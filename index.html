@@ -1,0 +1,381 @@
+<!--
+  Créé par Benam0u – 2025/07/08
+  GAIA 2 – Fiche de personnage
+-->
+
+<!DOCTYPE html>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fiche de personnage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* titre principal */
+    .title-row{display:grid;grid-template-columns:repeat(4,1fr);margin-bottom:1rem;}
+    .title-box{grid-column:1/span 4;border:2px solid #333;border-radius:1rem;background:#fff;padding:.5rem;text-align:center;font-size:24px;font-weight:bold;color:#666;box-shadow:2px 2px 4px rgba(0,0,0,.1);}
+    /* supprimer les flèches +/- des champs number et centrer */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button{ -webkit-appearance:none; margin:0; }
+    input[type="number"]{ -moz-appearance:textfield; text-align:center; }
+
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #fdfdfd;
+    }
+    .container { max-width: 1000px; margin: 2rem auto; padding: 1rem; position: relative; }
+
+    /* couleurs */
+    label, .section h3, .skill-table th, .attr-dice { color: #666; }
+    input, textarea, .abilities-list, .skill-table input { color: #000; }
+
+    /* grille 4 colonnes principale */
+    .attributes-and-vitals {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: stretch;
+    }
+    .attributes, .vitals, .portrait {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .attributes { grid-column: span 1; gap: 0.5rem; }
+    .vitals { grid-column: span 1; gap: 0.5rem; flex: 1; }
+    .portrait { grid-column: span 2; flex: 1; }
+
+    /* champs généraux (ligne top) */
+    .grid-top {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .field {
+      border: 2px solid #333;
+      border-radius: 1rem;
+      padding: 0.5rem;
+      background: #fff;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .field label {
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      display: block;
+    }
+    .field input {
+      width: 100%;
+      border: none;
+      padding: 0.25rem;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    /* caractéristiques */
+    .attr-box { flex: 1; border: 2px solid #333; border-radius: 1rem; background: #fff; padding: 0.5rem; box-shadow: 2px 2px 4px rgba(0,0,0,.1); display:flex; flex-direction:column; justify-content:center; align-items:center; }
+    .attr-box label { font-weight: bold; font-size: 22px; text-align: center; margin-bottom: 0.25rem; display: block;
+      text-align: center;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+    .value-wrap { display: flex; justify-content: center; align-items: center; gap: 0.25rem; }
+    .attr-box input[type="number"] { width: 40px; border: none; text-align: center; font-size: 18px; }
+    .attr-dice { font-size: 10px; }
+
+    /* vitaux */
+    .vital-sep{border:none;border-top:1px solid #666;margin:0.25rem 0;}
+    .vital-box {
+      border: 2px solid #333;
+      border-radius: 1rem;
+      background: #fff;
+      padding: 0.5rem;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      flex-basis: 0;
+    }
+    .vital-box label {
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+    .vital-box input { width: 100%; border: none; text-align: center; font-size: 16px; }
+    .vital-box:nth-child(1), .vital-box:nth-child(2) { flex: 0 1 40%; }
+    .vital-box:nth-child(3) { flex: 0 1 20%; }
+
+    /* portrait / notes */
+    .portrait{grid-column:span 2;border:2px solid #333;border-radius:1rem;background:#fff;padding:.75rem;box-shadow:2px 2px 4px rgba(0,0,0,.1);display:flex;flex-direction:column;gap:0.5rem;}
+    .portrait h3{margin:0;font-size:22px;text-align:center;color:#666;}
+    .portrait textarea{width:100%;border:none;border-radius:0.5rem;padding:0.5rem;background:#fff;font-size:16px;overflow:hidden;resize:none;} {
+      width: 100%;
+      height: 100%;
+      border: 2px dashed #999;
+      border-radius: 1rem;
+      padding: 0.5rem;
+      resize: vertical;
+      background: #fff;
+      font-size: 16px;
+    }
+
+    /* sections pleine largeur (4 col) */
+    .section {
+      border: 2px solid #333;
+      border-radius: 1rem;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      background: #fff;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      grid-column: span 4;
+    }
+    .section h3 { margin-top: 0; font-size: 22px; text-align: center; }
+    /* bouton impression */
+    .print-box{border:2px solid #333;border-radius:1rem;background:#fff;padding:.75rem;margin-bottom:1rem;grid-column:span 4;text-align:center;font-size:18px;font-weight:bold;color:#666;cursor:pointer;box-shadow:2px 2px 4px rgba(0,0,0,.1);}
+    /* rangées deux‑colonnes supplémentaires */
+    .row-two-col{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;}
+    .half-section{border:2px solid #333;border-radius:1rem;background:#fff;padding:.75rem;box-shadow:2px 2px 4px rgba(0,0,0,.1);grid-column:span 2;}
+    .half-section h3{margin-top:0;font-size:22px;text-align:center;color:#666;}
+    /* aperçu image */
+    .image-preview{display:none;width:100%;max-width:100%;height:auto;max-height:100%;border:1px dashed #999;border-radius:0.5rem;object-fit:contain;cursor:pointer;box-sizing:border-box;}
+
+    /* tableau compétences */
+    .skill-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .skill-table th, .skill-table td { border-bottom: 1px solid #ccc; padding: 0.25rem; text-align: left; }
+    .skill-table th { font-size: 18px; }
+    .skill-table th:nth-child(1), .skill-table td:nth-child(1) { width: 50%; }
+    .skill-table th:nth-child(2), .skill-table td:nth-child(2) { width: 25%; }
+    .skill-table th:nth-child(3), .skill-table td:nth-child(3) { width: 25%; text-align: center; }
+    .skill-table input { width: 100%; border: none; font-size: 16px; }
+    .skill-table tbody tr td:first-child { position: relative; padding-left: 1.25rem; }
+    .skill-table tbody tr td:first-child::before { content: '•'; position: absolute; left: 0; font-size: 16px; line-height: 1; top: 0.3rem; line-height: 1; top: 0.3rem; }
+
+    /* ajuster largeur des textareas des demi‑sections */
+    .half-section textarea{width:100%;box-sizing:border-box;border:none;border-radius:0.5rem;padding:0.5rem;background:#fff;font-size:16px;overflow:hidden;resize:none;}
+
+    /* listes à puces éditables */
+    .abilities-list { list-style-type: disc; padding-left: 1.2rem; margin: 0; font-size: 16px; }
+    .abilities-list li{ margin-bottom:0.25rem; border-bottom:1px solid #ccc; padding:0.25rem 0; }
+    .abilities-list li:first-child{border-top:1px solid #ccc;}
+
+    @media print {
+      /* forcer le zoom 100 % et conserver les couleurs/polices du web */
+      *{-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:inherit;}
+      html,body{zoom:100%;}
+      .container{margin:0;width:1000px;}
+      .section, .attributes-and-vitals, .row-two-col, .grid-top, .title-row{break-inside:avoid;page-break-inside:avoid;}
+    }
+      .section, .attributes-and-vitals, .row-two-col, .grid-top, .title-row { break-inside: avoid; page-break-inside: avoid; }
+    } }
+    /* aperçu A4 en pointillé */
+    
+    /* deuxième page A4 */
+     }
+      /* auto‑grow textarea */
+    .auto-grow{overflow:hidden;resize:none;width:100%;border:none;font-size:16px;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Titre centré 2 colonnes -->
+    <div class="title-row"><div class="title-box">GAÏA 2 - FICHE DE PERSONNAGE</div></div>
+    <!-- Ligne supérieure -->
+    <div class="grid-top">
+      <div class="field"><label for="name">Nom du Personnage</label><input id="name" /></div>
+      <div class="field"><label for="level">Niveau</label><input id="level" type="number" min="1" value="1" /></div>
+      <div class="field"><label for="race">Race</label><input id="race" /></div>
+      <div class="field"><label for="class">Classe</label><input id="class" /></div>
+    </div>
+
+    <!-- Grille principale -->
+    <div class="attributes-and-vitals">
+      <!-- Caractéristiques (col 1) -->
+      <div class="attributes">
+        <div class="attr-box"><label for="force">Force</label><div class="value-wrap"><input id="force" type="number" placeholder="10" value="10" /><span class="attr-dice" id="force-dice"></span></div></div>
+        <div class="attr-box"><label for="dex">Dextérité</label><div class="value-wrap"><input id="dex" type="number" placeholder="10" value="10" /><span class="attr-dice" id="dex-dice"></span></div></div>
+        <div class="attr-box"><label for="emp">Empathie</label><div class="value-wrap"><input id="emp" type="number" placeholder="10" value="10" /><span class="attr-dice" id="emp-dice"></span></div></div>
+        <div class="attr-box"><label for="sag">Sagesse</label><div class="value-wrap"><input id="sag" type="number" placeholder="10" value="10" /><span class="attr-dice" id="sag-dice"></span></div></div>
+        <div class="attr-box"><label for="int">Intelligence</label><div class="value-wrap"><input id="int" type="number" placeholder="10" value="10" /><span class="attr-dice" id="int-dice"></span></div></div>
+      </div>
+
+      <!-- PV / PF / Alignement (col 2) -->
+      <div class="vitals">
+        <div class="vital-box"><label>PV</label><input id="pv-max" type="number" placeholder="Max" /><hr class="vital-sep" /><input id="pv-current" type="number" placeholder="Actuel" /></div>
+        <div class="vital-box"><label>PF</label><input id="pf-max" type="number" placeholder="Max" /><hr class="vital-sep" /><input id="pf-current" type="number" placeholder="Actuel" /></div>
+        <div class="vital-box"><label>Alignement</label><input id="alignement" type="text" placeholder="" /></div>
+      </div>
+
+      <!-- Notes / portrait (cols 3-4) -->
+      <div class="portrait">
+        <h3>Notes – Quêtes – Équipements</h3>
+        <textarea class="auto-grow" rows="1"></textarea>
+      </div>
+    </div>
+
+    <!-- Bonus de race -->
+    <div class="section">
+      <h3>Bonus de race</h3>
+      <ul class="abilities-list" contenteditable="true"><li></li><li></li><li></li></ul>
+    </div>
+
+    <!-- Compétences -->
+    <div class="section">
+      <h3>Compétences</h3>
+      <table class="skill-table">
+        <thead>
+          <tr><th>Nom</th><th>Attribut</th><th>Bonus</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Capacités -->
+    <div class="section">
+      <h3>Capacités</h3>
+      <ul class="abilities-list" contenteditable="true"><li></li><li></li><li></li></ul>
+    </div>
+
+    <!-- Description + empty box -->
+    <div class="row-two-col">
+      <div class="half-section">
+        <h3>Description Physique</h3>
+        <textarea class="auto-grow" rows="1"></textarea>
+      </div>
+      <div class="half-section">
+        <h3>Visuel</h3>
+        <input type="file" id="avatar-input" accept="image/*" style="display:block;margin-bottom:.5rem;">
+        <img id="avatar-preview" class="image-preview" src="" alt="Aperçu du personnage" />
+      </div>
+    </div>
+
+    <!-- Histoire + Relations -->
+    <div class="row-two-col">
+      <div class="half-section">
+        <h3>Histoire</h3>
+        <textarea class="auto-grow" rows="1"></textarea>
+      </div>
+      <div class="half-section">
+        <h3>Relations – Alliés et Enemies</h3>
+        <textarea class="auto-grow" rows="1"></textarea>
+      </div>
+    </div>
+
+    <!-- Export / Impression -->
+    <div class="print-box" id="print-btn">Exporter au format PDF – Imprimer la Fiche de Personnage</div>
+  </div>
+
+  <script>
+    function getDie(val) {
+      if (val <= 4) return 'D4';
+      if (val <= 6) return 'D6';
+      if (val <= 8) return 'D8';
+      if (val <= 10) return 'D10';
+      return 'D12';
+    }
+
+    document.querySelectorAll('.attr-box').forEach(box => {
+      const numInput = box.querySelector('input[type="number"]');
+      const diceSpan = box.querySelector('.attr-dice');
+      const update = () => {
+        const v = parseInt(numInput.value, 10) || 0;
+        diceSpan.textContent = `( ${getDie(v)} )`;
+      };
+      numInput.addEventListener('input', update);
+      update();
+    });
+    // Ajout de lignes dans Compétences avec Entrée
+    const skillsBody = document.querySelector('.skill-table tbody');
+    skillsBody.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const currentRow = e.target.closest('tr');
+        if (!currentRow) return;
+        const newRow = currentRow.cloneNode(true);
+        newRow.querySelectorAll('input').forEach(inp => inp.value = '');
+        currentRow.after(newRow);
+        newRow.querySelector('input').focus();
+      }
+    });
+    // Suppression d’une ligne vide avec Backspace dans Compétences
+    skillsBody.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && e.target.value === '') {
+        const row = e.target.closest('tr');
+        if (row && row.parentElement.children.length > 1) {
+          e.preventDefault();
+          const prev = row.previousElementSibling ? row.previousElementSibling.querySelector('input') : null;
+          row.remove();
+          if (prev) prev.focus();
+        }
+      }
+    });
+
+    // Suppression d’un <li> vide avec Backspace dans Bonus de race & Capacités
+    document.querySelectorAll('.abilities-list').forEach(list => {
+      list.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace') {
+          const sel = window.getSelection();
+          if (!sel || !sel.anchorNode) return;
+          const li = sel.anchorNode.closest('li');
+          if (li && li.textContent.trim() === '' && list.children.length > 1) {
+            e.preventDefault();
+            const prev = li.previousElementSibling || li.nextElementSibling;
+            const range = document.createRange();
+            li.remove();
+            if (prev) {
+              range.selectNodeContents(prev);
+              range.collapse(false);
+              sel.removeAllRanges();
+              sel.addRange(range);
+            }
+          }
+        }
+      });
+    });
+    // Bouton impression
+    const printBtn=document.getElementById('print-btn');
+    if(printBtn){printBtn.addEventListener('click',()=>window.print());}
+
+    // Chargement de l'image personnage + toggle bouton
+    const fileInput = document.getElementById('avatar-input');
+    const previewImg = document.getElementById('avatar-preview');
+
+    if(fileInput){
+      // cliquer sur l’image rouvre le sélecteur
+      previewImg.addEventListener('click', ()=> fileInput.click());
+
+      fileInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if(file){
+          const reader = new FileReader();
+          reader.onload = ev => {
+            previewImg.src = ev.target.result;
+            previewImg.style.display = 'block';
+            fileInput.style.display = 'none';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // auto-grow textarea
+    document.querySelectorAll('.auto-grow').forEach(area=>{
+      const resize=()=>{area.style.height='auto';area.style.height=area.scrollHeight+'px';};
+      area.addEventListener('input',resize);
+      resize();
+    });
+  </script>
