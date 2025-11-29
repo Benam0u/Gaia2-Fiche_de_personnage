@@ -14,7 +14,7 @@
   <style>
     /* titre principal */
     .title-row{display:grid;grid-template-columns:repeat(4,1fr);margin-bottom:1rem;}
-    .title-box{grid-column:1/span 4;border:2px solid #333;border-radius:1rem;background:#fff;padding:.5rem;text-align:center;font-size:24px;font-weight:bold;color:#666;box-shadow:2px 2px 4px rgba(0,0,0,.1);}
+    .title-box{grid-column:1/span 4;border:2px solid #333;border-radius:1rem;background:#fff;padding:.5rem;text-align:center;font-size:24px;font-weight:bold;color:#8b0000;box-shadow:2px 2px 4px rgba(0,0,0,.1);}
     /* supprimer les flèches +/- des champs number et centrer */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button{ -webkit-appearance:none; margin:0; }
@@ -30,7 +30,8 @@
     .container { max-width: 1000px; margin: 2rem auto; padding: 1rem; position: relative; }
 
     /* couleurs */
-    label, .section h3, .skill-table th, .attr-dice { color: #666; }
+    label, .section h3, .skill-table th { color: #666; }
+    .attr-dice { color: #8b0000; }
     input, textarea, .abilities-list, .skill-table input { color: #000; }
 
     /* grille 4 colonnes principale */
@@ -199,11 +200,11 @@
     <div class="attributes-and-vitals">
       <!-- Caractéristiques (col 1) -->
       <div class="attributes">
-        <div class="attr-box"><label for="force">Force</label><div class="value-wrap"><input id="force" type="number" placeholder="10" value="10" /><span class="attr-dice" id="force-dice"></span></div></div>
-        <div class="attr-box"><label for="dex">Dextérité</label><div class="value-wrap"><input id="dex" type="number" placeholder="10" value="10" /><span class="attr-dice" id="dex-dice"></span></div></div>
-        <div class="attr-box"><label for="emp">Empathie</label><div class="value-wrap"><input id="emp" type="number" placeholder="10" value="10" /><span class="attr-dice" id="emp-dice"></span></div></div>
-        <div class="attr-box"><label for="sag">Sagesse</label><div class="value-wrap"><input id="sag" type="number" placeholder="10" value="10" /><span class="attr-dice" id="sag-dice"></span></div></div>
-        <div class="attr-box"><label for="int">Intelligence</label><div class="value-wrap"><input id="int" type="number" placeholder="10" value="10" /><span class="attr-dice" id="int-dice"></span></div></div>
+        <div class="attr-box"><label for="force">Force</label><div class="value-wrap"><input id="force" type="number" placeholder="10" value="10" /><span class="attr-dice" id="force-dice"></span><input type="text" placeholder="+0" style="width:30px;text-align:center;border:none;font-size:18px;" /></div></div>
+        <div class="attr-box"><label for="dex">Dextérité</label><div class="value-wrap"><input id="dex" type="number" placeholder="10" value="10" /><span class="attr-dice" id="dex-dice"></span><input type="text" placeholder="+0" style="width:30px;text-align:center;border:none;font-size:18px;" /></div></div>
+        <div class="attr-box"><label for="emp">Empathie</label><div class="value-wrap"><input id="emp" type="number" placeholder="10" value="10" /><span class="attr-dice" id="emp-dice"></span><input type="text" placeholder="+0" style="width:30px;text-align:center;border:none;font-size:18px;" /></div></div>
+        <div class="attr-box"><label for="sag">Sagesse</label><div class="value-wrap"><input id="sag" type="number" placeholder="10" value="10" /><span class="attr-dice" id="sag-dice"></span><input type="text" placeholder="+0" style="width:30px;text-align:center;border:none;font-size:18px;" /></div></div>
+        <div class="attr-box"><label for="int">Intelligence</label><div class="value-wrap"><input id="int" type="number" placeholder="10" value="10" /><span class="attr-dice" id="int-dice"></span><input type="text" placeholder="+0" style="width:30px;text-align:center;border:none;font-size:18px;" /></div></div>
       </div>
 
       <!-- PV / PF / Alignement (col 2) -->
@@ -213,8 +214,9 @@
           <div style="display:flex;align-items:center;justify-content:center;gap:0.25rem;margin-bottom:0.25rem;">
             <input id="pv-max" type="number" placeholder="Max" style="width:50px;" />
             <span style="font-size:14px;color:#666;">+</span>
-            <input id="pv-temp" type="number" placeholder="0" style="width:50px;" />
-            <span style="font-size:14px;color:#666;"></span>
+            <span style="font-size:14px;color:#666;margin-left:0.25rem;">(</span>
+            <input id="pv-temp" type="number" placeholder="0" style="width:40px;" />
+            <span style="font-size:14px;color:#666;">)</span>
           </div>
           <hr class="vital-sep" />
           <input id="pv-current" type="number" placeholder="Actuel" />
