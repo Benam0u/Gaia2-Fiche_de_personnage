@@ -208,7 +208,17 @@
 
       <!-- PV / PF / Alignement (col 2) -->
       <div class="vitals">
-        <div class="vital-box"><label>PV</label><input id="pv-max" type="number" placeholder="Max" /><hr class="vital-sep" /><input id="pv-current" type="number" placeholder="Actuel" /></div>
+        <div class="vital-box">
+          <label>PV</label>
+          <div style="display:flex;align-items:center;justify-content:center;gap:0.25rem;margin-bottom:0.25rem;">
+            <input id="pv-max" type="number" placeholder="Max" style="width:50px;" />
+            <span style="font-size:14px;color:#666;">+</span>
+            <input id="pv-temp" type="number" placeholder="0" style="width:50px;" />
+            <span style="font-size:14px;color:#666;"></span>
+          </div>
+          <hr class="vital-sep" />
+          <input id="pv-current" type="number" placeholder="Actuel" />
+        </div>
         <div class="vital-box"><label>PF</label><input id="pf-max" type="number" placeholder="Max" /><hr class="vital-sep" /><input id="pf-current" type="number" placeholder="Actuel" /></div>
         <div class="vital-box"><label>Alignement</label><input id="alignement" type="text" placeholder="" /></div>
       </div>
