@@ -1148,24 +1148,34 @@
       .option-card {
         display: flex !important;
         flex-direction: column !important;
+        flex-wrap: nowrap !important;
         width: 100% !important;
         max-width: 100% !important;
         border-radius: 0.75rem !important;
         overflow: hidden !important;
       }
       
-      .option-card .option-img {
+      .option-card > * {
+        flex-shrink: 0 !important;
+      }
+      
+      .option-card .option-img,
+      .option-card > img {
         width: 100% !important;
+        min-width: 100% !important;
         height: 150px !important;
         min-height: 150px !important;
         max-height: 150px !important;
         object-fit: cover !important;
         flex-shrink: 0 !important;
+        order: -1 !important;
       }
       
       .option-card-text-content,
-      .option-card .option-content {
+      .option-card .option-content,
+      .option-card > div {
         width: 100% !important;
+        min-width: 100% !important;
         max-height: none !important;
         height: auto !important;
         padding: 0.75rem !important;
@@ -1278,6 +1288,30 @@
       
       .levelup-selection-panel {
         padding: 0.75rem !important;
+        overflow-x: hidden !important;
+      }
+      
+      .levelup-selection-panel > div {
+        overflow-x: hidden !important;
+      }
+      
+      /* Level up characteristic selection - responsive grid */
+      .levelup-carac-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.4rem !important;
+      }
+      
+      .levelup-carac-grid button {
+        font-size: 10px !important;
+        padding: 0.3rem !important;
+      }
+      
+      /* Level up competence/advantage selection - no scroll, full list */
+      .levelup-comp-grid,
+      .levelup-adv-grid {
+        max-height: none !important;
+        overflow-y: visible !important;
+        grid-template-columns: 1fr !important;
       }
       
       .levelup-choice-item {
@@ -1286,16 +1320,19 @@
         gap: 0.5rem !important;
       }
       
-      /* Competences step */
+      /* Competences step - 1 column on mobile */
       #comp-list {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.5rem !important;
+        grid-template-columns: 1fr !important;
+        gap: 0.4rem !important;
       }
       
       .comp-item {
-        font-size: 11px !important;
-        padding: 0.4rem !important;
+        font-size: 12px !important;
+        padding: 0.5rem !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
       }
       
       /* Custom advantages */
@@ -1345,78 +1382,117 @@
       
       /* ========== CHARACTER SHEET ========== */
       .container {
-        padding: 0.5rem !important;
-        margin: 0.5rem auto !important;
+        padding: 0.25rem !important;
+        margin: 0.25rem auto !important;
         max-width: 100% !important;
       }
       
       .title-box {
-        font-size: 16px !important;
-        padding: 0.5rem !important;
+        font-size: 12px !important;
+        padding: 0.3rem !important;
+      }
+      
+      .title-row {
+        margin-bottom: 0.5rem !important;
       }
       
       .attributes-and-vitals {
-        grid-template-columns: 1fr !important;
-        gap: 0.5rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.25rem !important;
       }
       
       .attributes {
         display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 0.25rem !important;
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 0.15rem !important;
       }
       
       .attr-box {
-        padding: 0.4rem !important;
+        padding: 0.2rem !important;
         text-align: center !important;
+        border-width: 1px !important;
+        border-radius: 0.3rem !important;
       }
       
       .attr-box label {
-        font-size: 10px !important;
-        margin-bottom: 0.2rem !important;
+        font-size: 8px !important;
+        margin-bottom: 0.1rem !important;
+        display: block !important;
       }
       
       .attr-box input[type="number"] {
-        width: 35px !important;
-        font-size: 14px !important;
+        width: 22px !important;
+        font-size: 11px !important;
+        padding: 0 !important;
+      }
+      
+      .attr-box .value-wrap {
+        gap: 0.1rem !important;
       }
       
       .attr-dice {
-        font-size: 10px !important;
+        font-size: 7px !important;
+      }
+      
+      .attr-box input[type="text"] {
+        width: 18px !important;
+        font-size: 9px !important;
       }
       
       .vitals {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.25rem !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 0.15rem !important;
       }
       
       .vital-box {
-        padding: 0.3rem !important;
+        padding: 0.2rem !important;
+        border-width: 1px !important;
+        border-radius: 0.3rem !important;
       }
       
       .vital-box label {
-        font-size: 9px !important;
+        font-size: 7px !important;
+        display: block !important;
+        margin-bottom: 0.1rem !important;
       }
       
       .vital-box input {
-        font-size: 12px !important;
+        font-size: 10px !important;
         width: 100% !important;
+        padding: 0 !important;
       }
       
       .portrait {
-        min-height: 120px !important;
-        grid-row: span 1 !important;
+        min-height: 80px !important;
+        display: none !important;
       }
       
       .grid-top {
-        grid-template-columns: 1fr !important;
-        gap: 0.5rem !important;
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 0.15rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+      
+      .grid-top .section {
+        padding: 0.2rem !important;
+        border-width: 1px !important;
+        border-radius: 0.3rem !important;
+      }
+      
+      .grid-top .section label {
+        font-size: 7px !important;
+      }
+      
+      .grid-top .section input {
+        font-size: 10px !important;
       }
       
       .row-two-col {
         grid-template-columns: 1fr !important;
-        gap: 0.5rem !important;
+        gap: 0.25rem !important;
       }
       
       .half-section {
@@ -1424,34 +1500,64 @@
       }
       
       .section {
-        padding: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
+        padding: 0.3rem !important;
+        margin-bottom: 0.25rem !important;
+        border-width: 1px !important;
+        border-radius: 0.3rem !important;
       }
       
       .section h3 {
-        font-size: 14px !important;
-        margin-bottom: 0.5rem !important;
+        font-size: 10px !important;
+        margin-bottom: 0.2rem !important;
       }
       
       .skill-table {
-        font-size: 11px !important;
+        font-size: 9px !important;
       }
       
       .skill-table th,
       .skill-table td {
-        padding: 0.2rem !important;
+        padding: 0.1rem !important;
+      }
+      
+      .skill-table th {
+        font-size: 8px !important;
       }
       
       .skill-table input {
-        font-size: 11px !important;
+        font-size: 9px !important;
+        padding: 0 !important;
       }
       
       .abilities-list {
-        font-size: 12px !important;
+        font-size: 10px !important;
       }
       
       .abilities-list li {
+        padding: 0.2rem !important;
+      }
+      
+      /* Bonus de race */
+      .bonus-race-content {
+        font-size: 10px !important;
+      }
+      
+      .bonus-race-content li {
+        font-size: 10px !important;
+        padding: 0.15rem 0 !important;
+      }
+      
+      /* Half sections */
+      .half-section {
         padding: 0.3rem !important;
+      }
+      
+      .half-section h3 {
+        font-size: 10px !important;
+      }
+      
+      .half-section textarea {
+        font-size: 10px !important;
       }
     }
     
@@ -1465,22 +1571,23 @@
         font-size: 1rem !important;
       }
       
-      .option-card .option-img {
-        height: 120px !important;
-        min-height: 120px !important;
-        max-height: 120px !important;
+      .option-card .option-img,
+      .option-card > img {
+        height: 100px !important;
+        min-height: 100px !important;
+        max-height: 100px !important;
       }
       
       .option-card .option-name {
-        font-size: 14px !important;
+        font-size: 13px !important;
       }
       
       .option-card .option-desc {
-        font-size: 12px !important;
+        font-size: 11px !important;
       }
       
       .attributes {
-        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-columns: repeat(3, 1fr) !important;
       }
       
       #comp-list {
@@ -1491,6 +1598,11 @@
         width: 42px !important;
         height: 42px !important;
         font-size: 12px !important;
+      }
+      
+      /* Level up - 1 column for characteristics on very small screens */
+      .levelup-carac-grid {
+        grid-template-columns: 1fr !important;
       }
     }
     
@@ -2419,6 +2531,9 @@
         if (step > 1) {
           document.getElementById('wizard-separator').style.display = 'block';
         }
+        
+        // Scroll vers le haut de la page pour voir la nouvelle étape
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
       
       // Appliquer les changements d'une étape à la fiche
@@ -3408,6 +3523,7 @@
         container.innerHTML = '<p style="margin-bottom:0.75rem; color:#666;">Sélectionnez une compétence à améliorer (+1) :</p>';
         
         const grid = document.createElement('div');
+        grid.className = 'levelup-comp-grid';
         grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:0.5rem; max-height:200px; overflow-y:auto;';
         
         characterData.competences.forEach(comp => {
@@ -3438,6 +3554,7 @@
         const diceProgression = [4, 6, 8, 10, 12];
         
         const grid = document.createElement('div');
+        grid.className = 'levelup-carac-grid';
         grid.style.cssText = 'display:grid; grid-template-columns:repeat(5, 1fr); gap:0.5rem;';
         
         attrs.forEach(attr => {
@@ -3539,6 +3656,7 @@
           classSection.innerHTML = `<p style="margin-bottom:0.5rem; color:#666;"><strong>Avantages de votre classe (${creationState.classe.name}) :</strong></p>`;
           
           const classGrid = document.createElement('div');
+          classGrid.className = 'levelup-adv-grid';
           classGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:1rem; max-height:150px; overflow-y:auto;';
           
           const availableClassAdvantages = creationState.classe.avantages.filter(adv => !isAdvantageAlreadyChosen(adv.id));
@@ -3573,6 +3691,7 @@
         generalSection.innerHTML = `<p style="margin-bottom:0.5rem; color:#666;"><strong>Avantages généraux :</strong></p>`;
         
         const generalGrid = document.createElement('div');
+        generalGrid.className = 'levelup-adv-grid';
         generalGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; max-height:150px; overflow-y:auto;';
         
         const availableGeneralAdvantages = (characterData.avantagesGeneraux || []).filter(adv => !isAdvantageAlreadyChosen(adv.id));
@@ -3617,6 +3736,7 @@
         });
         
         const advantagesContainer = document.createElement('div');
+        advantagesContainer.className = 'levelup-adv-grid';
         advantagesContainer.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; max-height:200px; overflow-y:auto;';
         
         classSelect.addEventListener('change', () => {
