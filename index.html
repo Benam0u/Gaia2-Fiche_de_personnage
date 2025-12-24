@@ -1342,12 +1342,55 @@
         gap: 0.4rem !important;
       }
       
+      .comp-distribute {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.3rem !important;
+        overflow: hidden !important;
+      }
+      
       .comp-item {
-        font-size: 12px !important;
-        padding: 0.5rem !important;
+        font-size: 10px !important;
+        padding: 0.3rem 0.4rem !important;
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
+        overflow: hidden !important;
+      }
+      
+      .comp-item .comp-info {
+        gap: 0.2rem !important;
+        flex-shrink: 1 !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+      }
+      
+      .comp-item .comp-name {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 70px !important;
+      }
+      
+      .comp-item .comp-attr {
+        font-size: 8px !important;
+        padding: 0.1rem 0.2rem !important;
+        flex-shrink: 0 !important;
+      }
+      
+      .comp-item .comp-controls {
+        flex-shrink: 0 !important;
+        gap: 0.15rem !important;
+      }
+      
+      .comp-item .comp-controls button {
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 12px !important;
+      }
+      
+      .comp-item .comp-value {
+        min-width: 20px !important;
+        font-size: 10px !important;
       }
       
       /* Custom advantages */
@@ -1425,17 +1468,27 @@
         font-size: 9px !important;
       }
       
+      .attr-box .value-wrap {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.1rem !important;
+        white-space: nowrap !important;
+      }
+      
       .attr-box input[type="number"] {
-        width: 28px !important;
+        width: 24px !important;
         font-size: 12px !important;
       }
       
       .attr-dice {
         font-size: 7px !important;
+        white-space: nowrap !important;
       }
       
       .attr-box input[type="text"] {
-        width: 20px !important;
+        width: 18px !important;
         font-size: 8px !important;
       }
       
@@ -1471,6 +1524,7 @@
       
       .grid-top .field {
         padding: 0.2rem !important;
+        overflow: hidden !important;
       }
       
       .grid-top .field label {
@@ -1483,6 +1537,7 @@
         font-size: 10px !important;
         padding: 0.15rem !important;
         width: 100% !important;
+        background: transparent !important;
       }
       
       .row-two-col {
@@ -1559,6 +1614,7 @@
       /* Half sections */
       .half-section {
         padding: 0.4rem !important;
+        overflow: hidden !important;
       }
       
       .half-section h3 {
@@ -1567,6 +1623,12 @@
       
       .half-section textarea {
         font-size: 12px !important;
+      }
+      
+      .half-section input[type="file"] {
+        font-size: 9px !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
       }
       
       /* Textarea et notes (inventaire) */
