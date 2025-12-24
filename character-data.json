@@ -1,0 +1,380 @@
+{
+  "races": [
+    {"id":"humain","name":"Humain","description":"Espèce « dominante », réputée pour son adaptabilité et son sens des affaires. Souvent ouverts aux nouveautés, les humains sont une espèce essentiellement citadine.","bonuses":["Compétent : +1 point de création par Niveau (Niveau 1 compris)","Adaptable : peut apprendre un avantage racial d'une autre race en trouvant un Maître et en y consacrant du temps"],"maluses":["Complexé : choisir une race envers laquelle le personnage est raciste ou haineux. Le Charisme compte comme négatif lors des interactions avec cette race"]},
+    {"id":"elfe","name":"Elfe","description":"Sveltes, bons grimpeurs et amis des forêts, les elfes ont une peau blanche verdâtre et sont assez proches physiquement des humains, à l'exception de leurs traits distinctifs.","bonuses":["Vision dans le noir","Corps elfique : +Niveau aux soins reçus et +Niveau/2 sur les régénérations","Constitution elfique : PV = 10 + Int + For"],"maluses":[]},
+    {"id":"orc","name":"Orc","description":"Souvent plus athlétiques et coriaces, les orcs vivent dans une société clanique patriarcale. Ils sont connus pour leur soif d'aventure et leur goût de l'adrénaline, dû à leur espérance de vie relativement courte. L'idée est de vivre un maximum d'expériences exceptionnelles. Le sens de l'honneur est apprécié chez ces peaux vertes, même si eux-mêmes ne le sont pas nécessairement.","bonuses":["Athl'Orc : +1 Force","Berz'Orc : ignore 1 blessure en combat"],"maluses":["Hon'Orc : doit réussir un jet de Volonté pour ne pas s'énerver, sinon perte de Santé Mentale"]},
+    {"id":"nain","name":"Nain","description":"Évidemment de petite taille, mais pas aussi bourrus qu'on le pense, les nains sont capables de boire des mixtures extraordinairement fortes. L'artisanat est bien sûr leur spécialité, et l'argent est toujours apprécié !","bonuses":["Artisa'Nain : commence avec une arme dotée d'une rune ancestrale (+1 magique) qui aide selon le domaine d'expertise de l'ancêtre. Peut être transférée à un autre objet pour 3 actions","Gnôle naine : flasque de gnôle naine (15 gorgées). 1 gorgée = 5 PV et 5 PF, 1 gorgée par action, +5 Résistance à l'alcool"],"maluses":["Sang de pierre : −Force PV rendus par les soins et −Force/2 sur les régénérations avec des moyens non-nains"]},
+    {"id":"troll","name":"Troll","description":"Le troll est une force de la nature, et de ce fait très connecté à celle-ci. Généralement très grands et arborant des teintes proches des arbres, ils sont souvent tournés vers la poésie et le pacifisme. Cependant, la vision la plus terrifiante qui soit serait, selon les rumeurs… un village troll en colère.","bonuses":["Force de la nature : +1 Force, +2 supplémentaires quand il agit contre quelqu'un qui l'énerve","Aura de con-Troll : camouflage basé sur la Force en milieu naturel"],"maluses":["Calme de la montagne : fondamentalement pacifiste (sauf s'il est hors de lui ou riposte). −5 à tous les tests de combat tant qu'il n'est pas énervé, sinon perte de Santé Mentale"]},
+    {"id":"nymphe","name":"Nymphe","description":"Portées sur les arts, télépathes et muettes, les nymphes sont particulièrement connues pour leur capacité à transmettre des émotions et maintenir le moral de leur entourage. Elles vivent généralement entre elles et tirent au hasard leur représentant politique. Elles naissent dans un arbre de vie gracile et clair, à leur image, et sont très liées à leur diablotin rouge ailé qui les accompagne très souvent.","bonuses":["Télépathe : communique par télépathie, images, etc. La nymphe émet seulement ; on ne peut lui répondre par le même moyen","Familier : possède un petit diablotin volant comme familier"],"maluses":["Familier fragile : le familier est faible et très attaché. 2 tares mentales si le familier est perdu"]},
+    {"id":"sylphe","name":"Sylphe","description":"D'une taille moyenne inférieure aux nains, mais hélas bien moins corpulents, les sylphes ont une peau olivâtre et des ailes évoquant celles des libellules. Ils n'ont pas de société propre et vivent parmi les autres races au gré de leurs voyages. D'un naturel espiègle, leur volonté est de fer et leur sourire d'une douceur sans pareille. Petite anecdote : personne n'a jamais trouvé le palais légendaire de ces êtres, et ce sont les hommes qui portent les enfants.","bonuses":["Ailes : peut voler","Pouvoir de l'Amitié : 1 fois par scénario, le sylphe peut puiser dans les PF du groupe pour un jet"],"maluses":["−1 Force"]},
+    {"id":"vampire","name":"Vampire","description":"Issus d'une transformation par un futur pair, les vampires ont toujours vécu incognito parmi les autres races. Ils se sont toujours faits discrets, avec une hiérarchie très rigide régie par les plus puissants – hélas disparus pour la plupart depuis la nuit de la catastrophe. Les vampires sortent désormais des ombres pour se mêler à la population, encouragés par le fait que les autres races se côtoient.","bonuses":["Veinard : le vampire recouvre un objet de ses veines et récupère la moitié des PV infligés avec","+1 Charisme"],"maluses":["Vulnérable au Feu et à la Lumière Vive : +50% d'effets subis"]},
+    {"id":"nezen","name":"Nezen (Homme-Rat)","description":"Connus pour être la lie de la société, les hommes-rats ont effectivement eu le temps de s'adapter à ce genre de vie, mais certains tentent malgré tout de s'élever. Que ce soit à cause de leurs habitudes ou de la vision qu'on a d'eux, ces êtres sont des survivalistes hors pair.","bonuses":["Bouffe-tout : peut manger n'importe quoi, immunisé aux maladies, poisons, etc.","Contact Bas-Fonds : chance d'avoir une connaissance pouvant aider dans la basse société (bien vu dans les bas-fonds)"],"maluses":["Mauvaise réputation : mal vu en milieu aisé"]},
+    {"id":"artificiel","name":"Artificiel","description":"Golem, objet mécanique ou magique : ce groupe rassemble toutes les créations non organiques.","bonuses":["Insomniaque / Hyperactif : +1 action inter-séance","Corps de métal : porteur sain de toute toxine"],"maluses":["Compatibilité mécanique : les soins et régénérations ne fonctionnent pas sur le golem. Il doit passer du temps entre les séances pour récupérer les PV perdus"]},
+    {"id":"monstruosite","name":"Monstruosité","description":"Golem de chair ou structure magique créée à partir de matière organique : ce groupe rassemble toutes les créations organiques.","bonuses":["Avantage 1 : à déterminer avec le MJ","Avantage 2 : à déterminer avec le MJ"],"maluses":["Apparence monstrueuse : −5 aux interactions sociales basées sur le physique"]},
+    {"id":"hybride","name":"Hybride (Aviaire / Féroce / Agile)","description":"L'hybridation peut avoir diverses origines : croisement, manipulation génétique ou descendance d'hybrides. Les hybrides ont longtemps vécu cachés, considérés comme des monstres par les humains, mais sortent aujourd'hui de leur trou.","bonuses":["+1 Dextérité ou Force (au choix)","Animalisme : 2 traits mineurs de l'animal associé"],"maluses":["Fight or Flight : choisir à la création. En situation de conflit : si « Flight », doit réussir un jet de Volonté ou s'enfuir (sinon perte de SM). Si « Fight », doit réussir un jet de Volonté ou attaquer (sinon perte de SM)"]},
+    {"id":"garou","name":"Garou","description":"Vivant parmi les hommes à l'instar des vampires, les garous prennent leur essor en ce moment. Ils sont connus pour apprécier la bonne chair (dans tous les sens du terme), les matières animales et le frisson du combat. Ils ont cependant des superstitions qui les bloquent parfois. Contrairement aux préjugés, ils peuvent se transformer à volonté, et il est très difficile de s'en faire un ennemi (mais facile de se faire l'ennemi de tous ceux du secteur).","bonuses":["Forme de combat : +Force/2 et +Dex/2, coûte Niveau PF par tour","Solidarité de la meute : entraide naturelle avec les autres garous"],"maluses":["Vœu de pauvreté : gagne la moitié de l'argent suite aux quêtes (dépense vite)"]},
+    {"id":"goule","name":"Goule","description":"D'apparence repoussante (tête évoquant des êtres troglodytes, sabots, etc.), les goules ont trouvé jadis un moyen de passer inaperçues… la métamorphose ! Elles étaient à l'origine une création vampirique, mais certaines ont réussi à échapper à leurs premiers maîtres pour s'organiser. Dotées d'une grande adaptabilité mais aussi d'une forte allergie à la flore, elles ont réussi à se faire une place discrète dans le monde.","bonuses":["Aruspice des entrailles : permet de lire une partie de l'avenir dans des entrailles","Formes supplémentaires : vieillard ou chien. 5 PF pour changer de forme, passage possible de l'une à l'autre sans repasser par la forme de base. Revenir à la forme de base est gratuit"],"maluses":["Allergie aux plantes : allergie SUPRA sévère, même au simple contact"]},
+    {"id":"demon","name":"Démon","description":"Issus du plan démoniaque, avec leurs propres dieux et chefs (souvent les mêmes) et dotés de capacités colossales… chez eux. Les démons viennent de temps en temps rendre visite à notre monde, amicalement ou non. Mais gardez quand même un œil sur eux, surtout ceux qui sont sympathiques. Ils arborent souvent des couleurs chaudes ou sombres avec divers attributs rappelant leur plan d'origine.","bonuses":["Cuir épais : +Niveau RD magique","Dévoué au chaos : choisir un Vice à la création. 1 fois par scénario, être dans un lieu où l'on s'adonne audit vice donne 1 point d'Espoir. Pousser quelqu'un à s'y adonner donne 1 point d'Anarchy"],"maluses":["Haine / Rivalité avec les Anges et les Dieux : perte de Santé Mentale pour se retenir"]},
+    {"id":"ange","name":"Ange","description":"Issus du plan angélique, avec leurs propres dieux et chefs et dotés de capacités colossales… chez eux. Connus pour leurs bienfaits selon les superstitions. Physiquement, ils prennent une apparence qui leur plaît lors de leur première arrivée dans notre monde. Particularité : les ailes d'énergie dans leur dos ne changent jamais.","bonuses":["Forme d'énergie : peut devenir intangible 1 fois par séance","Affinité avec les artefacts : peut identifier un objet non magique et l'utiliser avec +2"],"maluses":["Hémophilie magique : perd la moitié des PV perdus en PF également"]},
+    {"id":"gobelin","name":"Gobelin","description":"Petits, pas aussi méchants qu'on veut bien le croire, mais surtout débordant d'énergie et souvent d'idées plus ou moins bonnes. Le gobelin est un humanoïde de couleur gris verdâtre. Ils vivent souvent entre eux et sont parfois considérés comme des animaux plutôt que comme des citoyens, ce qui a tendance à les vexer.","bonuses":["Mains agiles : +1 Dextérité","Boum ? Paboum ? : 1 objet peut toujours devenir une bombe (active au contact, Niveau D6 dégâts)","Shonen Junk : « Rien d'impossible à un gobelin ! »"],"maluses":[]},
+    {"id":"lutin","name":"Lutin","description":"Petit humanoïde bedonnant et barbu quel que soit son sexe, le lutin est une vision féerique quand on le rencontre. Cependant, on déchante vite devant le légendaire caractère acariâtre de l'espèce. Il existe évidemment des lutins parfaitement aimables, mais ils ne sont pas légion. Ils se définissent comme un peuple gardien de nombreux secrets, guides spirituels vers d'impossibles découvertes, et dotés d'un bon flair pour les bonnes affaires. Connus pour leurs noms interminables : l'une des pires horreurs est de demander à un lutin son nom complet plutôt que son diminutif.","bonuses":["Chance du lutin : 1 relance par session","Inventaire de RPG : le lutin peut faire apparaître une grande boîte nommée « Inventaire » où il stocke à l'infini ses objets"],"maluses":["Secret et énigmatique : cachotier, aime faire mériter toute information avec une énigme, ce qui le rend insupportable. −2 Social"]},
+    {"id":"daedroth","name":"Daedroth (Homme-Reptile)","description":"Homme-serpent, homme-dragon, homme-lézard… Nombreux noms pour une seule race qui, au nez et à la barbe des autres, a décidé de s'appeler Daedroth. À l'origine vivant dans des tribus très fermées sur une île à l'écart du monde, ils ont décidé de s'ouvrir aux autres après les événements récents. La famille est extrêmement importante pour ces êtres, qui ne parlent d'ailleurs jamais d'eux à la première personne (ils préfèrent omettre le pronom : « vais bien » au lieu de « je vais bien »). Ce peuple garde un secret : ils savent faire pousser des pierres et des gemmes.","bonuses":["Sang cicatrisant : régénère Niveau PV par tour","Résistance Chaleur / Feu : 50%"],"maluses":["−1 Intelligence"]},
+    {"id":"zombie","name":"Zombie","description":"Un rendez-vous manqué avec la mort, un rappel par un nécromancien ou un congé accordé par la faucheuse… Il s'avère que parfois, les morts ne le restent pas. Leur biologie ne fonctionne plus vraiment, mais tant qu'il y a de la vie, il y a de l'espoir.","bonuses":["Thriller : choisit un leader et fait la même chose que lui ce tour-ci (même jet, même compétence, seule la caractéristique change)","Lenteur cinématographique : +Niveau en Initiative"],"maluses":["Pourriture sur patte : −5 aux jets de discrétion liés à l'odeur"]}
+  ],
+  "classes": [
+    {
+      "id": "rodeur",
+      "name": "Rôdeur",
+      "description": "Maître des étendues sauvages, le rôdeur excelle dans la survie en milieu naturel, le pistage et le combat à distance. Il entretient un lien profond avec la nature et ses créatures.",
+      "avantages": [
+        {"id": "langage-foret", "name": "Langage de la forêt", "description": "Permet de connaître la situation globale du milieu (dangers, présences, etc.)"},
+        {"id": "signalisation", "name": "Signalisation des rôdeurs", "description": "Connaissance des signes et marques laissés par les rôdeurs"},
+        {"id": "pas-loup", "name": "Pas de loup", "description": "+Niveau/2 en Discrétion en milieu naturel"},
+        {"id": "depecage", "name": "Dépeçage avancé", "description": "Permet d'obtenir des composants plus rares sur les créatures"},
+        {"id": "refuges", "name": "Refuges des rôdeurs", "description": "Connaissance des refuges secrets des rôdeurs"},
+        {"id": "vision-aigle", "name": "Vision d'aigle", "description": "+Niveau/2 en Perception"},
+        {"id": "compagnon-animal", "name": "Compagnon animal", "description": "Possède un compagnon animal fidèle"},
+        {"id": "tir-precis", "name": "Tir précis", "description": "Peut relancer les dés de dégâts"},
+        {"id": "tir-rapide", "name": "Tir rapide", "description": "Peut attaquer plus fréquemment à distance"},
+        {"id": "acrobatie", "name": "Acrobatie", "description": "Maîtrise des mouvements acrobatiques"}
+      ]
+    },
+    {
+      "id": "guerrier",
+      "name": "Guerrier",
+      "description": "Combattant aguerri et polyvalent, le guerrier maîtrise l'art de la guerre sous toutes ses formes. Expert en armes et en armures, il est le pilier de toute ligne de front.",
+      "avantages": [
+        {"id": "parade-reactive", "name": "Parade réactive", "description": "1 défense supplémentaire sans malus"},
+        {"id": "botte", "name": "Botte", "description": "+Niveau en attaque, 1 fois par combat"},
+        {"id": "arme-favorite", "name": "Arme favorite", "description": "+Niveau/2 avec un type d'arme choisi"},
+        {"id": "arme-nommee", "name": "Arme nommée", "description": "+Niveau/2 avec une arme spécifique"},
+        {"id": "charge", "name": "Charge", "description": "Permet de renverser ou choquer l'adversaire"},
+        {"id": "interception", "name": "Interception", "description": "Défend une attaque destinée à un allié, 1 fois par combat"},
+        {"id": "coup-assommant", "name": "Coup assommant", "description": "Peut assommer un adversaire"},
+        {"id": "briser", "name": "Briser", "description": "Dégâts accrus sur l'équipement et les armes adverses"},
+        {"id": "organisation-combat", "name": "Organisation du combat", "description": "Jet tactique par combat permettant de repositionner les alliés"},
+        {"id": "connaissance-armure", "name": "Connaissance d'armure", "description": "+Niveau/2 en Défense et RD, +Niveau/2 en attaque contre armure similaire"}
+      ]
+    },
+    {
+      "id": "maitre-arme",
+      "name": "Maître d'arme",
+      "description": "Virtuose du combat rapproché, le maître d'arme a perfectionné son art jusqu'à l'excellence. Ses techniques raffinées lui permettent de dominer n'importe quel duel.",
+      "avantages": [
+        {"id": "botte-secrete", "name": "Botte secrète", "description": "Attaque sans dégâts mais l'ennemi a −Niveau+2 en Défense jusqu'à la fin du prochain tour"},
+        {"id": "feinte", "name": "Feinte", "description": "−Niveau/2 en attaque, +Niveau/2 en dégâts"},
+        {"id": "point-faible", "name": "Point faible", "description": "−5 en attaque mais ignore l'armure"},
+        {"id": "ecarter-soie", "name": "Écarter la soie", "description": "Dégâts divisés par 2 mais continus, arme plantée dans l'adversaire : il a −5 pour attaquer et défendre, mais +10 pour attaquer le personnage tant que maintenu"},
+        {"id": "frappe-sang-lie", "name": "Frappe du Sang-Lié", "description": "Sacrifie des PF ou PV pour augmenter les dégâts d'autant (PV) ou de moitié (PF)"},
+        {"id": "demonstration", "name": "Démonstration", "description": "Manœuvre offensive pour intimider"},
+        {"id": "coup-bas", "name": "Coup bas", "description": "1 action par combat, +Niveau/2 en Initiative"},
+        {"id": "repliques-percutantes", "name": "Répliques percutantes", "description": "Ajouter le bonus de Baratin à répartir entre attaque et dégâts"},
+        {"id": "provocation-masse", "name": "Provocation de masse", "description": "Attire l'attention de plusieurs ennemis"},
+        {"id": "perfection-etincelante", "name": "Perfection étincelante", "description": "Peut ajouter sa Force aux jets sociaux"}
+      ]
+    },
+    {
+      "id": "moine",
+      "name": "Moine",
+      "description": "Artiste martial ayant atteint la maîtrise de son corps et de son esprit. Le moine canalise son énergie intérieure pour accomplir des exploits physiques extraordinaires.",
+      "avantages": [
+        {"id": "petit-papa-baston", "name": "Petit Papa Baston", "description": "+Niveau à répartir entre attaque et dégâts contondants à mains nues, coûte 3 PF par round"},
+        {"id": "frappe-fulgurante", "name": "Frappe fulgurante", "description": "1 fois par combat, attaque instantanée"},
+        {"id": "esprit-allie", "name": "Esprit allié", "description": "1 action, +Niveau/2 aux actions des alliés pendant 2 rounds"},
+        {"id": "chakra", "name": "Chakra", "description": "Permet d'effectuer des actions « ninjaesques » et des techniques spéciales"},
+        {"id": "poing-acier", "name": "Poing d'acier", "description": "Peut parer à mains nues"},
+        {"id": "enchainement", "name": "Enchaînement", "description": "Si la différence de jet est de 5 ou plus, attaque supplémentaire"},
+        {"id": "queue-dragon", "name": "Queue du dragon", "description": "Attaque de zone au corps à corps"},
+        {"id": "fureur-anciens", "name": "Fureur des Anciens", "description": "+Niveau/2 aux dégâts à mains nues"},
+        {"id": "saut-salvateur", "name": "Saut salvateur", "description": "Désengagement gratuit"},
+        {"id": "meditation", "name": "Méditation", "description": "1 relance par session"}
+      ]
+    },
+    {
+      "id": "artiste",
+      "name": "Artiste",
+      "description": "Performer charismatique dont le talent transcende le simple divertissement. L'artiste influence les émotions et les esprits par sa musique, son chant ou sa poésie.",
+      "avantages": [
+        {"id": "rock-star", "name": "Rock Star", "description": "Possède un groupuscule de fans dévoués"},
+        {"id": "voie-ange", "name": "Voie d'ange", "description": "+Niveau/2 aux actions utilisant la voix"},
+        {"id": "touche-a-tout", "name": "Touche-à-tout", "description": "+5 aux compétences artistiques"},
+        {"id": "instrument-favori", "name": "Instrument favori", "description": "+Niveau/2 avec un instrument choisi"},
+        {"id": "sharing-soul", "name": "Sharing Soul", "description": "Partage une émotion, exacerbe un sentiment"},
+        {"id": "puttin-devil-jail", "name": "Puttin' Devil in Jail", "description": "Jet d'art avec tout le groupe, permet de repousser n'importe quel adversaire"},
+        {"id": "verbe-flatteur", "name": "Verbe flatteur", "description": "+Niveau/2 en Séduction et Baratin"},
+        {"id": "conteur-invetere", "name": "Conteur invétéré", "description": "Connaissance approfondie des mythes et légendes"},
+        {"id": "prestation-luxe", "name": "Prestation de luxe", "description": "Revenus des prestations ×2"},
+        {"id": "coeur-ouvrage", "name": "Cœur à l'ouvrage !", "description": "3 fois par scénario, +Niveau/2 de l'artiste à un jet allié"}
+      ]
+    },
+    {
+      "id": "ingenieur",
+      "name": "Ingénieur",
+      "description": "Inventeur et bricoleur de génie, l'ingénieur crée des merveilles mécaniques et alchimiques. Son esprit analytique lui permet de résoudre les problèmes les plus complexes.",
+      "avantages": [
+        {"id": "bidouille", "name": "La Bidouil' !", "description": "+Niveau/2 aux jets relatifs au bricolage"},
+        {"id": "ferrailleur", "name": "Ferrailleur", "description": "1 contact fournit 1 cargaison d'un matériau au début de chaque séance, dans la limite des stocks disponibles"},
+        {"id": "boutique", "name": "Boutique", "description": "Possède une boutique avec tout ce qu'il y a de plus boutiqual"},
+        {"id": "apprenti", "name": "Apprenti", "description": "Possède un apprenti qui peut aider"},
+        {"id": "chef-oeuvre", "name": "Chef-d'œuvre", "description": "Crée des objets de meilleure qualité"},
+        {"id": "alchimie-materiaux", "name": "Alchimie des matériaux", "description": "Permet de métamorphoser les matériaux"},
+        {"id": "amelioration-objet", "name": "Amélioration d'objet", "description": "Peut améliorer les caractéristiques d'un objet"},
+        {"id": "reparapide", "name": "Réparapide", "description": "Répare les objets plus rapidement"},
+        {"id": "technomagie", "name": "Technomagie", "description": "Permet de donner des effets magiques aux inventions"},
+        {"id": "biomachine", "name": "Biomachine", "description": "Permet de rendre compatible chair et mécanique"}
+      ]
+    },
+    {
+      "id": "brigand",
+      "name": "Brigand",
+      "description": "Maître de la discrétion urbaine et de la filouterie. Le brigand connaît tous les recoins sombres de la cité et sait comment obtenir ce qu'il veut par des moyens... peu orthodoxes.",
+      "avantages": [
+        {"id": "tout-le-monde", "name": "M. Tout-Le-Monde", "description": "+Niveau/2 en Discrétion en ville"},
+        {"id": "main-habile", "name": "Main habile", "description": "+Niveau/2 en Chirurgie et Vol"},
+        {"id": "spa-moa", "name": "S'pa moa !", "description": "+Niveau/2 en Baratin"},
+        {"id": "perception-ultime", "name": "Perception ultime", "description": "+Niveau/2 en Perception en ville"},
+        {"id": "analyse", "name": "Analyse", "description": "Évalue la quantité et la qualité d'un butin"},
+        {"id": "connais-gars", "name": "J'connais un gars", "description": "1 contact dans les bas-fonds"},
+        {"id": "par-la", "name": "Par là !", "description": "+Niveau/2 en Fouille"},
+        {"id": "toc-toc", "name": "Toc-Toc", "description": "Dégâts ×2 par surprise"},
+        {"id": "tracage-piecette", "name": "Traçage de la piécette", "description": "Via un bol enchanté, permet de retrouver quelqu'un qui a donné de l'argent au personnage"},
+        {"id": "fondu-ombres", "name": "Fondu dans les ombres", "description": "Peut faire un fondu même par temps couvert, ou devenir invisible dans les ombres"}
+      ]
+    },
+    {
+      "id": "paladin",
+      "name": "Paladin",
+      "description": "Champion d'une cause divine ou d'un idéal supérieur. Le paladin canalise une puissance sacrée qui lui permet de soigner ses alliés et de punir ses ennemis.",
+      "avantages": [
+        {"id": "imposition-mains", "name": "Imposition des mains", "description": "Dépense X PF et PV pour soigner 2×X PV"},
+        {"id": "rayon-brulure", "name": "Rayon de brûlure", "description": "Dépense X PV et PF pour infliger 2×X dégâts"},
+        {"id": "stratege", "name": "Stratège", "description": "+Niveau/2 en Tactique"},
+        {"id": "devotion", "name": "Dévotion", "description": "PF dépensés dans 2 compétences impliquant l'idéal de l'entité ×2"},
+        {"id": "sur-entraine", "name": "Sur-entraîné", "description": "+Niveau/2 en Athlétisme"},
+        {"id": "avatar", "name": "Avatar", "description": "Pouvoirs divins pendant 5 rounds, avec contrecoup dépendant de l'entité"},
+        {"id": "favori", "name": "Favori", "description": "Cadeau de l'entité, souvent un artefact"},
+        {"id": "attaque-elementaire", "name": "Attaque élémentaire", "description": "+1D6 dégâts d'un élément choisi"},
+        {"id": "purification", "name": "Purification", "description": "Purifie les malédictions et corruptions"},
+        {"id": "analyse-aura", "name": "Analyse d'aura", "description": "Permet de connaître les alignements"}
+      ]
+    },
+    {
+      "id": "chevalier",
+      "name": "Chevalier",
+      "description": "Guerrier noble lié à sa monture par un lien indéfectible. Le chevalier excelle dans le combat à cheval et les charges dévastatrices.",
+      "avantages": [
+        {"id": "appel-monture", "name": "Appel de la monture", "description": "Peut appeler sa monture à distance"},
+        {"id": "monture-chevalier", "name": "Monture de chevalier", "description": "Possède une monture loyale et entraînée"},
+        {"id": "combat-monte", "name": "Combat monté", "description": "+Niveau/2 aux actions de combat à cheval"},
+        {"id": "monture-guerre", "name": "Monture de guerre", "description": "Améliore les capacités de combat de la monture"},
+        {"id": "ne-faire-quun", "name": "Ne faire qu'un", "description": "Peut transférer des PV entre lui et sa monture"},
+        {"id": "lien-telempathique", "name": "Lien télempathique", "description": "Communication mentale avec la monture"},
+        {"id": "archerie-montee", "name": "Archerie montée", "description": "+Niveau/2 aux tirs à cheval"},
+        {"id": "charge-cavalerie", "name": "Charge de cavalerie", "description": "Charge dévastatrice infligeant des dégâts bonus"},
+        {"id": "esprit-indomptable", "name": "Esprit indomptable", "description": "+Niveau/2 en Volonté"},
+        {"id": "acrobate-voltigeur", "name": "Acrobate voltigeur", "description": "+Niveau/2 aux actions acrobatiques à cheval"}
+      ]
+    },
+    {
+      "id": "medecin",
+      "name": "Médecin",
+      "description": "Guérisseur et scientifique du corps humain. Le médecin sauve des vies grâce à ses connaissances médicales approfondies et son sang-froid.",
+      "avantages": [
+        {"id": "diagnostic-rapide", "name": "Diagnostic rapide", "description": "Identifie rapidement les blessures et maladies"},
+        {"id": "soin-rapide", "name": "Soin rapide", "description": "Soigne plus vite que la normale"},
+        {"id": "cuisine", "name": "Cuisine", "description": "+Niveau/2 en Cuisine (préparation de remèdes)"},
+        {"id": "resurrection", "name": "Résurrection", "description": "Fait revenir à 1 PV un héros mort, 1 fois par scénario"},
+        {"id": "cultiver-herbes", "name": "Cultiver les herbes", "description": "Peut faire pousser des herbes médicinales"},
+        {"id": "maitrise-poisons", "name": "Maîtrise des poisons", "description": "Expertise dans les poisons et antidotes"},
+        {"id": "connaissances-anatomiques", "name": "Connaissances anatomiques", "description": "Dextérité à répartir entre attaque et dégâts, cibles humanoïdes uniquement"},
+        {"id": "transplantation", "name": "Transplantation miraculeuse", "description": "Peut réaliser des implants"},
+        {"id": "zone-bienfaisance", "name": "Zone de bienfaisance", "description": "Zone autour du personnage, soigne Dextérité PV pendant 3 tours, 1 fois par scénario"},
+        {"id": "je-suis-medecin", "name": "Je suis médecin !", "description": "Les gens laissent passer dans les moments dramatiques, +Niveau/2 en Social"}
+      ]
+    },
+    {
+      "id": "barbare",
+      "name": "Barbare",
+      "description": "Guerrier sauvage animé par une rage primitive. Le barbare canalise sa fureur pour déchaîner une violence dévastatrice sur ses ennemis.",
+      "avantages": [
+        {"id": "ravage", "name": "Ravage", "description": "Attaque de zone tournoyante"},
+        {"id": "fureur", "name": "Fureur", "description": "+Niveau/2 aux dégâts"},
+        {"id": "chaine-ancetres", "name": "Chaîne des Ancêtres", "description": "Enchevêtrement magique"},
+        {"id": "cri-guerre", "name": "Cri de guerre", "description": "+Niveau/2 en attaque pour les PJ pendant Force tours"},
+        {"id": "il-en-faut-plus", "name": "IL EN FAUT PLUS", "description": "Revient à PV max s'il en restait au moins un peu, prochaines actions à −5"},
+        {"id": "arme-lourde-main", "name": "Arme lourde à une main", "description": "Peut manier des armes lourdes à une main"},
+        {"id": "frappe-sismique", "name": "Frappe sismique", "description": "−Niveau/2 de zone pendant 2 tours"},
+        {"id": "coup-brutal", "name": "Coup brutal", "description": "Force vs Force pour déséquilibrer, renverser ou désarmer"},
+        {"id": "haine-grandissante", "name": "Haine grandissante", "description": "+2 par tour de combat, cumulatif, à répartir entre dégâts, attaque, défense ou initiative"}
+      ]
+    },
+    {
+      "id": "antimage",
+      "name": "Antimage",
+      "description": "Spécialiste de la neutralisation magique. L'antimage possède une résistance naturelle aux arcanes et peut drainer, bloquer ou annuler les effets magiques.",
+      "avantages": [
+        {"id": "insensibilite-magie", "name": "Insensibilité à la magie", "description": "+Niveau/2 en Volonté contre la magie"},
+        {"id": "drain-magie", "name": "Drain de magie", "description": "Par contact, Volonté vs Volonté pour prendre des PF à une cible"},
+        {"id": "desenchantement", "name": "Désenchantement", "description": "Rituel permettant de retirer la magie d'un objet"},
+        {"id": "aimantation-repulsion", "name": "Aimantation / Répulsion magique", "description": "Sur Volonté, attire ou repousse les individus ou objets magiques"},
+        {"id": "stockage-magie", "name": "Stockage de magie", "description": "Permet de dépasser le maximum de PF"},
+        {"id": "decharge-magique", "name": "Décharge magique", "description": "Si stock de magie, produit une décharge offensive en zone épuisant tous les PF du stock"},
+        {"id": "coupure-magie", "name": "Coupure de la magie", "description": "Rituel permettant de couper un individu de la magie"},
+        {"id": "zone-antimagique", "name": "Zone antimagique", "description": "Rituel mettant une résistance magique sur une zone"},
+        {"id": "antimagemage", "name": "Antimagemage", "description": "Talent nécessaire aux antimages pour apprendre une magie"},
+        {"id": "analyse-magique", "name": "Analyse magique", "description": "Permet de repérer les éléments et types de magie"}
+      ]
+    },
+    {
+      "id": "diplomate",
+      "name": "Diplomate",
+      "description": "Maître de la persuasion et des négociations. Le diplomate obtient par les mots ce que d'autres n'obtiennent que par la force, manipulant les cœurs et les esprits.",
+      "avantages": [
+        {"id": "gueule-ange", "name": "Gueule d'ange", "description": "+Niveau/2 en Social (beauté)"},
+        {"id": "negoce", "name": "Négoce", "description": "+Niveau/2 en Marchandage"},
+        {"id": "ange-passe", "name": "Un ange passe", "description": "Les foules se taisent naturellement pour laisser parler le personnage"},
+        {"id": "voodoo-powa", "name": "VooDoo Powa", "description": "Empathie vs Idéal permet de faire tomber amoureux le temps d'un ordre"},
+        {"id": "commerage", "name": "Commérage", "description": "Permet d'obtenir quelques informations croustillantes"},
+        {"id": "attaque-charismatique", "name": "Attaque charismatique", "description": "Ajoute le bonus d'Empathie au score d'attaque"},
+        {"id": "defense-charismatique", "name": "Défense charismatique", "description": "Ajoute le bonus d'Empathie à la défense"},
+        {"id": "psychologue", "name": "Psychologue", "description": "+Niveau/2 en Détection de mensonge"},
+        {"id": "polyglotte", "name": "Polyglotte", "description": "4 langues supplémentaires gratuites"},
+        {"id": "chef-naturel", "name": "Chef naturel", "description": "Les PNJ ont tendance à suivre les directives du personnage"}
+      ]
+    }
+  ],
+  "competences": [
+    {"id":"acrobatie","name":"Acrobatie","attribut":"DEX"},
+    {"id":"agriculture","name":"Agriculture","attribut":"INT"},
+    {"id":"artisanat","name":"Artisanat","attribut":"DEX"},
+    {"id":"athletisme","name":"Athlétisme","attribut":"FOR"},
+    {"id":"bagarre","name":"Bagarre","attribut":"DEX"},
+    {"id":"baratin","name":"Baratin","attribut":"EMP"},
+    {"id":"bibliotheque","name":"Bibliothèque","attribut":"INT"},
+    {"id":"chasse","name":"Chasse","attribut":"EMP"},
+    {"id":"chirurgie","name":"Chirurgie","attribut":"DEX"},
+    {"id":"comedie","name":"Comédie","attribut":"EMP"},
+    {"id":"crochetage","name":"Crochetage","attribut":"DEX"},
+    {"id":"deguisement","name":"Déguisement","attribut":"DEX"},
+    {"id":"diplomatie","name":"Diplomatie","attribut":"EMP"},
+    {"id":"discretion","name":"Discrétion","attribut":"DEX"},
+    {"id":"dressage","name":"Dressage","attribut":"EMP"},
+    {"id":"droit","name":"Droit","attribut":"INT"},
+    {"id":"eloquence","name":"Éloquence","attribut":"EMP"},
+    {"id":"equitation","name":"Équitation","attribut":"EMP"},
+    {"id":"erudition","name":"Érudition","attribut":"INT"},
+    {"id":"esquive","name":"Esquive","attribut":"DEX"},
+    {"id":"etiquette","name":"Étiquette","attribut":"INT"},
+    {"id":"fouille","name":"Fouille","attribut":"DEX"},
+    {"id":"fronde","name":"Fronde","attribut":"DEX"},
+    {"id":"herboristerie","name":"Herboristerie","attribut":"INT"},
+    {"id":"informatique","name":"Informatique","attribut":"INT"},
+    {"id":"ingenierie","name":"Ingénierie","attribut":"INT"},
+    {"id":"intimidation","name":"Intimidation","attribut":"FOR"},
+    {"id":"linguistique","name":"Linguistique","attribut":"INT"},
+    {"id":"magie","name":"Magie","attribut":"—","description":"1 compétence par type de magie apprise"},
+    {"id":"medecine","name":"Médecine","attribut":"INT"},
+    {"id":"melee","name":"Mêlée","attribut":"FOR"},
+    {"id":"orientation","name":"Orientation","attribut":"SAG"},
+    {"id":"parade","name":"Parade","attribut":"FOR"},
+    {"id":"perception","name":"Perception","attribut":"EMP"},
+    {"id":"perception-magique","name":"Perception magique","attribut":"EMP"},
+    {"id":"piege","name":"Piège","attribut":"DEX"},
+    {"id":"pilotage","name":"Pilotage","attribut":"DEX"},
+    {"id":"poison","name":"Poison","attribut":"INT"},
+    {"id":"psychologie","name":"Psychologie","attribut":"EMP"},
+    {"id":"representation","name":"Représentation","attribut":"EMP"},
+    {"id":"resistance","name":"Résistance","attribut":"FOR"},
+    {"id":"seduction","name":"Séduction","attribut":"EMP"},
+    {"id":"survie","name":"Survie","attribut":"DEX"},
+    {"id":"tactique","name":"Tactique","attribut":"SAG"},
+    {"id":"theologie","name":"Théologie","attribut":"SAG"},
+    {"id":"tir","name":"Tir","attribut":"DEX"},
+    {"id":"vol","name":"Vol","attribut":"DEX"},
+    {"id":"volonte","name":"Volonté","attribut":"SAG"},
+    {"id":"zoologie","name":"Zoologie","attribut":"INT"}
+  ],
+  "avantagesGeneraux": [
+    {
+      "id": "connaissance-magie",
+      "name": "Connaissance d'une magie",
+      "description": "Le personnage a la capacité d'utiliser l'une des nombreuses formes de magie disponibles sur Gaïa."
+    },
+    {
+      "id": "ambidextrie",
+      "name": "Ambidextrie",
+      "description": "Le personnage dispose de deux actions par tour de combat."
+    },
+    {
+      "id": "action-combinee",
+      "name": "Action combinée",
+      "description": "Prérequis : pouvoir faire deux actions par tour. Permet au personnage de faire une seule action au lieu de deux, mais augmentée de 50 % (100 % si en full attaque)."
+    },
+    {
+      "id": "action-supplementaire-specifique",
+      "name": "Action supplémentaire spécifique",
+      "description": "Permet d'avoir une action gratuite dont la nature doit être spécifiée à la prise de l'avantage. Peut se cumuler avec Ambidextrie. Sauf conditions particulières, cette action gratuite ne peut pas être une action d'attaque."
+    },
+    {
+      "id": "infatigable",
+      "name": "Infatigable",
+      "description": "Réduit la quantité de repos dont le personnage a besoin."
+    },
+    {
+      "id": "hyperactif",
+      "name": "Hyperactif",
+      "description": "Prérequis : Infatigable. Le personnage dispose de trois actions au lieu de deux entre deux séances."
+    },
+    {
+      "id": "eleve-doue",
+      "name": "Élève doué",
+      "description": "Réduit l'entraînement d'une compétence à 3 actions au lieu de 4."
+    },
+    {
+      "id": "superiorite-martiale",
+      "name": "Supériorité martiale",
+      "description": "Permet de rajouter la moitié de la différence entre son attaque et la défense de l'adversaire aux dégâts."
+    },
+    {
+      "id": "suprematie-martiale",
+      "name": "Suprématie martiale",
+      "description": "Prérequis : Supériorité martiale. Permet de rajouter la différence totale entre l'attaque et la défense au lieu de la moitié."
+    },
+    {
+      "id": "avantage-autre-classe",
+      "name": "Avantage d'une autre classe",
+      "description": "Coûte l'équivalent de deux avantages (6 points de création). Permet de choisir un avantage appartenant à une classe différente de la sienne."
+    },
+    {
+      "id": "style-particulier",
+      "name": "Style particulier",
+      "description": "Remplace une caractéristique par une autre dans une compétence spécifique ou les jets de dégâts."
+    },
+    {
+      "id": "expertise-competence",
+      "name": "Expertise de compétence",
+      "description": "Ajoute les rangs d'une compétence définie aux jets d'une autre compétence définie."
+    },
+    {
+      "id": "accompagner-coups",
+      "name": "Accompagner les coups",
+      "description": "Ajoute la Dextérité à la RD, uniquement si une tentative d'esquive ou de parade a pu être faite."
+    },
+    {
+      "id": "developper-technique-sort",
+      "name": "Développer une technique ou un sort",
+      "description": "Généralement moins coûteux ou plus puissant qu'une action improvisée. Permet de créer une technique ou un sort personnalisé."
+    },
+    {
+      "id": "regroupement-competences",
+      "name": "Regroupement de compétences",
+      "description": "Un avantage (3 points) par compétence regroupée, si celles-ci utilisent la même caractéristique. Permet de lier plusieurs compétences entre elles."
+    }
+  ],
+  "levelUps": [
+    {"level":2,"options":[{"id":"pv","name":"+2 PV max","effect":{"type":"pv","value":2}},{"id":"pf","name":"+2 PF max","effect":{"type":"pf","value":2}},{"id":"comp","name":"+2 points de compétence","effect":{"type":"competence","value":2}},{"id":"carac","name":"+1 caractéristique","effect":{"type":"caracteristique","value":1}}]},
+    {"level":3,"options":[{"id":"pv","name":"+2 PV max","effect":{"type":"pv","value":2}},{"id":"pf","name":"+2 PF max","effect":{"type":"pf","value":2}},{"id":"comp","name":"+2 points de compétence","effect":{"type":"competence","value":2}},{"id":"carac","name":"+1 caractéristique","effect":{"type":"caracteristique","value":1}},{"id":"avantage","name":"Nouvel avantage de classe","effect":{"type":"avantage","value":1}}]},
+    {"level":4,"options":[{"id":"pv","name":"+3 PV max","effect":{"type":"pv","value":3}},{"id":"pf","name":"+3 PF max","effect":{"type":"pf","value":3}},{"id":"comp","name":"+3 points de compétence","effect":{"type":"competence","value":3}},{"id":"carac","name":"+1 caractéristique","effect":{"type":"caracteristique","value":1}}]},
+    {"level":5,"options":[{"id":"pv","name":"+3 PV max","effect":{"type":"pv","value":3}},{"id":"pf","name":"+3 PF max","effect":{"type":"pf","value":3}},{"id":"comp","name":"+3 points de compétence","effect":{"type":"competence","value":3}},{"id":"carac","name":"+2 caractéristiques","effect":{"type":"caracteristique","value":2}},{"id":"avantage","name":"Nouvel avantage de classe","effect":{"type":"avantage","value":1}}]}
+  ]
+}

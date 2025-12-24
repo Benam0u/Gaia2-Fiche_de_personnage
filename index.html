@@ -4,21 +4,1007 @@
 -->
 
 <!DOCTYPE html>
-
-<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <title>Fiche de personnage</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    /* ========== WIZARD DE CRÉATION ========== */
+    .wizard-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+      overflow: hidden;
+    }
+    
+    .wizard-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .wizard-title {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 28px;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+    
+    .wizard-subtitle {
+      color: #7f8c8d;
+      font-size: 16px;
+    }
+    
+    .btn-start-wizard {
+      display: inline-block;
+      background: linear-gradient(135deg, #8b0000 0%, #a52a2a 100%);
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 1rem 2.5rem;
+      border: none;
+      border-radius: 2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+    
+    .btn-start-wizard:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+    }
+    
+    .btn-skip-wizard {
+      display: block;
+      margin: 1rem auto 0;
+      background: transparent;
+      border: 2px solid #bdc3c7;
+      color: #7f8c8d;
+      padding: 0.5rem 1.5rem;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-skip-wizard:hover {
+      border-color: #8b0000;
+      color: #8b0000;
+    }
+    
+    /* Wizard Steps Container */
+    .wizard-steps {
+      display: none;
+    }
+    
+    .wizard-steps.active {
+      display: block;
+    }
+    
+    /* Progress Bar */
+    .wizard-progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 0 1rem;
+      position: relative;
+    }
+    
+    .wizard-progress::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 2rem;
+      right: 2rem;
+      height: 3px;
+      background: #ecf0f1;
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+    
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 1;
+      cursor: pointer;
+    }
+    
+    .progress-step .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ecf0f1;
+      color: #95a5a6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      border: 3px solid #ecf0f1;
+    }
+    
+    .progress-step.active .step-number {
+      background: #8b0000;
+      color: #fff;
+      border-color: #8b0000;
+    }
+    
+    .progress-step.completed .step-number {
+      background: #27ae60;
+      color: #fff;
+      border-color: #27ae60;
+    }
+    
+    .progress-step .step-label {
+      font-size: 11px;
+      color: #95a5a6;
+      margin-top: 0.5rem;
+      text-align: center;
+      max-width: 80px;
+    }
+    
+    .progress-step.active .step-label,
+    .progress-step.completed .step-label {
+      color: #2c3e50;
+      font-weight: bold;
+    }
+    
+    /* Step Content */
+    .step-content {
+      display: none;
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      overflow-x: auto;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .step-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .step-title {
+      font-size: 22px;
+      color: #8b0000;
+      margin: 0 0 0.5rem 0;
+      text-align: center;
+    }
+    
+    .step-description {
+      color: #666;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 14px;
+    }
+    
+    /* Options Grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    /* Grille 4 colonnes pour les avantages */
+    .options-grid-4col {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    
+    /* Responsive: réduire les colonnes sur petits écrans */
+    @media (max-width: 1200px) {
+      .options-grid-4col {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (max-width: 900px) {
+      .options-grid-4col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    /* Carte simple sans image */
+    .option-card-simple {
+      border: 2px solid #ddd;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fafafa;
+    }
+    
+    .option-card-simple:hover {
+      border-color: #8b0000;
+      background: #fff;
+      transform: translateY(-2px);
+    }
+    
+    .option-card-simple.selected {
+      border-color: #8b0000;
+      background: #fff5f5;
+      box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
+    }
+    
+    .option-card-simple .option-name {
+      font-weight: bold;
+      font-size: 14px;
+      color: #2c3e50;
+      margin-bottom: 0.25rem;
+    }
+    
+    .option-card-simple .option-desc {
+      font-size: 12px;
+      color: #333;
+    }
+    
+    /* Checkbox simple pour grille 4 colonnes */
+    .option-checkbox-simple {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      border: 2px solid #ddd;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fafafa;
+      overflow: hidden;
+      word-wrap: break-word;
+      min-width: 0;
+    }
+    
+    .option-checkbox-simple > div {
+      min-width: 0;
+      overflow: hidden;
+    }
+    
+    .option-checkbox-simple:hover {
+      border-color: #8b0000;
+      background: #fff;
+    }
+    
+    .option-checkbox-simple.selected {
+      border-color: #8b0000;
+      background: #fff5f5;
+    }
+    
+    .option-checkbox-simple .checkbox-mark {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #8b0000;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 12px;
+    }
+    
+    .option-checkbox-simple.selected .checkbox-mark::after {
+      content: '✓';
+      color: #8b0000;
+      font-weight: bold;
+    }
+    
+    .option-checkbox-simple .option-name {
+      font-weight: bold;
+      font-size: 13px;
+      color: #2c3e50;
+      margin-bottom: 0.15rem;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    .option-checkbox-simple .option-desc {
+      font-size: 11px;
+      color: #333;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    /* Section titles for advantages */
+    .advantages-section-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #8b0000;
+      margin: 1.5rem 0 0.75rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #8b0000;
+    }
+    
+    .advantages-section-title:first-child {
+      margin-top: 0;
+    }
+    
+    /* Custom advantages */
+    .custom-advantages-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    .custom-advantage-card {
+      flex: 1;
+      min-width: 280px;
+      max-width: calc(50% - 0.5rem);
+      border: 2px solid #8b0000;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      background: #fff5f5;
+    }
+    
+    .custom-advantage-header {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .custom-advantage-name {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.25rem;
+      font-weight: bold;
+      font-size: 13px;
+    }
+    
+    .custom-advantage-name:focus {
+      outline: none;
+      border-color: #8b0000;
+    }
+    
+    .custom-advantage-remove {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: #e74c3c;
+      color: white;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .custom-advantage-remove:hover {
+      background: #c0392b;
+    }
+    
+    .custom-advantage-desc {
+      width: 100%;
+      min-height: 60px;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 0.25rem;
+      resize: vertical;
+      font-size: 11px;
+      font-family: inherit;
+    }
+    
+    .custom-advantage-desc:focus {
+      outline: none;
+      border-color: #8b0000;
+    }
+    
+    .custom-advantage-add {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 280px;
+      max-width: calc(50% - 0.5rem);
+      min-height: 120px;
+      border: 2px dashed #bbb;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fafafa;
+    }
+    
+    .custom-advantage-add:hover {
+      border-color: #8b0000;
+      background: #fff5f5;
+    }
+    
+    .custom-advantage-add .add-icon {
+      font-size: 2.5rem;
+      color: #8b0000;
+      line-height: 1;
+    }
+    
+    .custom-advantage-add .add-text {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: #666;
+    }
+    
+    /* Level Up System */
+    .levelup-points-display {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 0.75rem;
+      border: 2px solid #ddd;
+    }
+    
+    .levelup-points-remaining {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #27ae60;
+    }
+    
+    .levelup-points-remaining.warning {
+      color: #f39c12;
+    }
+    
+    .levelup-points-remaining.spent {
+      color: #8b0000;
+    }
+    
+    .levelup-options-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    @media (max-width: 900px) {
+      .levelup-options-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    .levelup-option-card {
+      border: 2px solid #ddd;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fafafa;
+      text-align: center;
+    }
+    
+    .levelup-option-card:hover:not(.disabled) {
+      border-color: #8b0000;
+      background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .levelup-option-card.selected {
+      border-color: #8b0000;
+      background: #fff5f5;
+      box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
+    }
+    
+    .levelup-option-card.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #eee;
+    }
+    
+    .levelup-option-cost {
+      display: inline-block;
+      background: #8b0000;
+      color: #fff;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .levelup-option-name {
+      font-weight: bold;
+      font-size: 14px;
+      color: #2c3e50;
+      margin-bottom: 0.25rem;
+    }
+    
+    .levelup-option-desc {
+      font-size: 11px;
+      color: #666;
+    }
+    
+    .levelup-selection-panel {
+      border: 2px solid #8b0000;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      background: #fff5f5;
+    }
+    
+    .levelup-selection-title {
+      font-weight: bold;
+      font-size: 16px;
+      color: #8b0000;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #8b0000;
+    }
+    
+    .levelup-choices-list {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      border: 1px solid #ddd;
+    }
+    
+    .levelup-choice-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      background: #fff;
+      border-radius: 0.25rem;
+      border: 1px solid #ddd;
+    }
+    
+    .levelup-choice-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .levelup-choice-remove {
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .levelup-choice-remove:hover {
+      background: #c0392b;
+    }
+
+    .option-card {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      border: 2px solid #ddd;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fafafa;
+    }
+    
+    .option-card .option-img {
+      width: 50%;
+      min-height: 150px;
+      object-fit: contain;
+      background: #f0f0f0;
+      flex-shrink: 0;
+    }
+    
+    .option-card .option-content {
+      width: 50%;
+      padding: 1rem;
+    }
+    
+    .option-card:hover {
+      border-color: #8b0000;
+      background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .option-card.selected {
+      border-color: #8b0000;
+      background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+      box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.2);
+    }
+    
+    .option-card .option-name,
+    .option-checkbox .option-name {
+      font-weight: bold;
+      font-size: 16px;
+      color: #2c3e50;
+      margin-bottom: 0.25rem;
+    }
+    
+    .option-card .option-desc,
+    .option-checkbox .option-desc {
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+    
+    .option-card .option-bonuses {
+      font-size: 12px;
+      color: #333;
+      list-style: disc;
+      padding-left: 1.2rem;
+      margin: 0.5rem 0 0 0;
+    }
+    
+    .option-card .option-bonuses li {
+      margin-bottom: 0.15rem;
+    }
+    
+    .option-card .option-maluses {
+      font-size: 12px;
+      color: #333;
+      list-style: disc;
+      padding-left: 1.2rem;
+      margin: 0.25rem 0 0 0;
+    }
+    
+    .option-card .option-maluses li {
+      margin-bottom: 0.15rem;
+    }
+    
+    /* Dice System for Attributes */
+    .dice-pool {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border: 2px dashed #bdc3c7;
+    }
+    
+    .dice-item {
+      width: 60px;
+      height: 60px;
+      border: 3px solid #8b0000;
+      border-radius: 0.5rem;
+      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #8b0000;
+      cursor: grab;
+      transition: all 0.2s ease;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .dice-item:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+    }
+    
+    .dice-item.selected {
+      background: #8b0000;
+      color: #fff;
+      transform: scale(1.15);
+    }
+    
+    .dice-item.used {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-style: dashed;
+    }
+    
+    .attr-item {
+      text-align: center;
+      padding: 1rem 0.5rem;
+      border: 2px solid #ddd;
+      border-radius: 0.75rem;
+      background: #fafafa;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .attr-item:hover {
+      border-color: #8b0000;
+      background: #fff;
+    }
+    
+    .attr-item.has-dice {
+      border-color: #27ae60;
+      background: linear-gradient(135deg, #f0fff4 0%, #fff 100%);
+    }
+    
+    .attr-item.selected-target {
+      border-color: #8b0000;
+      border-width: 3px;
+      background: #fff5f5;
+      box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.2);
+    }
+    
+    .attr-item label {
+      display: block;
+      font-weight: bold;
+      color: #666;
+      margin-bottom: 0.5rem;
+      font-size: 14px;
+      pointer-events: none;
+    }
+    
+    .attr-item .attr-dice-display {
+      font-size: 24px;
+      font-weight: bold;
+      color: #8b0000;
+      margin: 0.25rem 0;
+    }
+    
+    .attr-item .attr-value-display {
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .attr-item .attr-empty {
+      font-size: 14px;
+      color: #999;
+      font-style: italic;
+    }
+    
+    .dice-instructions {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      background: #fff3cd;
+      border-radius: 0.5rem;
+    }
+    
+    /* Competences Distribution */
+    .comp-distribute {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+    
+    .comp-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      background: #fafafa;
+      font-size: 14px;
+    }
+    
+    .comp-item .comp-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .comp-item .comp-attr {
+      background: #eee;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.25rem;
+      font-size: 11px;
+      color: #666;
+    }
+    
+    .comp-item .comp-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .comp-item .comp-controls button {
+      width: 22px;
+      height: 22px;
+      border: none;
+      border-radius: 50%;
+      background: #8b0000;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    
+    .comp-item .comp-controls button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .comp-item .comp-value {
+      font-weight: bold;
+      min-width: 30px;
+      text-align: center;
+    }
+    
+    .comp-item.has-points {
+      background: linear-gradient(135deg, #f0fff4 0%, #fff 100%);
+      border-color: #27ae60;
+    }
+    
+    .comp-item .comp-controls button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    /* Level Up Section */
+    .level-up-section {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+    }
+    
+    .level-up-section h4 {
+      margin: 0 0 0.75rem 0;
+      color: #8b0000;
+    }
+    
+    .level-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .level-option {
+      padding: 0.5rem 1rem;
+      border: 2px solid #ddd;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: #fff;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    
+    .level-option:hover {
+      border-color: #8b0000;
+    }
+    
+    .level-option.selected {
+      border-color: #8b0000;
+      background: #fff5f5;
+    }
+    
+    /* Navigation Buttons */
+    .step-navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+    }
+    
+    .btn-prev, .btn-next, .btn-confirm {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-prev {
+      background: #fff;
+      border: 2px solid #bdc3c7;
+      color: #7f8c8d;
+    }
+    
+    .btn-prev:hover {
+      border-color: #8b0000;
+      color: #8b0000;
+    }
+    
+    .btn-next, .btn-confirm {
+      background: #8b0000;
+      border: none;
+      color: #fff;
+    }
+    
+    .btn-next:hover, .btn-confirm:hover {
+      background: #a52a2a;
+    }
+    
+    .btn-next:disabled, .btn-confirm:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    /* Checkbox styles for multi-select */
+    .option-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border: 2px solid #ddd;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fafafa;
+    }
+    
+    .option-checkbox:hover {
+      border-color: #8b0000;
+      background: #fff;
+    }
+    
+    .option-checkbox.selected {
+      border-color: #8b0000;
+      background: #fff5f5;
+    }
+    
+    .option-checkbox input[type="checkbox"] {
+      display: none;
+    }
+    
+    .option-checkbox .checkbox-mark {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #8b0000;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .option-checkbox.selected .checkbox-mark::after {
+      content: '✓';
+      color: #8b0000;
+      font-weight: bold;
+    }
+    
+    .selection-count {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+    
+    .selection-count strong {
+      color: #8b0000;
+    }
+    
+    /* Separator before sheet */
+    .wizard-separator {
+      max-width: 1000px;
+      margin: 0 auto 2rem;
+      padding: 1rem;
+      text-align: center;
+      border-top: 3px dashed #8b0000;
+    }
+    
+    .wizard-separator span {
+      background: #fdfdfd;
+      padding: 0 1rem;
+      color: #8b0000;
+      font-weight: bold;
+      font-size: 18px;
+      position: relative;
+      top: -1.75rem;
+    }
+    
+    @media print {
+      .wizard-container, .wizard-separator { display: none !important; }
+    }
     /* titre principal */
     .title-row{display:grid;grid-template-columns:repeat(4,1fr);margin-bottom:1rem;}
     .title-box{grid-column:1/span 4;border:2px solid #333;border-radius:1rem;background:#fff;padding:.5rem;text-align:center;font-size:24px;font-weight:bold;color:#8b0000;box-shadow:2px 2px 4px rgba(0,0,0,.1);}
     /* supprimer les flèches +/- des champs number et centrer */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button{ -webkit-appearance:none; margin:0; }
-    input[type="number"]{ -moz-appearance:textfield; text-align:center; }
+    input[type="number"]{ -moz-appearance:textfield; appearance:textfield; text-align:center; }
 
     * { box-sizing: border-box; }
     body {
@@ -117,16 +1103,7 @@
     /* portrait / notes */
     .portrait{grid-column:span 2;border:2px solid #333;border-radius:1rem;background:#fff;padding:.75rem;box-shadow:2px 2px 4px rgba(0,0,0,.1);display:flex;flex-direction:column;gap:0.5rem;}
     .portrait h3{margin:0;font-size:22px;text-align:center;color:#666;}
-    .portrait textarea{width:100%;border:none;border-radius:0.5rem;padding:0.5rem;background:#fff;font-size:16px;overflow:hidden;resize:none;} {
-      width: 100%;
-      height: 100%;
-      border: 2px dashed #999;
-      border-radius: 1rem;
-      padding: 0.5rem;
-      resize: vertical;
-      background: #fff;
-      font-size: 16px;
-    }
+    .portrait textarea{width:100%;border:none;border-radius:0.5rem;padding:0.5rem;background:#fff;font-size:16px;overflow:hidden;resize:none;}
 
     /* sections pleine largeur (4 col) */
     .section {
@@ -174,18 +1151,234 @@
       .container{margin:0;width:1000px;}
       .section, .attributes-and-vitals, .row-two-col, .grid-top, .title-row{break-inside:avoid;page-break-inside:avoid;}
     }
-      .section, .attributes-and-vitals, .row-two-col, .grid-top, .title-row { break-inside: avoid; page-break-inside: avoid; }
-    } }
-    /* aperçu A4 en pointillé */
     
-    /* deuxième page A4 */
-     }
-      /* auto‑grow textarea */
+    /* auto‑grow textarea */
     .auto-grow{overflow:hidden;resize:none;width:100%;border:none;font-size:16px;}
   </style>
 </head>
 <body>
-  <div class="container">
+  <!-- ========== WIZARD DE CRÉATION DE PERSONNAGE ========== -->
+  <div class="wizard-container" id="wizard-container">
+    <div class="wizard-header" id="wizard-intro">
+      <h1 class="wizard-title">🎲 Création de Personnage</h1>
+      <p class="wizard-subtitle">Bienvenue, aventurier ! Laissez-vous guider dans la création de votre personnage.</p>
+      <button class="btn-start-wizard" id="btn-start-wizard">Démarrer la création de personnage</button>
+      <button class="btn-skip-wizard" id="btn-skip-wizard">Remplir la fiche librement</button>
+    </div>
+
+    <div class="wizard-steps" id="wizard-steps">
+      <!-- Progress Bar -->
+      <div class="wizard-progress">
+        <div class="progress-step active" data-step="1">
+          <span class="step-number">1</span>
+          <span class="step-label">Race</span>
+        </div>
+        <div class="progress-step" data-step="2">
+          <span class="step-number">2</span>
+          <span class="step-label">Caractéristiques</span>
+        </div>
+        <div class="progress-step" data-step="3">
+          <span class="step-number">3</span>
+          <span class="step-label">Classe</span>
+        </div>
+        <div class="progress-step" data-step="4">
+          <span class="step-number">4</span>
+          <span class="step-label">Avantage de Classe</span>
+        </div>
+        <div class="progress-step" data-step="5">
+          <span class="step-number">5</span>
+          <span class="step-label">Compétences</span>
+        </div>
+        <div class="progress-step" data-step="6">
+          <span class="step-number">6</span>
+          <span class="step-label">Avantages</span>
+        </div>
+        <div class="progress-step" data-step="7">
+          <span class="step-number">7</span>
+          <span class="step-label">Nom & Stats</span>
+        </div>
+        <div class="progress-step" data-step="8">
+          <span class="step-number">8</span>
+          <span class="step-label">Level Up</span>
+        </div>
+        <div class="progress-step" data-step="9" style="display: none;">
+          <span class="step-number">✓</span>
+          <span class="step-label">Terminée</span>
+        </div>
+      </div>
+
+      <!-- Étape 1: Choix de la race -->
+      <div class="step-content active" data-step="1">
+        <h2 class="step-title">Choisissez votre Race</h2>
+        <p class="step-description">Votre race détermine vos bonus innés et vos aptitudes naturelles.</p>
+        <div class="options-grid" id="race-options">
+          <!-- Généré par JS -->
+        </div>
+        <div class="step-navigation">
+          <div></div>
+          <button class="btn-next" id="btn-next-1" disabled>Suivant →</button>
+        </div>
+      </div>
+
+      <!-- Étape 2: Répartition des caractéristiques (système de dés) -->
+      <div class="step-content" data-step="2">
+        <h2 class="step-title">Attribuez vos Dés aux Caractéristiques</h2>
+        <p class="step-description">Assignez un dé unique à chaque caractéristique. La valeur du dé devient la valeur de la caractéristique.</p>
+        
+        <div class="dice-pool" id="dice-pool" style="display:flex; justify-content:center; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+          <!-- Dés disponibles générés par JS -->
+        </div>
+        
+        <div class="attr-distribute" id="attr-distribute" style="display:grid; grid-template-columns:repeat(5,1fr); gap:0.75rem;">
+          <!-- Généré par JS -->
+        </div>
+        
+        <div class="step-navigation">
+          <button class="btn-prev" id="btn-prev-2">← Précédent</button>
+          <button class="btn-next" id="btn-next-2" disabled>Suivant →</button>
+        </div>
+      </div>
+
+      <!-- Étape 3: Choix de la classe -->
+      <div class="step-content" data-step="3">
+        <h2 class="step-title">Choisissez votre Classe</h2>
+        <p class="step-description">Votre classe définit votre rôle et vos capacités en combat.</p>
+        <div class="options-grid" id="class-options">
+          <!-- Généré par JS -->
+        </div>
+        <div class="step-navigation">
+          <button class="btn-prev" id="btn-prev-3">← Précédent</button>
+          <button class="btn-next" id="btn-next-3" disabled>Suivant →</button>
+        </div>
+      </div>
+
+      <!-- Étape 4: Choix d'un avantage de classe -->
+      <div class="step-content" data-step="4">
+        <h2 class="step-title">Choisissez un Avantage de Classe</h2>
+        <p class="step-description">Sélectionnez l'avantage principal de votre classe.</p>
+        <div class="options-grid-4col" id="primary-advantage-options">
+          <!-- Généré par JS -->
+        </div>
+        <div class="step-navigation">
+          <button class="btn-prev" id="btn-prev-4">← Précédent</button>
+          <button class="btn-next" id="btn-next-4" disabled>Suivant →</button>
+        </div>
+      </div>
+
+      <!-- Étape 5: Répartition des compétences -->
+      <div class="step-content" data-step="5">
+        <h2 class="step-title">Répartissez vos Compétences</h2>
+        <p class="step-description">Distribuez 12 points parmi les compétences disponibles.</p>
+        <div class="points-counter">
+          Points restants : <span class="remaining" id="comp-points-remaining">12</span>
+        </div>
+        <div class="comp-distribute" id="comp-distribute">
+          <!-- Généré par JS -->
+        </div>
+        <div class="step-navigation">
+          <button class="btn-prev" id="btn-prev-5">← Précédent</button>
+          <button class="btn-next" id="btn-next-5" disabled>Suivant →</button>
+        </div>
+      </div>
+
+      <!-- Étape 6: Choix de 3 avantages secondaires -->
+      <div class="step-content" data-step="6">
+        <h2 class="step-title">Choisissez 3 Avantages Secondaires</h2>
+        <p class="step-description">Sélectionnez 3 avantages parmi ceux de votre classe.</p>
+        <div class="selection-count">Sélectionnés : <strong id="secondary-count">0</strong> / 3</div>
+        <div id="secondary-advantage-options">
+          <!-- Généré par JS -->
+        </div>
+        <div class="step-navigation">
+          <button class="btn-prev" id="btn-prev-6">← Précédent</button>
+          <button class="btn-next" id="btn-next-6" disabled>Suivant →</button>
+        </div>
+      </div>
+
+      <!-- Étape 7: Nom du personnage et calcul des stats -->
+      <div class="step-content" data-step="7">
+        <h2 class="step-title">Nommez votre Personnage</h2>
+        <p class="step-description">Donnez un nom à votre personnage, choisissez son alignement et validez le calcul de ses statistiques vitales.</p>
+        
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1rem; margin-bottom: 1.5rem;">
+          <div class="name-input-section">
+            <label for="wizard-name" style="display:block; font-weight:bold; font-size:16px; color:#666; margin-bottom:0.5rem;">Nom du Personnage</label>
+            <input type="text" id="wizard-name" placeholder="Entrez le nom de votre personnage..." style="width:100%; padding:0.75rem; font-size:18px; border:2px solid #ddd; border-radius:0.5rem; text-align:center;">
+          </div>
+          <div class="alignment-input-section">
+            <label for="wizard-alignment" style="display:block; font-weight:bold; font-size:16px; color:#666; margin-bottom:0.5rem;">Alignement</label>
+            <select id="wizard-alignment" style="width:100%; padding:0.75rem; font-size:16px; border:2px solid #ddd; border-radius:0.5rem; text-align:center; cursor:pointer;">
+              <option value="">-- Choisir --</option>
+              <option value="Loyal Bon">Loyal Bon</option>
+              <option value="Loyal Neutre">Loyal Neutre</option>
+              <option value="Loyal Mauvais">Loyal Mauvais</option>
+              <option value="Neutre Bon">Neutre Bon</option>
+              <option value="Neutre Neutre">Neutre Neutre</option>
+              <option value="Neutre Mauvais">Neutre Mauvais</option>
+              <option value="Chaotique Bon">Chaotique Bon</option>
+              <option value="Chaotique Neutre">Chaotique Neutre</option>
+              <option value="Chaotique Mauvais">Chaotique Mauvais</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="stats-summary" style="background:#f8f9fa; border-radius:0.75rem; padding:1rem; margin-bottom:1rem;">
+          <h4 style="margin:0 0 1rem 0; color:#8b0000; text-align:center;">📊 Récapitulatif des Statistiques</h4>
+          <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:1rem;">
+            <div class="stat-box" style="background:#fff; padding:0.75rem; border-radius:0.5rem; text-align:center; border:2px solid #27ae60;">
+              <div style="font-size:14px; color:#666;">Points de Vie (PV)</div>
+              <div style="font-size:28px; font-weight:bold; color:#27ae60;" id="calculated-pv">--</div>
+              <div style="font-size:11px; color:#999;" id="pv-formula">FOR×2 + INT×2 + 10 + Niveau + Bonus</div>
+            </div>
+            <div class="stat-box" style="background:#fff; padding:0.75rem; border-radius:0.5rem; text-align:center; border:2px solid #3498db;">
+              <div style="font-size:14px; color:#666;">Points de Fatalité (PF)</div>
+              <div style="font-size:28px; font-weight:bold; color:#3498db;" id="calculated-pf">--</div>
+              <div style="font-size:11px; color:#999;" id="pf-formula">PV + Bonus</div>
+            </div>
+          </div>
+          <div style="margin-top:1rem; padding:0.75rem; background:#fff5f5; border-radius:0.5rem; font-size:13px; color:#666;" id="stats-details">
+            <!-- Détails du calcul -->
+          </div>
+        </div>
+        
+        <div class="step-navigation">
+          <button class="btn-prev" id="btn-prev-7">← Précédent</button>
+          <button class="btn-next" id="btn-next-7" disabled>Suivant →</button>
+        </div>
+      </div>
+
+      <!-- Étape 8: Level Up -->
+      <div class="step-content" data-step="8">
+        <h2 class="step-title">Améliorations de Niveau (Level Up)</h2>
+        <p class="step-description">Chaque Level Up vous donne <strong>10 points de création</strong> à dépenser. Choisissez vos améliorations ci-dessous.</p>
+        
+        <div class="levelup-controls" style="display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+          <label style="font-weight:bold; color:#666;">Nombre de Level Up :</label>
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <button id="levelup-minus" class="levelup-btn" style="width:36px; height:36px; font-size:20px; border:2px solid #8b0000; background:#fff; color:#8b0000; border-radius:0.25rem; cursor:pointer;">−</button>
+            <input type="number" id="levelup-count" min="0" max="10" value="0" style="width:60px; text-align:center; font-size:18px; font-weight:bold; border:2px solid #ddd; border-radius:0.25rem; padding:0.25rem;">
+            <button id="levelup-plus" class="levelup-btn" style="width:36px; height:36px; font-size:20px; border:2px solid #8b0000; background:#8b0000; color:#fff; border-radius:0.25rem; cursor:pointer;">+</button>
+          </div>
+          <span id="levelup-total-points" style="font-size:18px; font-weight:bold; color:#27ae60;">= 0 points</span>
+        </div>
+        
+        <div id="level-up-container">
+          <!-- Généré par JS -->
+        </div>
+        
+        <div class="step-navigation">
+          <button class="btn-prev" id="btn-prev-8">← Précédent</button>
+          <button class="btn-confirm" id="btn-confirm">✓ Confirmer et finaliser la fiche</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wizard-separator" id="wizard-separator" style="display: none;">
+    <span>📜 Votre Fiche de Personnage</span>
+  </div>
+
+  <div class="container" id="character-sheet">
     <!-- Titre centré 2 colonnes -->
     <div class="title-row"><div class="title-box">GAÏA 2 - FICHE DE PERSONNAGE</div></div>
     <!-- Ligne supérieure -->
@@ -258,7 +1451,7 @@
 
     <!-- Capacités -->
     <div class="section">
-      <h3>Capacités</h3>
+      <h3>Avantages / Capacités</h3>
       <ul class="abilities-list" contenteditable="true"><li></li><li></li><li></li></ul>
     </div>
 
@@ -390,4 +1583,1767 @@
       area.addEventListener('input',resize);
       resize();
     });
+
+    // ========== WIZARD DE CRÉATION ==========
+    (function() {
+      // Données de création intégrées directement (pour fonctionner sans serveur)
+      const characterData = {
+        "races": [
+          {"id":"humain","name":"Humain","description":"Espèce « dominante », réputée pour son adaptabilité et son sens des affaires. Souvent ouverts aux nouveautés, les humains sont une espèce essentiellement citadine.","bonuses":["Compétent : +1 point de création par Niveau (Niveau 1 compris)","Adaptable : peut apprendre un avantage racial d'une autre race en trouvant un Maître et en y consacrant du temps"],"maluses":["Complexé : choisir une race envers laquelle le personnage est raciste ou haineux. Le Charisme compte comme négatif lors des interactions avec cette race"]},
+          {"id":"elfe","name":"Elfe","description":"Sveltes, bons grimpeurs et amis des forêts, les elfes ont une peau blanche verdâtre et sont assez proches physiquement des humains, à l'exception de leurs traits distinctifs.","bonuses":["Vision dans le noir","Corps elfique : +Niveau aux soins reçus et +Niveau/2 sur les régénérations","Constitution elfique : PV = 10 + Int + For"],"maluses":[]},
+          {"id":"orc","name":"Orc","description":"Souvent plus athlétiques et coriaces, les orcs vivent dans une société clanique patriarcale. Ils sont connus pour leur soif d'aventure et leur goût de l'adrénaline, dû à leur espérance de vie relativement courte. L'idée est de vivre un maximum d'expériences exceptionnelles. Le sens de l'honneur est apprécié chez ces peaux vertes, même si eux-mêmes ne le sont pas nécessairement.","bonuses":["Athl'Orc : +1 Force","Berz'Orc : ignore 1 blessure en combat"],"maluses":["Hon'Orc : doit réussir un jet de Volonté pour ne pas s'énerver, sinon perte de Santé Mentale"]},
+          {"id":"nain","name":"Nain","description":"Évidemment de petite taille, mais pas aussi bourrus qu'on le pense, les nains sont capables de boire des mixtures extraordinairement fortes. L'artisanat est bien sûr leur spécialité, et l'argent est toujours apprécié !","bonuses":["Artisa'Nain : commence avec une arme dotée d'une rune ancestrale (+1 magique) qui aide selon le domaine d'expertise de l'ancêtre. Peut être transférée à un autre objet pour 3 actions","Gnôle naine : flasque de gnôle naine (15 gorgées). 1 gorgée = 5 PV et 5 PF, 1 gorgée par action, +5 Résistance à l'alcool"],"maluses":["Sang de pierre : −Force PV rendus par les soins et −Force/2 sur les régénérations avec des moyens non-nains"]},
+          {"id":"troll","name":"Troll","description":"Le troll est une force de la nature, et de ce fait très connecté à celle-ci. Généralement très grands et arborant des teintes proches des arbres, ils sont souvent tournés vers la poésie et le pacifisme. Cependant, la vision la plus terrifiante qui soit serait, selon les rumeurs… un village troll en colère.","bonuses":["Force de la nature : +1 Force, +2 supplémentaires quand il agit contre quelqu'un qui l'énerve","Aura de con-Troll : camouflage basé sur la Force en milieu naturel"],"maluses":["Calme de la montagne : fondamentalement pacifiste (sauf s'il est hors de lui ou riposte). −5 à tous les tests de combat tant qu'il n'est pas énervé, sinon perte de Santé Mentale"]},
+          {"id":"nymphe","name":"Nymphe","description":"Portées sur les arts, télépathes et muettes, les nymphes sont particulièrement connues pour leur capacité à transmettre des émotions et maintenir le moral de leur entourage. Elles vivent généralement entre elles et tirent au hasard leur représentant politique. Elles naissent dans un arbre de vie gracile et clair, à leur image, et sont très liées à leur diablotin rouge ailé qui les accompagne très souvent.","bonuses":["Télépathe : communique par télépathie, images, etc. La nymphe émet seulement ; on ne peut lui répondre par le même moyen","Familier : possède un petit diablotin volant comme familier"],"maluses":["Familier fragile : le familier est faible et très attaché. 2 tares mentales si le familier est perdu"]},
+          {"id":"sylphe","name":"Sylphe","description":"D'une taille moyenne inférieure aux nains, mais hélas bien moins corpulents, les sylphes ont une peau olivâtre et des ailes évoquant celles des libellules. Ils n'ont pas de société propre et vivent parmi les autres races au gré de leurs voyages. D'un naturel espiègle, leur volonté est de fer et leur sourire d'une douceur sans pareille. Petite anecdote : personne n'a jamais trouvé le palais légendaire de ces êtres, et ce sont les hommes qui portent les enfants.","bonuses":["Ailes : peut voler","Pouvoir de l'Amitié : 1 fois par scénario, le sylphe peut puiser dans les PF du groupe pour un jet"],"maluses":["−1 Force"]},
+          {"id":"vampire","name":"Vampire","description":"Issus d'une transformation par un futur pair, les vampires ont toujours vécu incognito parmi les autres races. Ils se sont toujours faits discrets, avec une hiérarchie très rigide régie par les plus puissants – hélas disparus pour la plupart depuis la nuit de la catastrophe. Les vampires sortent désormais des ombres pour se mêler à la population, encouragés par le fait que les autres races se côtoient.","bonuses":["Veinard : le vampire recouvre un objet de ses veines et récupère la moitié des PV infligés avec","+1 Charisme"],"maluses":["Vulnérable au Feu et à la Lumière Vive : +50% d'effets subis"]},
+          {"id":"nezen","name":"Nezen (Homme-Rat)","description":"Connus pour être la lie de la société, les hommes-rats ont effectivement eu le temps de s'adapter à ce genre de vie, mais certains tentent malgré tout de s'élever. Que ce soit à cause de leurs habitudes ou de la vision qu'on a d'eux, ces êtres sont des survivalistes hors pair.","bonuses":["Bouffe-tout : peut manger n'importe quoi, immunisé aux maladies, poisons, etc.","Contact Bas-Fonds : chance d'avoir une connaissance pouvant aider dans la basse société (bien vu dans les bas-fonds)"],"maluses":["Mauvaise réputation : mal vu en milieu aisé"]},
+          {"id":"artificiel","name":"Artificiel","description":"Golem, objet mécanique ou magique : ce groupe rassemble toutes les créations non organiques.","bonuses":["Insomniaque / Hyperactif : +1 action inter-séance","Corps de métal : porteur sain de toute toxine"],"maluses":["Compatibilité mécanique : les soins et régénérations ne fonctionnent pas sur le golem. Il doit passer du temps entre les séances pour récupérer les PV perdus"]},
+          {"id":"monstruosite","name":"Monstruosité","description":"Golem de chair ou structure magique créée à partir de matière organique : ce groupe rassemble toutes les créations organiques.","bonuses":["Avantage 1 : à déterminer avec le MJ","Avantage 2 : à déterminer avec le MJ"],"maluses":["Apparence monstrueuse : −5 aux interactions sociales basées sur le physique"]},
+          {"id":"hybride","name":"Hybride (Aviaire / Féroce / Agile)","description":"L'hybridation peut avoir diverses origines : croisement, manipulation génétique ou descendance d'hybrides. Les hybrides ont longtemps vécu cachés, considérés comme des monstres par les humains, mais sortent aujourd'hui de leur trou.","bonuses":["+1 Dextérité ou Force (au choix)","Animalisme : 2 traits mineurs de l'animal associé"],"maluses":["Fight or Flight : choisir à la création. En situation de conflit : si « Flight », doit réussir un jet de Volonté ou s'enfuir (sinon perte de SM). Si « Fight », doit réussir un jet de Volonté ou attaquer (sinon perte de SM)"]},
+          {"id":"garou","name":"Garou","description":"Vivant parmi les hommes à l'instar des vampires, les garous prennent leur essor en ce moment. Ils sont connus pour apprécier la bonne chair (dans tous les sens du terme), les matières animales et le frisson du combat. Ils ont cependant des superstitions qui les bloquent parfois. Contrairement aux préjugés, ils peuvent se transformer à volonté, et il est très difficile de s'en faire un ennemi (mais facile de se faire l'ennemi de tous ceux du secteur).","bonuses":["Forme de combat : +Force/2 et +Dex/2, coûte Niveau PF par tour","Solidarité de la meute : entraide naturelle avec les autres garous"],"maluses":["Vœu de pauvreté : gagne la moitié de l'argent suite aux quêtes (dépense vite)"]},
+          {"id":"goule","name":"Goule","description":"D'apparence repoussante (tête évoquant des êtres troglodytes, sabots, etc.), les goules ont trouvé jadis un moyen de passer inaperçues… la métamorphose ! Elles étaient à l'origine une création vampirique, mais certaines ont réussi à échapper à leurs premiers maîtres pour s'organiser. Dotées d'une grande adaptabilité mais aussi d'une forte allergie à la flore, elles ont réussi à se faire une place discrète dans le monde.","bonuses":["Aruspice des entrailles : permet de lire une partie de l'avenir dans des entrailles","Formes supplémentaires : vieillard ou chien. 5 PF pour changer de forme, passage possible de l'une à l'autre sans repasser par la forme de base. Revenir à la forme de base est gratuit"],"maluses":["Allergie aux plantes : allergie SUPRA sévère, même au simple contact"]},
+          {"id":"demon","name":"Démon","description":"Issus du plan démoniaque, avec leurs propres dieux et chefs (souvent les mêmes) et dotés de capacités colossales… chez eux. Les démons viennent de temps en temps rendre visite à notre monde, amicalement ou non. Mais gardez quand même un œil sur eux, surtout ceux qui sont sympathiques. Ils arborent souvent des couleurs chaudes ou sombres avec divers attributs rappelant leur plan d'origine.","bonuses":["Cuir épais : +Niveau RD magique","Dévoué au chaos : choisir un Vice à la création. 1 fois par scénario, être dans un lieu où l'on s'adonne audit vice donne 1 point d'Espoir. Pousser quelqu'un à s'y adonner donne 1 point d'Anarchy"],"maluses":["Haine / Rivalité avec les Anges et les Dieux : perte de Santé Mentale pour se retenir"]},
+          {"id":"ange","name":"Ange","description":"Issus du plan angélique, avec leurs propres dieux et chefs et dotés de capacités colossales… chez eux. Connus pour leurs bienfaits selon les superstitions. Physiquement, ils prennent une apparence qui leur plaît lors de leur première arrivée dans notre monde. Particularité : les ailes d'énergie dans leur dos ne changent jamais.","bonuses":["Forme d'énergie : peut devenir intangible 1 fois par séance","Affinité avec les artefacts : peut identifier un objet non magique et l'utiliser avec +2"],"maluses":["Hémophilie magique : perd la moitié des PV perdus en PF également"]},
+          {"id":"gobelin","name":"Gobelin","description":"Petits, pas aussi méchants qu'on veut bien le croire, mais surtout débordant d'énergie et souvent d'idées plus ou moins bonnes. Le gobelin est un humanoïde de couleur gris verdâtre. Ils vivent souvent entre eux et sont parfois considérés comme des animaux plutôt que comme des citoyens, ce qui a tendance à les vexer.","bonuses":["Mains agiles : +1 Dextérité","Boum ? Paboum ? : 1 objet peut toujours devenir une bombe (active au contact, Niveau D6 dégâts)","Shonen Junk : « Rien d'impossible à un gobelin ! »"],"maluses":[]},
+          {"id":"lutin","name":"Lutin","description":"Petit humanoïde bedonnant et barbu quel que soit son sexe, le lutin est une vision féerique quand on le rencontre. Cependant, on déchante vite devant le légendaire caractère acariâtre de l'espèce. Il existe évidemment des lutins parfaitement aimables, mais ils ne sont pas légion. Ils se définissent comme un peuple gardien de nombreux secrets, guides spirituels vers d'impossibles découvertes, et dotés d'un bon flair pour les bonnes affaires. Connus pour leurs noms interminables : l'une des pires horreurs est de demander à un lutin son nom complet plutôt que son diminutif.","bonuses":["Chance du lutin : 1 relance par session","Inventaire de RPG : le lutin peut faire apparaître une grande boîte nommée « Inventaire » où il stocke à l'infini ses objets"],"maluses":["Secret et énigmatique : cachotier, aime faire mériter toute information avec une énigme, ce qui le rend insupportable. −2 Social"]},
+          {"id":"daedroth","name":"Daedroth (Homme-Reptile)","description":"Homme-serpent, homme-dragon, homme-lézard… Nombreux noms pour une seule race qui, au nez et à la barbe des autres, a décidé de s'appeler Daedroth. À l'origine vivant dans des tribus très fermées sur une île à l'écart du monde, ils ont décidé de s'ouvrir aux autres après les événements récents. La famille est extrêmement importante pour ces êtres, qui ne parlent d'ailleurs jamais d'eux à la première personne (ils préfèrent omettre le pronom : « vais bien » au lieu de « je vais bien »). Ce peuple garde un secret : ils savent faire pousser des pierres et des gemmes.","bonuses":["Sang cicatrisant : régénère Niveau PV par tour","Résistance Chaleur / Feu : 50%"],"maluses":["−1 Intelligence"]},
+          {"id":"zombie","name":"Zombie","description":"Un rendez-vous manqué avec la mort, un rappel par un nécromancien ou un congé accordé par la faucheuse… Il s'avère que parfois, les morts ne le restent pas. Leur biologie ne fonctionne plus vraiment, mais tant qu'il y a de la vie, il y a de l'espoir.","bonuses":["Thriller : choisit un leader et fait la même chose que lui ce tour-ci (même jet, même compétence, seule la caractéristique change)","Lenteur cinématographique : +Niveau en Initiative"],"maluses":["Pourriture sur patte : −5 aux jets de discrétion liés à l'odeur"]}
+        ],
+        "classes": [
+          {"id":"rodeur","name":"Rôdeur","description":"Maître des étendues sauvages, le rôdeur excelle dans la survie en milieu naturel, le pistage et le combat à distance.","avantages":[{"id":"langage-foret","name":"Langage de la forêt","description":"Permet de connaître la situation globale du milieu (dangers, présences, etc.)"},{"id":"signalisation","name":"Signalisation des rôdeurs","description":"Connaissance des signes et marques laissés par les rôdeurs"},{"id":"pas-loup","name":"Pas de loup","description":"+Niveau/2 en Discrétion en milieu naturel"},{"id":"depecage","name":"Dépeçage avancé","description":"Permet d'obtenir des composants plus rares sur les créatures"},{"id":"refuges","name":"Refuges des rôdeurs","description":"Connaissance des refuges secrets des rôdeurs"},{"id":"vision-aigle","name":"Vision d'aigle","description":"+Niveau/2 en Perception"},{"id":"compagnon-animal","name":"Compagnon animal","description":"Possède un compagnon animal fidèle"},{"id":"tir-precis","name":"Tir précis","description":"Peut relancer les dés de dégâts"},{"id":"tir-rapide","name":"Tir rapide","description":"Peut attaquer plus fréquemment à distance"},{"id":"acrobatie","name":"Acrobatie","description":"Maîtrise des mouvements acrobatiques"}]},
+          {"id":"guerrier","name":"Guerrier","description":"Combattant aguerri et polyvalent, le guerrier maîtrise l'art de la guerre sous toutes ses formes.","avantages":[{"id":"parade-reactive","name":"Parade réactive","description":"1 défense supplémentaire sans malus"},{"id":"botte","name":"Botte","description":"+Niveau en attaque, 1 fois par combat"},{"id":"arme-favorite","name":"Arme favorite","description":"+Niveau/2 avec un type d'arme choisi"},{"id":"arme-nommee","name":"Arme nommée","description":"+Niveau/2 avec une arme spécifique"},{"id":"charge","name":"Charge","description":"Permet de renverser ou choquer l'adversaire"},{"id":"interception","name":"Interception","description":"Défend une attaque destinée à un allié, 1 fois par combat"},{"id":"coup-assommant","name":"Coup assommant","description":"Peut assommer un adversaire"},{"id":"briser","name":"Briser","description":"Dégâts accrus sur l'équipement et les armes adverses"},{"id":"organisation-combat","name":"Organisation du combat","description":"Jet tactique par combat permettant de repositionner les alliés"},{"id":"connaissance-armure","name":"Connaissance d'armure","description":"+Niveau/2 en Défense et RD, +Niveau/2 en attaque contre armure similaire"}]},
+          {"id":"maitre-arme","name":"Maître d'arme","description":"Virtuose du combat rapproché, le maître d'arme a perfectionné son art jusqu'à l'excellence.","avantages":[{"id":"botte-secrete","name":"Botte secrète","description":"Attaque sans dégâts mais l'ennemi a −Niveau+2 en Défense jusqu'à la fin du prochain tour"},{"id":"feinte","name":"Feinte","description":"−Niveau/2 en attaque, +Niveau/2 en dégâts"},{"id":"point-faible","name":"Point faible","description":"−5 en attaque mais ignore l'armure"},{"id":"ecarter-soie","name":"Écarter la soie","description":"Dégâts /2 continus, arme plantée : ennemi −5 atk/def, +10 pour attaquer le personnage"},{"id":"frappe-sang-lie","name":"Frappe du Sang-Lié","description":"Sacrifie PF ou PV pour augmenter les dégâts d'autant (PV) ou moitié (PF)"},{"id":"demonstration","name":"Démonstration","description":"Manœuvre offensive pour intimider"},{"id":"coup-bas","name":"Coup bas","description":"1 action par combat, +Niveau/2 en Initiative"},{"id":"repliques-percutantes","name":"Répliques percutantes","description":"Ajouter Baratin à répartir entre attaque et dégâts"},{"id":"provocation-masse","name":"Provocation de masse","description":"Attire l'attention de plusieurs ennemis"},{"id":"perfection-etincelante","name":"Perfection étincelante","description":"Peut ajouter sa Force aux jets sociaux"}]},
+          {"id":"moine","name":"Moine","description":"Artiste martial ayant atteint la maîtrise de son corps et de son esprit.","avantages":[{"id":"petit-papa-baston","name":"Petit Papa Baston","description":"+Niveau à répartir entre attaque et dégâts contondants mains nues, 3 PF/round"},{"id":"frappe-fulgurante","name":"Frappe fulgurante","description":"1 fois par combat, attaque instantanée"},{"id":"esprit-allie","name":"Esprit allié","description":"1 action, +Niveau/2 aux actions alliées pendant 2 rounds"},{"id":"chakra","name":"Chakra","description":"Actions ninjaesques et techniques spéciales"},{"id":"poing-acier","name":"Poing d'acier","description":"Peut parer à mains nues"},{"id":"enchainement","name":"Enchaînement","description":"Si différence de 5+, attaque supplémentaire"},{"id":"queue-dragon","name":"Queue du dragon","description":"Attaque de zone au corps à corps"},{"id":"fureur-anciens","name":"Fureur des Anciens","description":"+Niveau/2 aux dégâts à mains nues"},{"id":"saut-salvateur","name":"Saut salvateur","description":"Désengagement gratuit"},{"id":"meditation","name":"Méditation","description":"1 relance par session"}]},
+          {"id":"artiste","name":"Artiste","description":"Performer charismatique dont le talent transcende le simple divertissement.","avantages":[{"id":"rock-star","name":"Rock Star","description":"Possède un groupuscule de fans dévoués"},{"id":"voie-ange","name":"Voie d'ange","description":"+Niveau/2 aux actions utilisant la voix"},{"id":"touche-a-tout","name":"Touche-à-tout","description":"+5 aux compétences artistiques"},{"id":"instrument-favori","name":"Instrument favori","description":"+Niveau/2 avec un instrument choisi"},{"id":"sharing-soul","name":"Sharing Soul","description":"Partage une émotion, exacerbe un sentiment"},{"id":"puttin-devil-jail","name":"Puttin' Devil in Jail","description":"Jet d'art avec le groupe, repousse n'importe quel adversaire"},{"id":"verbe-flatteur","name":"Verbe flatteur","description":"+Niveau/2 en Séduction et Baratin"},{"id":"conteur-invetere","name":"Conteur invétéré","description":"Connaissance des mythes et légendes"},{"id":"prestation-luxe","name":"Prestation de luxe","description":"Revenus des prestations ×2"},{"id":"coeur-ouvrage","name":"Cœur à l'ouvrage !","description":"3×/scénario, +Niveau/2 à un jet allié"}]},
+          {"id":"ingenieur","name":"Ingénieur","description":"Inventeur et bricoleur de génie, l'ingénieur crée des merveilles mécaniques et alchimiques.","avantages":[{"id":"bidouille","name":"La Bidouil' !","description":"+Niveau/2 aux jets de bricolage"},{"id":"ferrailleur","name":"Ferrailleur","description":"1 contact fournit 1 cargaison de matériau par séance"},{"id":"boutique","name":"Boutique","description":"Possède une boutique"},{"id":"apprenti","name":"Apprenti","description":"Possède un apprenti"},{"id":"chef-oeuvre","name":"Chef-d'œuvre","description":"Crée des objets de meilleure qualité"},{"id":"alchimie-materiaux","name":"Alchimie des matériaux","description":"Peut métamorphoser les matériaux"},{"id":"amelioration-objet","name":"Amélioration d'objet","description":"Peut améliorer un objet"},{"id":"reparapide","name":"Réparapide","description":"Répare plus vite"},{"id":"technomagie","name":"Technomagie","description":"Donne des effets magiques aux inventions"},{"id":"biomachine","name":"Biomachine","description":"Rend compatible chair et mécanique"}]},
+          {"id":"brigand","name":"Brigand","description":"Maître de la discrétion urbaine et de la filouterie.","avantages":[{"id":"tout-le-monde","name":"M. Tout-Le-Monde","description":"+Niveau/2 Discrétion en ville"},{"id":"main-habile","name":"Main habile","description":"+Niveau/2 Chirurgie et Vol"},{"id":"spa-moa","name":"S'pa moa !","description":"+Niveau/2 Baratin"},{"id":"perception-ultime","name":"Perception ultime","description":"+Niveau/2 Perception en ville"},{"id":"analyse","name":"Analyse","description":"Évalue quantité et qualité d'un butin"},{"id":"connais-gars","name":"J'connais un gars","description":"1 contact dans les bas-fonds"},{"id":"par-la","name":"Par là !","description":"+Niveau/2 Fouille"},{"id":"toc-toc","name":"Toc-Toc","description":"Dégâts ×2 par surprise"},{"id":"tracage-piecette","name":"Traçage de la piécette","description":"Retrouve quelqu'un via argent donné"},{"id":"fondu-ombres","name":"Fondu dans les ombres","description":"Fondu ou invisibilité dans les ombres"}]},
+          {"id":"paladin","name":"Paladin","description":"Champion d'une cause divine ou d'un idéal supérieur.","avantages":[{"id":"imposition-mains","name":"Imposition des mains","description":"X PF+PV = 2×X PV soignés"},{"id":"rayon-brulure","name":"Rayon de brûlure","description":"X PV+PF = 2×X dégâts"},{"id":"stratege","name":"Stratège","description":"+Niveau/2 Tactique"},{"id":"devotion","name":"Dévotion","description":"PF dépensés ×2 pour compétences de l'idéal"},{"id":"sur-entraine","name":"Sur-entraîné","description":"+Niveau/2 Athlétisme"},{"id":"avatar","name":"Avatar","description":"Pouvoirs divins 5 rounds, contrecoup"},{"id":"favori","name":"Favori","description":"Artefact offert par l'entité"},{"id":"attaque-elementaire","name":"Attaque élémentaire","description":"+1D6 dégâts élémentaires"},{"id":"purification","name":"Purification","description":"Purifie malédictions et corruptions"},{"id":"analyse-aura","name":"Analyse d'aura","description":"Connaît les alignements"}]},
+          {"id":"chevalier","name":"Chevalier","description":"Guerrier noble lié à sa monture par un lien indéfectible.","avantages":[{"id":"appel-monture","name":"Appel de la monture","description":"Appelle sa monture à distance"},{"id":"monture-chevalier","name":"Monture de chevalier","description":"Possède une monture loyale"},{"id":"combat-monte","name":"Combat monté","description":"+Niveau/2 combat à cheval"},{"id":"monture-guerre","name":"Monture de guerre","description":"Améliore le combat de la monture"},{"id":"ne-faire-quun","name":"Ne faire qu'un","description":"Transfert de PV avec la monture"},{"id":"lien-telempathique","name":"Lien télempathique","description":"Communication mentale avec la monture"},{"id":"archerie-montee","name":"Archerie montée","description":"+Niveau/2 tirs à cheval"},{"id":"charge-cavalerie","name":"Charge de cavalerie","description":"Charge dévastatrice"},{"id":"esprit-indomptable","name":"Esprit indomptable","description":"+Niveau/2 Volonté"},{"id":"acrobate-voltigeur","name":"Acrobate voltigeur","description":"+Niveau/2 acrobaties à cheval"}]},
+          {"id":"medecin","name":"Médecin","description":"Guérisseur et scientifique du corps humain.","avantages":[{"id":"diagnostic-rapide","name":"Diagnostic rapide","description":"Identifie rapidement blessures et maladies"},{"id":"soin-rapide","name":"Soin rapide","description":"Soigne plus vite"},{"id":"cuisine","name":"Cuisine","description":"+Niveau/2 Cuisine (remèdes)"},{"id":"resurrection","name":"Résurrection","description":"Ramène à 1 PV, 1×/scénario"},{"id":"cultiver-herbes","name":"Cultiver les herbes","description":"Fait pousser des herbes médicinales"},{"id":"maitrise-poisons","name":"Maîtrise des poisons","description":"Expert en poisons et antidotes"},{"id":"connaissances-anatomiques","name":"Connaissances anatomiques","description":"DEX à répartir atk/dégâts sur humanoïdes"},{"id":"transplantation","name":"Transplantation miraculeuse","description":"Peut réaliser des implants"},{"id":"zone-bienfaisance","name":"Zone de bienfaisance","description":"Zone de soin DEX PV, 3 tours, 1×/scénario"},{"id":"je-suis-medecin","name":"Je suis médecin !","description":"Passage prioritaire, +Niveau/2 Social"}]},
+          {"id":"barbare","name":"Barbare","description":"Guerrier sauvage animé par une rage primitive.","avantages":[{"id":"ravage","name":"Ravage","description":"Attaque de zone tournoyante"},{"id":"fureur","name":"Fureur","description":"+Niveau/2 dégâts"},{"id":"chaine-ancetres","name":"Chaîne des Ancêtres","description":"Enchevêtrement magique"},{"id":"cri-guerre","name":"Cri de guerre","description":"+Niveau/2 atk PJ pendant FOR tours"},{"id":"il-en-faut-plus","name":"IL EN FAUT PLUS","description":"Revient full PV, prochaines actions −5"},{"id":"arme-lourde-main","name":"Arme lourde à une main","description":"Manie armes lourdes à une main"},{"id":"frappe-sismique","name":"Frappe sismique","description":"−Niveau/2 zone pendant 2 tours"},{"id":"coup-brutal","name":"Coup brutal","description":"FOR vs FOR : déséquilibre/renverse/désarme"},{"id":"haine-grandissante","name":"Haine grandissante","description":"+2/tour cumulatif entre dégâts/atk/def/init"}]},
+          {"id":"antimage","name":"Antimage","description":"Spécialiste de la neutralisation magique.","avantages":[{"id":"insensibilite-magie","name":"Insensibilité à la magie","description":"+Niveau/2 Volonté contre magie"},{"id":"drain-magie","name":"Drain de magie","description":"Contact, Vol vs Vol pour prendre des PF"},{"id":"desenchantement","name":"Désenchantement","description":"Rituel : retire la magie d'un objet"},{"id":"aimantation-repulsion","name":"Aimantation/Répulsion","description":"Attire ou repousse éléments magiques"},{"id":"stockage-magie","name":"Stockage de magie","description":"Dépasse le max de PF"},{"id":"decharge-magique","name":"Décharge magique","description":"Décharge offensive épuisant les PF stockés"},{"id":"coupure-magie","name":"Coupure de la magie","description":"Rituel : coupe un individu de la magie"},{"id":"zone-antimagique","name":"Zone antimagique","description":"Rituel : résistance magique sur zone"},{"id":"antimagemage","name":"Antimagemage","description":"Permet aux antimages d'apprendre une magie"},{"id":"analyse-magique","name":"Analyse magique","description":"Repère les types de magie"}]},
+          {"id":"diplomate","name":"Diplomate","description":"Maître de la persuasion et des négociations.","avantages":[{"id":"gueule-ange","name":"Gueule d'ange","description":"+Niveau/2 Social (beauté)"},{"id":"negoce","name":"Négoce","description":"+Niveau/2 Marchandage"},{"id":"ange-passe","name":"Un ange passe","description":"Les foules se taisent pour laisser parler"},{"id":"voodoo-powa","name":"VooDoo Powa","description":"EMP vs Idéal : fait tomber amoureux temporairement"},{"id":"commerage","name":"Commérage","description":"Obtient des infos croustillantes"},{"id":"attaque-charismatique","name":"Attaque charismatique","description":"Ajoute EMP au score d'attaque"},{"id":"defense-charismatique","name":"Défense charismatique","description":"Ajoute EMP à la défense"},{"id":"psychologue","name":"Psychologue","description":"+Niveau/2 Détection de mensonge"},{"id":"polyglotte","name":"Polyglotte","description":"4 langues gratuites"},{"id":"chef-naturel","name":"Chef naturel","description":"Les PNJ suivent les directives"}]}
+        ],
+        "competences": [
+          {"id":"acrobatie","name":"Acrobatie","attribut":"DEX"},
+          {"id":"agriculture","name":"Agriculture","attribut":"INT"},
+          {"id":"artisanat","name":"Artisanat","attribut":"DEX"},
+          {"id":"athletisme","name":"Athlétisme","attribut":"FOR"},
+          {"id":"bagarre","name":"Bagarre","attribut":"DEX"},
+          {"id":"baratin","name":"Baratin","attribut":"EMP"},
+          {"id":"bibliotheque","name":"Bibliothèque","attribut":"INT"},
+          {"id":"chasse","name":"Chasse","attribut":"EMP"},
+          {"id":"chirurgie","name":"Chirurgie","attribut":"DEX"},
+          {"id":"comedie","name":"Comédie","attribut":"EMP"},
+          {"id":"crochetage","name":"Crochetage","attribut":"DEX"},
+          {"id":"deguisement","name":"Déguisement","attribut":"DEX"},
+          {"id":"diplomatie","name":"Diplomatie","attribut":"EMP"},
+          {"id":"discretion","name":"Discrétion","attribut":"DEX"},
+          {"id":"dressage","name":"Dressage","attribut":"EMP"},
+          {"id":"droit","name":"Droit","attribut":"INT"},
+          {"id":"eloquence","name":"Éloquence","attribut":"EMP"},
+          {"id":"equitation","name":"Équitation","attribut":"EMP"},
+          {"id":"erudition","name":"Érudition","attribut":"INT"},
+          {"id":"esquive","name":"Esquive","attribut":"DEX"},
+          {"id":"etiquette","name":"Étiquette","attribut":"INT"},
+          {"id":"fouille","name":"Fouille","attribut":"DEX"},
+          {"id":"fronde","name":"Fronde","attribut":"DEX"},
+          {"id":"herboristerie","name":"Herboristerie","attribut":"INT"},
+          {"id":"informatique","name":"Informatique","attribut":"INT"},
+          {"id":"ingenierie","name":"Ingénierie","attribut":"INT"},
+          {"id":"intimidation","name":"Intimidation","attribut":"FOR"},
+          {"id":"linguistique","name":"Linguistique","attribut":"INT"},
+          {"id":"magie","name":"Magie","attribut":"—","description":"1 compétence par type de magie"},
+          {"id":"medecine","name":"Médecine","attribut":"INT"},
+          {"id":"melee","name":"Mêlée","attribut":"FOR"},
+          {"id":"orientation","name":"Orientation","attribut":"SAG"},
+          {"id":"parade","name":"Parade","attribut":"FOR"},
+          {"id":"perception","name":"Perception","attribut":"EMP"},
+          {"id":"perception-magique","name":"Perception magique","attribut":"EMP"},
+          {"id":"piege","name":"Piège","attribut":"DEX"},
+          {"id":"pilotage","name":"Pilotage","attribut":"DEX"},
+          {"id":"poison","name":"Poison","attribut":"INT"},
+          {"id":"psychologie","name":"Psychologie","attribut":"EMP"},
+          {"id":"representation","name":"Représentation","attribut":"EMP"},
+          {"id":"resistance","name":"Résistance","attribut":"FOR"},
+          {"id":"seduction","name":"Séduction","attribut":"EMP"},
+          {"id":"survie","name":"Survie","attribut":"DEX"},
+          {"id":"tactique","name":"Tactique","attribut":"SAG"},
+          {"id":"theologie","name":"Théologie","attribut":"SAG"},
+          {"id":"tir","name":"Tir","attribut":"DEX"},
+          {"id":"vol","name":"Vol","attribut":"DEX"},
+          {"id":"volonte","name":"Volonté","attribut":"SAG"},
+          {"id":"zoologie","name":"Zoologie","attribut":"INT"}
+        ],
+        "avantagesGeneraux": [
+          {"id":"connaissance-magie","name":"Connaissance d'une magie","description":"Le personnage a la capacité d'utiliser l'une des nombreuses formes de magie disponibles sur Gaïa."},
+          {"id":"ambidextrie","name":"Ambidextrie","description":"Le personnage dispose de deux actions par tour de combat."},
+          {"id":"action-combinee","name":"Action combinée","description":"Prérequis : pouvoir faire deux actions par tour. Permet au personnage de faire une seule action au lieu de deux, mais augmentée de 50 % (100 % si en full attaque)."},
+          {"id":"action-supplementaire-specifique","name":"Action supplémentaire spécifique","description":"Permet d'avoir une action gratuite dont la nature doit être spécifiée à la prise de l'avantage. Peut se cumuler avec Ambidextrie. Sauf conditions particulières, cette action gratuite ne peut pas être une action d'attaque."},
+          {"id":"infatigable","name":"Infatigable","description":"Réduit la quantité de repos dont le personnage a besoin."},
+          {"id":"hyperactif","name":"Hyperactif","description":"Prérequis : Infatigable. Le personnage dispose de trois actions au lieu de deux entre deux séances."},
+          {"id":"eleve-doue","name":"Élève doué","description":"Réduit l'entraînement d'une compétence à 3 actions au lieu de 4."},
+          {"id":"superiorite-martiale","name":"Supériorité martiale","description":"Permet de rajouter la moitié de la différence entre son attaque et la défense de l'adversaire aux dégâts."},
+          {"id":"suprematie-martiale","name":"Suprématie martiale","description":"Prérequis : Supériorité martiale. Permet de rajouter la différence totale entre l'attaque et la défense au lieu de la moitié."},
+          {"id":"avantage-autre-classe","name":"Avantage d'une autre classe","description":"Coûte l'équivalent de deux avantages (6 points de création). Permet de choisir un avantage appartenant à une classe différente de la sienne."},
+          {"id":"style-particulier","name":"Style particulier","description":"Remplace une caractéristique par une autre dans une compétence spécifique ou les jets de dégâts."},
+          {"id":"expertise-competence","name":"Expertise de compétence","description":"Ajoute les rangs d'une compétence définie aux jets d'une autre compétence définie."},
+          {"id":"accompagner-coups","name":"Accompagner les coups","description":"Ajoute la Dextérité à la RD, uniquement si une tentative d'esquive ou de parade a pu être faite."},
+          {"id":"developper-technique-sort","name":"Développer une technique ou un sort","description":"Généralement moins coûteux ou plus puissant qu'une action improvisée. Permet de créer une technique ou un sort personnalisé."},
+          {"id":"regroupement-competences","name":"Regroupement de compétences","description":"Un avantage (3 points) par compétence regroupée, si celles-ci utilisent la même caractéristique. Permet de lier plusieurs compétences entre elles."}
+        ],
+        "levelUps": [
+          {"level":2,"options":[{"id":"pv","name":"+2 PV max","effect":{"type":"pv","value":2}},{"id":"pf","name":"+2 PF max","effect":{"type":"pf","value":2}},{"id":"comp","name":"+2 points de compétence","effect":{"type":"competence","value":2}},{"id":"carac","name":"+1 caractéristique","effect":{"type":"caracteristique","value":1}}]},
+          {"level":3,"options":[{"id":"pv","name":"+2 PV max","effect":{"type":"pv","value":2}},{"id":"pf","name":"+2 PF max","effect":{"type":"pf","value":2}},{"id":"comp","name":"+2 points de compétence","effect":{"type":"competence","value":2}},{"id":"carac","name":"+1 caractéristique","effect":{"type":"caracteristique","value":1}},{"id":"avantage","name":"Nouvel avantage de classe","effect":{"type":"avantage","value":1}}]},
+          {"level":4,"options":[{"id":"pv","name":"+3 PV max","effect":{"type":"pv","value":3}},{"id":"pf","name":"+3 PF max","effect":{"type":"pf","value":3}},{"id":"comp","name":"+3 points de compétence","effect":{"type":"competence","value":3}},{"id":"carac","name":"+1 caractéristique","effect":{"type":"caracteristique","value":1}}]},
+          {"level":5,"options":[{"id":"pv","name":"+3 PV max","effect":{"type":"pv","value":3}},{"id":"pf","name":"+3 PF max","effect":{"type":"pf","value":3}},{"id":"comp","name":"+3 points de compétence","effect":{"type":"competence","value":3}},{"id":"carac","name":"+2 caractéristiques","effect":{"type":"caracteristique","value":2}},{"id":"avantage","name":"Nouvel avantage de classe","effect":{"type":"avantage","value":1}}]}
+        ]
+      };
+      
+      let currentStep = 1;
+      const totalSteps = 8;
+      
+      // État de création
+      const creationState = {
+        race: null,
+        // Nouveau système de dés : chaque carac a un dé attribué (D4=4, D6=6, D8=8, D10=10, D12=12)
+        attributes: { force: null, dex: null, emp: null, sag: null, int: null },
+        // Bonus de caractéristiques (provenant de la race, etc.)
+        attributeBonuses: { force: 0, dex: 0, emp: 0, sag: 0, int: 0 },
+        // Dés disponibles (non encore attribués)
+        availableDice: [4, 6, 8, 10, 12],
+        classe: null,
+        primaryAdvantage: null,
+        competences: {},
+        compPointsUsed: 0,
+        secondaryAdvantages: [],
+        customAdvantages: [], // Avantages personnalisés créés par le joueur
+        name: '',
+        alignment: '',
+        // Level Up system
+        levelUpCount: 0,
+        levelUpPointsTotal: 0,
+        levelUpPointsSpent: 0,
+        levelUpChoices: [], // Array of { type, cost, details }
+        levelUpCurrentSelection: null // Type d'amélioration en cours de sélection
+      };
+      
+      // Mapping des bonus de caractéristiques par race
+      const raceBonuses = {
+        'orc': { force: 1 },
+        'troll': { force: 1 },
+        'gobelin': { dex: 1 },
+        'sylphe': { force: -1 },
+        'daedroth': { int: -1 }
+        // Note: hybride a un choix (+1 DEX ou FOR) - à gérer séparément si besoin
+      };
+      
+      // Applique les bonus de race aux caractéristiques
+      function applyRaceBonuses() {
+        // Reset des bonus
+        creationState.attributeBonuses = { force: 0, dex: 0, emp: 0, sag: 0, int: 0 };
+        
+        if (creationState.race && raceBonuses[creationState.race.id]) {
+          const bonuses = raceBonuses[creationState.race.id];
+          for (const [attr, value] of Object.entries(bonuses)) {
+            creationState.attributeBonuses[attr] = value;
+          }
+        }
+      }
+      
+      // Calcule la valeur finale d'une caractéristique (dé + bonus)
+      function getFinalAttribute(attr) {
+        const baseValue = parseInt(creationState.attributes[attr]) || 0;
+        const raceBonus = creationState.attributeBonuses[attr] || 0;
+        
+        // Compter les augmentations de Level Up pour cette caractéristique
+        const levelUpBonus = creationState.levelUpChoices
+          .filter(c => c.type === 'caracteristique' && c.details && c.details.attr === attr)
+          .length;
+        
+        // Bonus total = race + level ups (chaque level up = +1 niveau de dé)
+        const totalBonus = raceBonus + levelUpBonus;
+        
+        if (baseValue === 0) return { value: 0, die: null, bonus: 0, display: '-' };
+        
+        // Chaque +1 augmente le dé d'un cran (D4->D6->D8->D10->D12)
+        // Au-delà de D12, on reste à D12 avec un bonus
+        const diceProgression = [4, 6, 8, 10, 12];
+        let currentIndex = diceProgression.indexOf(baseValue);
+        
+        // Si la valeur n'est pas trouvée, trouver l'index le plus proche
+        if (currentIndex === -1) {
+          currentIndex = diceProgression.findIndex(d => d >= baseValue);
+          if (currentIndex === -1) currentIndex = diceProgression.length - 1;
+        }
+        
+        let extraBonus = 0;
+        
+        if (totalBonus > 0) {
+          // Bonus positif : monter les dés
+          for (let i = 0; i < totalBonus; i++) {
+            if (currentIndex < diceProgression.length - 1) {
+              currentIndex++;
+            } else {
+              // Déjà au D12, ajouter un bonus
+              extraBonus++;
+            }
+          }
+        } else if (totalBonus < 0) {
+          // Malus : descendre les dés
+          for (let i = 0; i < Math.abs(totalBonus); i++) {
+            if (currentIndex > 0) {
+              currentIndex--;
+            }
+            // En dessous de D4, reste à D4
+          }
+        }
+        
+        const finalDie = diceProgression[currentIndex];
+        const display = extraBonus > 0 ? `D${finalDie} +${extraBonus}` : `D${finalDie}`;
+        
+        return { value: finalDie, die: finalDie, bonus: extraBonus, display, baseValue, raceBonus: raceBonus, levelUpBonus: levelUpBonus };
+      }
+      
+      const attrNames = {
+        force: 'Force',
+        dex: 'Dextérité',
+        emp: 'Empathie',
+        sag: 'Sagesse',
+        int: 'Intelligence'
+      };
+      
+      // Initialiser le wizard
+      function initWizard() {
+        
+        // Bouton démarrer
+        document.getElementById('btn-start-wizard').addEventListener('click', () => {
+          document.getElementById('wizard-intro').style.display = 'none';
+          document.getElementById('wizard-steps').classList.add('active');
+          renderStep(1);
+        });
+        
+        // Bouton passer
+        document.getElementById('btn-skip-wizard').addEventListener('click', () => {
+          document.getElementById('wizard-container').style.display = 'none';
+        });
+        
+        // Navigation
+        for (let i = 1; i <= totalSteps; i++) {
+          const prevBtn = document.getElementById(`btn-prev-${i}`);
+          const nextBtn = document.getElementById(`btn-next-${i}`);
+          if (prevBtn) prevBtn.addEventListener('click', () => goToStep(i - 1));
+          if (nextBtn) nextBtn.addEventListener('click', () => goToStep(i + 1));
+        }
+        
+        // Bouton confirmer
+        document.getElementById('btn-confirm').addEventListener('click', generateCharacterSheet);
+        
+        // Progress bar click
+        document.querySelectorAll('.progress-step').forEach(step => {
+          step.addEventListener('click', () => {
+            const stepNum = parseInt(step.dataset.step);
+            if (canNavigateToStep(stepNum)) {
+              goToStep(stepNum);
+            }
+          });
+        });
+      }
+      
+      function canNavigateToStep(step) {
+        // Peut naviguer vers les étapes précédentes ou complétées
+        // Si on est à l'étape 9 (terminée), on peut aller à n'importe quelle étape 1-8
+        if (currentStep === 9 && step >= 1 && step <= 8) return true;
+        return step <= currentStep;
+      }
+      
+      function goToStep(step) {
+        // Permettre la navigation vers les étapes 1-8 (même depuis l'étape 9)
+        if (step < 1 || step > 8) return;
+        
+        const previousStep = currentStep;
+        
+        // Si on revient de l'étape 9 (terminée), cacher le message et réinitialiser le séparateur
+        if (previousStep === 9) {
+          const separator = document.getElementById('wizard-separator');
+          separator.innerHTML = '<h3 style="text-align: center; color: #666;">↓ Votre fiche de personnage ↓</h3>';
+          // Cacher l'étape 9 dans la barre de progression
+          const step9 = document.querySelector('.progress-step[data-step="9"]');
+          if (step9) step9.style.display = 'none';
+        }
+        
+        // Appliquer les changements de l'étape précédente à la fiche (quand on avance)
+        if (step > previousStep && previousStep !== 9) {
+          applyStepToSheet(previousStep);
+        }
+        
+        // Cacher l'étape actuelle (seulement si ce n'est pas l'étape 9 qui n'a pas de contenu)
+        if (previousStep !== 9) {
+          const prevStepContent = document.querySelector(`.step-content[data-step="${previousStep}"]`);
+          if (prevStepContent) prevStepContent.classList.remove('active');
+        }
+        
+        // Afficher la nouvelle étape
+        currentStep = step;
+        const newStepContent = document.querySelector(`.step-content[data-step="${currentStep}"]`);
+        if (newStepContent) newStepContent.classList.add('active');
+        
+        // Mettre à jour la progress bar
+        updateProgressBar();
+        
+        // Rendre le contenu de l'étape
+        renderStep(step);
+        
+        // Afficher le séparateur et scroller vers la fiche quand on avance
+        if (step > 1) {
+          document.getElementById('wizard-separator').style.display = 'block';
+        }
+      }
+      
+      // Appliquer les changements d'une étape à la fiche
+      function applyStepToSheet(step) {
+        switch (step) {
+          case 1: 
+            updateSheetRace(); 
+            break;
+          case 2: 
+            updateSheetAttributes(); 
+            break;
+          case 3: 
+            updateSheetClass(); 
+            break;
+          case 4: 
+            updateSheetCapacities(); 
+            break;
+          case 5: 
+            updateSheetCompetences(); 
+            break;
+          case 6: 
+            updateSheetCapacities(); 
+            break;
+          case 7: 
+            updateSheetNameAndStats(); 
+            break;
+        }
+      }
+      
+      function updateProgressBar() {
+        document.querySelectorAll('.progress-step').forEach(step => {
+          const stepNum = parseInt(step.dataset.step);
+          step.classList.remove('active', 'completed');
+          if (stepNum === currentStep) {
+            step.classList.add('active');
+          } else if (stepNum < currentStep) {
+            step.classList.add('completed');
+          }
+        });
+      }
+      
+      function renderStep(step) {
+        switch (step) {
+          case 1: renderRaceOptions(); break;
+          case 2: applyRaceBonuses(); renderAttributeDistribution(); break;
+          case 3: renderClassOptions(); break;
+          case 4: renderPrimaryAdvantageOptions(); break;
+          case 5: renderCompetenceDistribution(); break;
+          case 6: renderSecondaryAdvantageOptions(); break;
+          case 7: renderNameAndStats(); break;
+          case 8: renderLevelUpOptions(); break;
+        }
+      }
+      
+      // ========== FONCTIONS DE MISE À JOUR DE LA FICHE ==========
+      
+      // Mettre à jour la case Race et les bonus de race
+      function updateSheetRace() {
+        if (!creationState.race) return;
+        
+        // Case Race
+        const raceField = document.getElementById('race');
+        if (raceField) raceField.value = creationState.race.name;
+        
+        // Bonus de race
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+          const h3 = section.querySelector('h3');
+          if (h3 && h3.textContent.includes('Bonus de race')) {
+            const list = section.querySelector('.abilities-list');
+            if (list) {
+              const allTraits = [];
+              if (creationState.race.bonuses) {
+                creationState.race.bonuses.forEach(b => allTraits.push(`<li>${b}</li>`));
+              }
+              if (creationState.race.maluses && creationState.race.maluses.length > 0) {
+                creationState.race.maluses.forEach(m => allTraits.push(`<li>${m}</li>`));
+              }
+              list.innerHTML = allTraits.join('');
+            }
+          }
+        });
+      }
+      
+      // Mettre à jour les caractéristiques
+      function updateSheetAttributes() {
+        const attrMap = { force: 'force', dex: 'dex', emp: 'emp', sag: 'sag', int: 'int' };
+        for (const [key, id] of Object.entries(attrMap)) {
+          const input = document.getElementById(id);
+          if (input) {
+            const finalAttr = getFinalAttribute(key);
+            
+            // Mettre la valeur du dé final dans l'input number
+            if (finalAttr.value > 0) {
+              input.value = finalAttr.value;
+            } else {
+              input.value = '';
+            }
+            input.dispatchEvent(new Event('input')); // Déclenche la mise à jour du dé affiché
+            
+            // Mettre le bonus dans le petit champ +0 (le 3ème élément dans value-wrap)
+            const attrBox = input.closest('.attr-box');
+            if (attrBox) {
+              const bonusInput = attrBox.querySelector('input[type="text"]');
+              if (bonusInput && finalAttr.bonus > 0) {
+                bonusInput.value = `+${finalAttr.bonus}`;
+              } else if (bonusInput) {
+                bonusInput.value = '+0';
+              }
+            }
+          }
+        }
+      }
+      
+      // Mettre à jour la case Classe
+      function updateSheetClass() {
+        if (!creationState.classe) return;
+        const classField = document.getElementById('class');
+        if (classField) classField.value = creationState.classe.name;
+      }
+      
+      // Mettre à jour les avantages/capacités
+      function updateSheetCapacities() {
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+          const h3 = section.querySelector('h3');
+          if (h3 && (h3.textContent.includes('Capacités') || h3.textContent.includes('Avantages'))) {
+            const list = section.querySelector('.abilities-list');
+            if (list) {
+              const capacities = [];
+              
+              // Avantage primaire (de classe)
+              if (creationState.primaryAdvantage) {
+                capacities.push(`<li><strong>${creationState.primaryAdvantage.name}</strong> : ${creationState.primaryAdvantage.description}</li>`);
+              }
+              
+              // Avantages secondaires (classe + généraux)
+              creationState.secondaryAdvantages.forEach(adv => {
+                const prefix = adv.isGeneral ? '◆ ' : '';
+                capacities.push(`<li><strong>${prefix}${adv.name}</strong> : ${adv.description}</li>`);
+              });
+              
+              // Avantages personnalisés
+              creationState.customAdvantages.forEach(adv => {
+                if (adv.name && adv.name.trim() !== '') {
+                  capacities.push(`<li><strong>✦ ${adv.name}</strong> : ${adv.description || 'Pas de description'}</li>`);
+                }
+              });
+              
+              if (capacities.length > 0) {
+                list.innerHTML = capacities.join('');
+              }
+            }
+          }
+        });
+      }
+      
+      // Mettre à jour les compétences
+      function updateSheetCompetences() {
+        const skillsBody = document.querySelector('.skill-table tbody');
+        if (!skillsBody) {
+          console.error('Tableau des compétences non trouvé');
+          return;
+        }
+        
+        // Collecter toutes les compétences (étape 5 + level ups)
+        const allComps = {};
+        
+        // Compétences de l'étape 5
+        for (const [compId, value] of Object.entries(creationState.competences)) {
+          if (value && value > 0) {
+            allComps[compId] = (allComps[compId] || 0) + value;
+          }
+        }
+        
+        // Ajouter les compétences des Level Ups
+        creationState.levelUpChoices
+          .filter(c => c.type === 'competence' && c.details && c.details.compId)
+          .forEach(choice => {
+            allComps[choice.details.compId] = (allComps[choice.details.compId] || 0) + 1;
+          });
+        
+        // Construire la liste des compétences avec leurs infos
+        const usedComps = [];
+        for (const [compId, value] of Object.entries(allComps)) {
+          const comp = characterData.competences.find(c => c.id === compId);
+          if (comp) {
+            usedComps.push({ comp, value });
+          }
+        }
+        
+        // Trier par nom
+        usedComps.sort((a, b) => a.comp.name.localeCompare(b.comp.name));
+        
+        // Toujours vider et reconstruire le tableau
+        skillsBody.innerHTML = '';
+        
+        if (usedComps.length > 0) {
+          usedComps.forEach(({ comp, value }) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td><input value="${comp.name}" /></td>
+              <td><input value="${comp.attribut}" /></td>
+              <td><input type="text" value="+${value}" style="text-align:center;" /></td>
+            `;
+            skillsBody.appendChild(row);
+          });
+        } else {
+          // Ajouter des lignes vides par défaut si aucune compétence
+          for (let i = 0; i < 6; i++) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td><input /></td>
+              <td><input placeholder="FOR" /></td>
+              <td><input type="number" placeholder="+0" /></td>
+            `;
+            skillsBody.appendChild(row);
+          }
+        }
+      }
+      
+      // Calculer les PV (FOR×2 + INT×2 + 10 + Niveau + Bonus)
+      function calculatePV() {
+        const niveau = 1 + (creationState.levelUpCount || 0); // Niveau de base + level ups
+        let bonusPV = 0;
+        
+        // Utiliser getFinalAttribute pour obtenir les valeurs finales incluant tous les bonus
+        const forceAttr = getFinalAttribute('force');
+        const intelAttr = getFinalAttribute('int');
+        
+        // Valeur de la caractéristique = valeur du dé + bonus au-delà de D12
+        // Pour le calcul des PV, on utilise la valeur du dé + le bonus extra
+        const forceValue = (forceAttr.value || 0) + (forceAttr.bonus || 0);
+        const intelValue = (intelAttr.value || 0) + (intelAttr.bonus || 0);
+        
+        // TODO: Ajouter les bonus de race ou d'avantage qui augmentent les PV
+        
+        const pv = (forceValue * 2) + (intelValue * 2) + 10 + niveau + bonusPV;
+        return { pv, force: forceValue, intel: intelValue, niveau, bonusPV, forceBonus: forceAttr.bonus, intelBonus: intelAttr.bonus };
+      }
+      
+      // Calculer les PF (PF = PV + Bonus)
+      function calculatePF(pv) {
+        let bonusPF = 0;
+        
+        // TODO: Ajouter les bonus de race ou d'avantage qui augmentent les PF
+        
+        return { pf: pv + bonusPF, bonusPF };
+      }
+      
+      // Mettre à jour le nom et les stats vitales
+      function updateSheetNameAndStats() {
+        const nameInput = document.getElementById('wizard-name');
+        const alignmentSelect = document.getElementById('wizard-alignment');
+        const nameField = document.getElementById('name');
+        const alignmentField = document.getElementById('alignement');
+        const levelField = document.getElementById('level');
+        const pvMaxField = document.getElementById('pv-max');
+        const pvCurrentField = document.getElementById('pv-current');
+        const pfMaxField = document.getElementById('pf-max');
+        const pfCurrentField = document.getElementById('pf-current');
+        
+        if (nameInput && nameField) {
+          nameField.value = nameInput.value;
+        }
+        
+        if (alignmentSelect && alignmentField) {
+          alignmentField.value = alignmentSelect.value;
+        } else if (creationState.alignment && alignmentField) {
+          alignmentField.value = creationState.alignment;
+        }
+        
+        if (levelField) {
+          levelField.value = 1;
+        }
+        
+        const { pv } = calculatePV();
+        const { pf } = calculatePF(pv);
+        
+        if (pvMaxField) pvMaxField.value = pv;
+        if (pvCurrentField) pvCurrentField.value = pv;
+        if (pfMaxField) pfMaxField.value = pf;
+        if (pfCurrentField) pfCurrentField.value = pf;
+      }
+      
+      // Étape 1: Races
+      // Chemins des images
+      function getRaceImagePath(raceId) {
+        return `img/races/${raceId}.webp`;
+      }
+      
+      function getClassImagePath(classId) {
+        return `img/classes/${classId}.webp`;
+      }
+      
+      function renderRaceOptions() {
+        const container = document.getElementById('race-options');
+        container.innerHTML = '';
+        
+        characterData.races.forEach(race => {
+          const card = document.createElement('div');
+          card.className = 'option-card' + (creationState.race?.id === race.id ? ' selected' : '');
+          
+          // Générer la liste des bonus
+          const bonusesHtml = race.bonuses && race.bonuses.length > 0 
+            ? `<ul class="option-bonuses">${race.bonuses.map(b => `<li>${b}</li>`).join('')}</ul>` 
+            : '';
+          
+          // Générer la liste des malus
+          const malusesHtml = race.maluses && race.maluses.length > 0 
+            ? `<ul class="option-maluses">${race.maluses.map(m => `<li>${m}</li>`).join('')}</ul>` 
+            : '';
+          
+          card.innerHTML = `
+            <img src="${getRaceImagePath(race.id)}" alt="${race.name}" class="option-img" onerror="this.style.display='none'">
+            <div class="option-content">
+              <div class="option-name">${race.name}</div>
+              <div class="option-desc">${race.description}</div>
+              ${bonusesHtml}
+              ${malusesHtml}
+            </div>
+          `;
+          card.addEventListener('click', () => {
+            creationState.race = race;
+            applyRaceBonuses();
+            renderRaceOptions();
+            document.getElementById('btn-next-1').disabled = false;
+          });
+          container.appendChild(card);
+        });
+      }
+      
+      // Étape 2: Caractéristiques
+      // Système de dés pour les caractéristiques
+      let selectedDice = null; // Dé actuellement sélectionné
+      
+      function renderAttributeDistribution() {
+        const dicePool = document.getElementById('dice-pool');
+        const container = document.getElementById('attr-distribute');
+        
+        const attrs = ['force', 'dex', 'emp', 'sag', 'int'];
+        const allDice = [4, 6, 8, 10, 12];
+        
+        // Calculer les dés utilisés
+        const usedDice = Object.values(creationState.attributes).filter(d => d !== null);
+        const availableDice = allDice.filter(d => !usedDice.includes(d));
+        
+        // Afficher le pool de dés
+        dicePool.innerHTML = '<div class="dice-instructions">🎲 Cliquez sur un dé, puis sur une caractéristique pour l\'assigner</div>';
+        
+        const diceContainer = document.createElement('div');
+        diceContainer.style.cssText = 'display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap; margin-top:0.5rem;';
+        
+        allDice.forEach(dice => {
+          const isUsed = usedDice.includes(dice);
+          const isSelected = selectedDice === dice;
+          
+          const diceEl = document.createElement('div');
+          diceEl.className = 'dice-item' + (isUsed ? ' used' : '') + (isSelected ? ' selected' : '');
+          diceEl.innerHTML = `D${dice}`;
+          diceEl.title = isUsed ? 'Ce dé est déjà assigné' : `Cliquez pour sélectionner le D${dice}`;
+          
+          if (!isUsed) {
+            diceEl.addEventListener('click', () => {
+              selectedDice = isSelected ? null : dice;
+              renderAttributeDistribution();
+            });
+          }
+          
+          diceContainer.appendChild(diceEl);
+        });
+        
+        dicePool.appendChild(diceContainer);
+        
+        // Afficher les caractéristiques
+        container.innerHTML = '';
+        
+        attrs.forEach(attr => {
+          const value = creationState.attributes[attr];
+          const hasDice = value !== null;
+          const raceBonus = creationState.attributeBonuses[attr] || 0;
+          const finalAttr = getFinalAttribute(attr);
+          
+          const item = document.createElement('div');
+          item.className = 'attr-item' + (hasDice ? ' has-dice' : '') + (selectedDice && !hasDice ? ' selected-target' : '');
+          
+          // Affichage du bonus de race
+          let bonusHtml = '';
+          if (raceBonus !== 0) {
+            const bonusColor = raceBonus > 0 ? '#27ae60' : '#c0392b';
+            const bonusSign = raceBonus > 0 ? '+' : '';
+            bonusHtml = `<div style="font-size:11px; color:${bonusColor}; margin-top:0.25rem;">(Race : ${bonusSign}${raceBonus})</div>`;
+          }
+          
+          if (hasDice) {
+            // Afficher le dé final avec le bonus de race appliqué
+            const finalDisplay = raceBonus !== 0 
+              ? `<span style="text-decoration:line-through; opacity:0.5;">D${value}</span> → <strong>${finalAttr.display}</strong>`
+              : `D${value}`;
+            
+            item.innerHTML = `
+              <label>${attrNames[attr]}</label>
+              <div class="attr-dice-display">${finalDisplay}</div>
+              <div class="attr-value-display">Valeur : ${finalAttr.value}${finalAttr.bonus > 0 ? ' +' + finalAttr.bonus : ''}</div>
+              ${bonusHtml}
+              <button style="margin-top:0.5rem; padding:0.25rem 0.5rem; font-size:12px; background:#c0392b; color:#fff; border:none; border-radius:0.25rem; cursor:pointer;" data-attr="${attr}">✗ Retirer</button>
+            `;
+          } else {
+            item.innerHTML = `
+              <label>${attrNames[attr]}</label>
+              <div class="attr-empty">${selectedDice ? '← Cliquez ici' : 'Aucun dé'}</div>
+              ${bonusHtml}
+            `;
+          }
+          
+          // Event listener pour assigner ou retirer un dé
+          item.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+              // Retirer le dé
+              creationState.attributes[attr] = null;
+              selectedDice = null;
+              renderAttributeDistribution();
+            } else if (selectedDice && !hasDice) {
+              // Assigner le dé sélectionné
+              creationState.attributes[attr] = selectedDice;
+              selectedDice = null;
+              renderAttributeDistribution();
+            }
+          });
+          
+          container.appendChild(item);
+        });
+        
+        // Vérifier si toutes les caractéristiques sont assignées
+        const allAssigned = attrs.every(attr => creationState.attributes[attr] !== null);
+        document.getElementById('btn-next-2').disabled = !allAssigned;
+      }
+      
+      // Étape 3: Classes
+      function renderClassOptions() {
+        const container = document.getElementById('class-options');
+        container.innerHTML = '';
+        
+        characterData.classes.forEach(cls => {
+          const card = document.createElement('div');
+          card.className = 'option-card' + (creationState.classe?.id === cls.id ? ' selected' : '');
+          
+          // Générer la liste des avantages de la classe (même format que les races)
+          const avantagesHtml = (cls.avantages || []).map(adv => 
+            `<li><strong>${adv.name}</strong> : ${adv.description}</li>`
+          ).join('');
+          
+          card.innerHTML = `
+            <img src="${getClassImagePath(cls.id)}" alt="${cls.name}" class="option-img" onerror="this.style.display='none'">
+            <div class="option-content">
+              <div class="option-name">${cls.name}</div>
+              <div class="option-desc">${cls.description}</div>
+              ${avantagesHtml ? `<ul class="option-bonuses">${avantagesHtml}</ul>` : ''}
+            </div>
+          `;
+          card.addEventListener('click', () => {
+            creationState.classe = cls;
+            creationState.primaryAdvantage = null;
+            creationState.secondaryAdvantages = [];
+            renderClassOptions();
+            document.getElementById('btn-next-3').disabled = false;
+          });
+          container.appendChild(card);
+        });
+      }
+      
+      // Étape 4: Avantage de classe
+      function renderPrimaryAdvantageOptions() {
+        const container = document.getElementById('primary-advantage-options');
+        container.innerHTML = '';
+        
+        if (!creationState.classe) {
+          container.innerHTML = '<p style="text-align:center;color:#e74c3c;">Veuillez d\'abord choisir une classe.</p>';
+          return;
+        }
+        
+        // Utiliser tous les avantages de la classe
+        const avantages = creationState.classe.avantages || [];
+        
+        avantages.forEach(adv => {
+          const card = document.createElement('div');
+          card.className = 'option-card-simple' + (creationState.primaryAdvantage?.id === adv.id ? ' selected' : '');
+          card.innerHTML = `
+            <div class="option-name">${adv.name}</div>
+            <div class="option-desc">${adv.description}</div>
+          `;
+          card.addEventListener('click', () => {
+            creationState.primaryAdvantage = adv;
+            renderPrimaryAdvantageOptions();
+            document.getElementById('btn-next-4').disabled = false;
+          });
+          container.appendChild(card);
+        });
+      }
+      
+      // Étape 5: Compétences
+      function renderCompetenceDistribution() {
+        const container = document.getElementById('comp-distribute');
+        container.innerHTML = '';
+        
+        const maxPoints = 12;
+        const maxPerComp = 3; // Maximum +3 par compétence
+        const pointsRemaining = maxPoints - creationState.compPointsUsed;
+        
+        characterData.competences.forEach(comp => {
+          const value = creationState.competences[comp.id] || 0;
+          const isMaxed = value >= maxPerComp;
+          
+          const item = document.createElement('div');
+          item.className = 'comp-item' + (value > 0 ? ' has-points' : '');
+          item.innerHTML = `
+            <div class="comp-info">
+              <span class="comp-name">${comp.name}</span>
+              <span class="comp-attr">${comp.attribut}</span>
+            </div>
+            <div class="comp-controls">
+              <button data-comp="${comp.id}" data-action="dec" ${value <= 0 ? 'disabled' : ''}>−</button>
+              <span class="comp-value" style="${value > 0 ? 'color:#27ae60;font-weight:bold;' : ''}">+${value}</span>
+              <button data-comp="${comp.id}" data-action="inc" ${isMaxed || pointsRemaining <= 0 ? 'disabled' : ''}>+</button>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+        
+        // Event listeners
+        container.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const comp = btn.dataset.comp;
+            const action = btn.dataset.action;
+            const currentValue = creationState.competences[comp] || 0;
+            
+            if (action === 'inc' && currentValue < maxPerComp && creationState.compPointsUsed < maxPoints) {
+              creationState.competences[comp] = currentValue + 1;
+              creationState.compPointsUsed++;
+            } else if (action === 'dec' && currentValue > 0) {
+              creationState.competences[comp] = currentValue - 1;
+              creationState.compPointsUsed--;
+            }
+            renderCompetenceDistribution();
+          });
+        });
+        
+        // Update points display
+        const remaining = document.getElementById('comp-points-remaining');
+        remaining.textContent = pointsRemaining;
+        remaining.className = 'remaining' + (pointsRemaining === 0 ? ' done' : pointsRemaining < 4 ? ' warning' : '');
+        
+        // Enable/disable next button
+        document.getElementById('btn-next-5').disabled = pointsRemaining !== 0;
+      }
+      
+      // Étape 6: Avantages secondaires
+      function renderSecondaryAdvantageOptions() {
+        const container = document.getElementById('secondary-advantage-options');
+        container.innerHTML = '';
+        
+        if (!creationState.classe) {
+          container.innerHTML = '<p style="text-align:center;color:#e74c3c;">Veuillez d\'abord choisir une classe.</p>';
+          return;
+        }
+        
+        // Compte total des avantages sélectionnés (class + général + custom)
+        const totalSelected = creationState.secondaryAdvantages.length + creationState.customAdvantages.length;
+        
+        // === SECTION 1: Avantages de classe ===
+        const classTitle = document.createElement('h4');
+        classTitle.className = 'advantages-section-title';
+        classTitle.textContent = `Avantages de classe : ${creationState.classe.name}`;
+        container.appendChild(classTitle);
+        
+        const classGrid = document.createElement('div');
+        classGrid.className = 'options-grid-4col';
+        container.appendChild(classGrid);
+        
+        // Utiliser tous les avantages de classe sauf celui choisi comme primaire
+        const avantagesClasse = (creationState.classe.avantages || []).filter(
+          adv => !creationState.primaryAdvantage || adv.id !== creationState.primaryAdvantage.id
+        );
+        
+        avantagesClasse.forEach(adv => {
+          const isSelected = creationState.secondaryAdvantages.some(a => a.id === adv.id && !a.isGeneral);
+          const card = document.createElement('div');
+          card.className = 'option-checkbox-simple' + (isSelected ? ' selected' : '');
+          card.innerHTML = `
+            <span class="checkbox-mark"></span>
+            <div>
+              <div class="option-name">${adv.name}</div>
+              <div class="option-desc">${adv.description}</div>
+            </div>
+          `;
+          card.addEventListener('click', () => {
+            if (isSelected) {
+              creationState.secondaryAdvantages = creationState.secondaryAdvantages.filter(a => a.id !== adv.id);
+            } else if (totalSelected < 3) {
+              creationState.secondaryAdvantages.push({ ...adv, isGeneral: false });
+            }
+            renderSecondaryAdvantageOptions();
+          });
+          classGrid.appendChild(card);
+        });
+        
+        // === SECTION 2: Avantages généraux ===
+        const generalTitle = document.createElement('h4');
+        generalTitle.className = 'advantages-section-title';
+        generalTitle.textContent = 'Avantages généraux';
+        container.appendChild(generalTitle);
+        
+        const generalGrid = document.createElement('div');
+        generalGrid.className = 'options-grid-4col';
+        container.appendChild(generalGrid);
+        
+        const avantagesGeneraux = characterData.avantagesGeneraux || [];
+        
+        avantagesGeneraux.forEach(adv => {
+          const isSelected = creationState.secondaryAdvantages.some(a => a.id === adv.id && a.isGeneral);
+          const card = document.createElement('div');
+          card.className = 'option-checkbox-simple' + (isSelected ? ' selected' : '');
+          card.innerHTML = `
+            <span class="checkbox-mark"></span>
+            <div>
+              <div class="option-name">${adv.name}</div>
+              <div class="option-desc">${adv.description}</div>
+            </div>
+          `;
+          card.addEventListener('click', () => {
+            if (isSelected) {
+              creationState.secondaryAdvantages = creationState.secondaryAdvantages.filter(a => !(a.id === adv.id && a.isGeneral));
+            } else if (totalSelected < 3) {
+              creationState.secondaryAdvantages.push({ ...adv, isGeneral: true });
+            }
+            renderSecondaryAdvantageOptions();
+          });
+          generalGrid.appendChild(card);
+        });
+        
+        // === SECTION 3: Avantages personnalisés ===
+        const customTitle = document.createElement('h4');
+        customTitle.className = 'advantages-section-title';
+        customTitle.textContent = 'Avantages personnalisés';
+        container.appendChild(customTitle);
+        
+        const customContainer = document.createElement('div');
+        customContainer.className = 'custom-advantages-container';
+        container.appendChild(customContainer);
+        
+        // Afficher les avantages personnalisés existants
+        creationState.customAdvantages.forEach((customAdv, index) => {
+          const customCard = document.createElement('div');
+          customCard.className = 'custom-advantage-card selected';
+          customCard.innerHTML = `
+            <div class="custom-advantage-header">
+              <input type="text" class="custom-advantage-name" placeholder="Nom de l'avantage" value="${customAdv.name || ''}" data-index="${index}">
+              <button class="custom-advantage-remove" data-index="${index}" title="Supprimer">×</button>
+            </div>
+            <textarea class="custom-advantage-desc" placeholder="Description de l'avantage" data-index="${index}">${customAdv.description || ''}</textarea>
+          `;
+          customContainer.appendChild(customCard);
+          
+          // Event listeners pour les inputs
+          const nameInput = customCard.querySelector('.custom-advantage-name');
+          const descInput = customCard.querySelector('.custom-advantage-desc');
+          const removeBtn = customCard.querySelector('.custom-advantage-remove');
+          
+          nameInput.addEventListener('input', (e) => {
+            creationState.customAdvantages[index].name = e.target.value;
+            updateSecondaryCount();
+          });
+          
+          descInput.addEventListener('input', (e) => {
+            creationState.customAdvantages[index].description = e.target.value;
+          });
+          
+          removeBtn.addEventListener('click', () => {
+            creationState.customAdvantages.splice(index, 1);
+            renderSecondaryAdvantageOptions();
+          });
+        });
+        
+        // Bouton "+" pour ajouter un avantage personnalisé
+        if (totalSelected < 3) {
+          const addBtn = document.createElement('div');
+          addBtn.className = 'custom-advantage-add';
+          addBtn.innerHTML = `
+            <span class="add-icon">+</span>
+            <span class="add-text">Ajouter un avantage personnalisé</span>
+          `;
+          addBtn.addEventListener('click', () => {
+            if (totalSelected < 3) {
+              creationState.customAdvantages.push({ 
+                id: 'custom-' + Date.now(), 
+                name: '', 
+                description: '',
+                isCustom: true
+              });
+              renderSecondaryAdvantageOptions();
+            }
+          });
+          customContainer.appendChild(addBtn);
+        }
+        
+        // Update count
+        updateSecondaryCount();
+      }
+      
+      function updateSecondaryCount() {
+        const totalSelected = creationState.secondaryAdvantages.length + creationState.customAdvantages.length;
+        document.getElementById('secondary-count').textContent = totalSelected;
+        
+        // Vérifier si tous les avantages personnalisés ont un nom
+        const allCustomHaveNames = creationState.customAdvantages.every(adv => adv.name && adv.name.trim() !== '');
+        
+        document.getElementById('btn-next-6').disabled = totalSelected !== 3 || !allCustomHaveNames;
+      }
+      
+      // Étape 7: Nom et Stats
+      let nameCheckHandler = null;
+      
+      function renderNameAndStats() {
+        const nameInput = document.getElementById('wizard-name');
+        const alignmentSelect = document.getElementById('wizard-alignment');
+        const calculatedPV = document.getElementById('calculated-pv');
+        const calculatedPF = document.getElementById('calculated-pf');
+        const statsDetails = document.getElementById('stats-details');
+        const btnNext = document.getElementById('btn-next-7');
+        
+        // Restaurer les valeurs si elles existent
+        if (nameInput && creationState.name) {
+          nameInput.value = creationState.name;
+        }
+        if (alignmentSelect && creationState.alignment) {
+          alignmentSelect.value = creationState.alignment;
+        }
+        
+        // Calculer les stats
+        const { pv, force, intel, niveau, bonusPV, forceBonus, intelBonus } = calculatePV();
+        const { pf, bonusPF } = calculatePF(pv);
+        
+        // Afficher les calculs
+        if (calculatedPV) calculatedPV.textContent = pv;
+        if (calculatedPF) calculatedPF.textContent = pf;
+        
+        // Détails du calcul
+        if (statsDetails) {
+          // Afficher FOR et INT avec leurs bonus si présents
+          const forceDisplay = forceBonus > 0 ? `${force - forceBonus}+${forceBonus}=${force}` : force;
+          const intelDisplay = intelBonus > 0 ? `${intel - intelBonus}+${intelBonus}=${intel}` : intel;
+          
+          let details = `<strong>Calcul des PV :</strong> FOR(${forceDisplay})×2 + INT(${intelDisplay})×2 + 10 + Niveau(${niveau})`;
+          if (bonusPV > 0) details += ` + Bonus(${bonusPV})`;
+          details += ` = <strong>${pv}</strong><br>`;
+          details += `<strong>Calcul des PF :</strong> PV(${pv})`;
+          if (bonusPF > 0) details += ` + Bonus(${bonusPF})`;
+          details += ` = <strong>${pf}</strong>`;
+          
+          // Ajouter un récap du personnage
+          details += `<hr style="margin:0.75rem 0; border:none; border-top:1px dashed #ccc;">`;
+          details += `<strong>Récapitulatif :</strong><br>`;
+          if (creationState.race) details += `• Race : ${creationState.race.name}<br>`;
+          if (creationState.classe) details += `• Classe : ${creationState.classe.name}<br>`;
+          
+          // Afficher les caractéristiques avec leurs valeurs finales
+          const formatAttr = (attr) => {
+            const final = getFinalAttribute(attr);
+            if (!final.value) return '—';
+            return final.bonus > 0 ? `D${final.value}+${final.bonus} (${final.value + final.bonus})` : `D${final.value} (${final.value})`;
+          };
+          details += `• FOR: ${formatAttr('force')} | DEX: ${formatAttr('dex')} | EMP: ${formatAttr('emp')} | SAG: ${formatAttr('sag')} | INT: ${formatAttr('int')}`;
+          
+          statsDetails.innerHTML = details;
+        }
+        
+        // Fonction de validation (nom ET alignement requis)
+        function validateStep7() {
+          const nameOk = nameInput && nameInput.value.trim().length > 0;
+          const alignmentOk = alignmentSelect && alignmentSelect.value !== '';
+          
+          // Stocker les valeurs dans creationState
+          if (nameInput) creationState.name = nameInput.value.trim();
+          if (alignmentSelect) creationState.alignment = alignmentSelect.value;
+          
+          if (btnNext) {
+            btnNext.disabled = !(nameOk && alignmentOk);
+          }
+        }
+        
+        // Validation du nom et de l'alignement
+        if (nameInput && alignmentSelect && btnNext) {
+          // Supprimer les anciens handlers si existants
+          if (nameCheckHandler) {
+            nameInput.removeEventListener('input', nameCheckHandler);
+            alignmentSelect.removeEventListener('change', nameCheckHandler);
+          }
+          
+          // Créer un nouveau handler
+          nameCheckHandler = validateStep7;
+          
+          nameInput.addEventListener('input', nameCheckHandler);
+          alignmentSelect.addEventListener('change', nameCheckHandler);
+          nameCheckHandler(); // Vérification initiale
+        }
+      }
+      
+      // Étape 8: Level Up
+      // Level Up options configuration
+      const LEVELUP_OPTIONS = [
+        { id: 'autre-classe', cost: 6, name: 'Avantage d\'autre classe', desc: '+1 Avantage/Capacité d\'une autre classe' },
+        { id: 'caracteristique', cost: 5, name: '+1 Dé Caractéristique', desc: '+1 Dé sur une carac. (ou +1 bonus si déjà D12)' },
+        { id: 'classe-general', cost: 3, name: 'Avantage classe/général', desc: '+1 Avantage/Capacité de sa classe ou général' },
+        { id: 'competence', cost: 1, name: '+1 Compétence', desc: '+1 point de compétence' }
+      ];
+      
+      function renderLevelUpOptions() {
+        const container = document.getElementById('level-up-container');
+        const countInput = document.getElementById('levelup-count');
+        const totalPointsSpan = document.getElementById('levelup-total-points');
+        const minusBtn = document.getElementById('levelup-minus');
+        const plusBtn = document.getElementById('levelup-plus');
+        
+        // Setup controls si pas déjà fait
+        if (!minusBtn.dataset.initialized) {
+          minusBtn.dataset.initialized = 'true';
+          
+          minusBtn.addEventListener('click', () => {
+            const current = parseInt(countInput.value) || 0;
+            if (current > 0) {
+              countInput.value = current - 1;
+              updateLevelUpPoints();
+            }
+          });
+          
+          plusBtn.addEventListener('click', () => {
+            const current = parseInt(countInput.value) || 0;
+            if (current < 10) {
+              countInput.value = current + 1;
+              updateLevelUpPoints();
+            }
+          });
+          
+          countInput.addEventListener('change', () => {
+            let val = parseInt(countInput.value) || 0;
+            val = Math.max(0, Math.min(10, val));
+            countInput.value = val;
+            updateLevelUpPoints();
+          });
+        }
+        
+        // Restore value
+        countInput.value = creationState.levelUpCount;
+        
+        updateLevelUpPoints();
+        renderLevelUpContent();
+      }
+      
+      function updateLevelUpPoints() {
+        const countInput = document.getElementById('levelup-count');
+        const totalPointsSpan = document.getElementById('levelup-total-points');
+        
+        creationState.levelUpCount = parseInt(countInput.value) || 0;
+        creationState.levelUpPointsTotal = creationState.levelUpCount * 10;
+        
+        // Recalculer les points dépensés
+        creationState.levelUpPointsSpent = creationState.levelUpChoices.reduce((sum, c) => sum + c.cost, 0);
+        
+        totalPointsSpan.textContent = `= ${creationState.levelUpPointsTotal} points`;
+        
+        renderLevelUpContent();
+      }
+      
+      function renderLevelUpContent() {
+        const container = document.getElementById('level-up-container');
+        container.innerHTML = '';
+        
+        if (creationState.levelUpCount === 0) {
+          container.innerHTML = `
+            <p style="text-align:center;color:#666;padding:1rem;">
+              Vous n'avez pas de Level Up. Utilisez les boutons ci-dessus pour ajouter des Level Up si vous commencez à un niveau supérieur à 1.
+            </p>
+          `;
+          return;
+        }
+        
+        const pointsRemaining = creationState.levelUpPointsTotal - creationState.levelUpPointsSpent;
+        
+        // Points display
+        const pointsDisplay = document.createElement('div');
+        pointsDisplay.className = 'levelup-points-display';
+        pointsDisplay.innerHTML = `
+          <div style="font-size:14px; color:#666; margin-bottom:0.25rem;">Points restants</div>
+          <div class="levelup-points-remaining ${pointsRemaining === 0 ? 'spent' : pointsRemaining <= 3 ? 'warning' : ''}">${pointsRemaining} / ${creationState.levelUpPointsTotal}</div>
+        `;
+        container.appendChild(pointsDisplay);
+        
+        // Options grid
+        const optionsGrid = document.createElement('div');
+        optionsGrid.className = 'levelup-options-grid';
+        
+        LEVELUP_OPTIONS.forEach(opt => {
+          const canAfford = pointsRemaining >= opt.cost;
+          const isSelected = creationState.levelUpCurrentSelection === opt.id;
+          
+          const card = document.createElement('div');
+          card.className = 'levelup-option-card' + (isSelected ? ' selected' : '') + (!canAfford ? ' disabled' : '');
+          card.innerHTML = `
+            <div class="levelup-option-cost">${opt.cost} pt${opt.cost > 1 ? 's' : ''}</div>
+            <div class="levelup-option-name">${opt.name}</div>
+            <div class="levelup-option-desc">${opt.desc}</div>
+          `;
+          
+          if (canAfford) {
+            card.addEventListener('click', () => {
+              creationState.levelUpCurrentSelection = isSelected ? null : opt.id;
+              renderLevelUpContent();
+            });
+          }
+          
+          optionsGrid.appendChild(card);
+        });
+        
+        container.appendChild(optionsGrid);
+        
+        // Selection panel (if an option is selected)
+        if (creationState.levelUpCurrentSelection) {
+          const selectionPanel = document.createElement('div');
+          selectionPanel.className = 'levelup-selection-panel';
+          renderSelectionPanel(selectionPanel, creationState.levelUpCurrentSelection, pointsRemaining);
+          container.appendChild(selectionPanel);
+        }
+        
+        // Current choices list
+        if (creationState.levelUpChoices.length > 0) {
+          const choicesList = document.createElement('div');
+          choicesList.className = 'levelup-choices-list';
+          choicesList.innerHTML = '<strong style="color:#8b0000;">🎯 Améliorations choisies :</strong>';
+          
+          creationState.levelUpChoices.forEach((choice, index) => {
+            const item = document.createElement('div');
+            item.className = 'levelup-choice-item';
+            item.innerHTML = `
+              <span><strong>${choice.cost} pts</strong> - ${choice.label}</span>
+              <button class="levelup-choice-remove" data-index="${index}">✕ Retirer</button>
+            `;
+            item.querySelector('button').addEventListener('click', () => {
+              // Retirer le choix et recalculer les points
+              const removedChoice = creationState.levelUpChoices.splice(index, 1)[0];
+              creationState.levelUpPointsSpent -= removedChoice.cost;
+              renderLevelUpContent();
+            });
+            choicesList.appendChild(item);
+          });
+          
+          container.appendChild(choicesList);
+        }
+      }
+      
+      function renderSelectionPanel(panel, optionId, pointsRemaining) {
+        const opt = LEVELUP_OPTIONS.find(o => o.id === optionId);
+        if (!opt) return;
+        
+        panel.innerHTML = `<div class="levelup-selection-title">Choisissez : ${opt.name} (${opt.cost} pts)</div>`;
+        
+        const content = document.createElement('div');
+        
+        switch (optionId) {
+          case 'competence':
+            renderCompetenceSelection(content, opt.cost);
+            break;
+          case 'caracteristique':
+            renderCaracteristiqueSelection(content, opt.cost);
+            break;
+          case 'classe-general':
+            renderClasseGeneralSelection(content, opt.cost);
+            break;
+          case 'autre-classe':
+            renderAutreClasseSelection(content, opt.cost);
+            break;
+        }
+        
+        panel.appendChild(content);
+      }
+      
+      function renderCompetenceSelection(container, cost) {
+        container.innerHTML = '<p style="margin-bottom:0.75rem; color:#666;">Sélectionnez une compétence à améliorer (+1) :</p>';
+        
+        const grid = document.createElement('div');
+        grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:0.5rem; max-height:200px; overflow-y:auto;';
+        
+        characterData.competences.forEach(comp => {
+          const btn = document.createElement('button');
+          btn.style.cssText = 'padding:0.5rem; border:1px solid #ddd; border-radius:0.25rem; background:#fff; cursor:pointer; text-align:left; font-size:12px;';
+          btn.innerHTML = `<strong>${comp.name}</strong> <span style="color:#888;">(${comp.attribut})</span>`;
+          btn.addEventListener('click', () => {
+            addLevelUpChoice({
+              type: 'competence',
+              cost: cost,
+              label: `+1 ${comp.name} (${comp.attribut})`,
+              details: { compId: comp.id, compName: comp.name }
+            });
+          });
+          btn.addEventListener('mouseover', () => btn.style.borderColor = '#8b0000');
+          btn.addEventListener('mouseout', () => btn.style.borderColor = '#ddd');
+          grid.appendChild(btn);
+        });
+        
+        container.appendChild(grid);
+      }
+      
+      function renderCaracteristiqueSelection(container, cost) {
+        container.innerHTML = '<p style="margin-bottom:0.75rem; color:#666;">Sélectionnez une caractéristique à améliorer :</p>';
+        
+        const attrs = ['force', 'dex', 'emp', 'sag', 'int'];
+        const attrNames = { force: 'Force (FOR)', dex: 'Dextérité (DEX)', emp: 'Empathie (EMP)', sag: 'Sagesse (SAG)', int: 'Intelligence (INT)' };
+        const diceProgression = [4, 6, 8, 10, 12];
+        
+        const grid = document.createElement('div');
+        grid.style.cssText = 'display:grid; grid-template-columns:repeat(5, 1fr); gap:0.5rem;';
+        
+        attrs.forEach(attr => {
+          const baseDie = creationState.attributes[attr] || 4;
+          const raceBonus = creationState.attributeBonuses[attr] || 0;
+          
+          // Nombre de level ups déjà choisis pour cette caractéristique
+          const levelUpCount = creationState.levelUpChoices
+            .filter(c => c.type === 'caracteristique' && c.details && c.details.attr === attr)
+            .length;
+          
+          // Calculer l'état actuel (base + race + level ups existants)
+          let currentIndex = diceProgression.indexOf(baseDie);
+          if (currentIndex === -1) currentIndex = 0;
+          
+          let currentExtraBonus = 0;
+          const totalBonusSteps = raceBonus + levelUpCount;
+          
+          for (let i = 0; i < totalBonusSteps; i++) {
+            if (currentIndex < diceProgression.length - 1) {
+              currentIndex++;
+            } else {
+              currentExtraBonus++;
+            }
+          }
+          
+          const currentDie = diceProgression[currentIndex];
+          
+          // Calculer ce qui se passe avec +1 level up supplémentaire
+          let nextDie = currentDie;
+          let nextExtraBonus = currentExtraBonus;
+          
+          if (currentIndex < diceProgression.length - 1) {
+            nextDie = diceProgression[currentIndex + 1];
+          } else {
+            nextExtraBonus = currentExtraBonus + 1;
+          }
+          
+          // Construire le texte d'effet
+          let effectText = '';
+          let currentDisplay = `D${currentDie}${currentExtraBonus > 0 ? '+' + currentExtraBonus : ''}`;
+          let nextDisplay = `D${nextDie}${nextExtraBonus > 0 ? '+' + nextExtraBonus : ''}`;
+          effectText = `${currentDisplay} → ${nextDisplay}`;
+          
+          const btn = document.createElement('button');
+          btn.style.cssText = 'padding:0.75rem 0.5rem; border:2px solid #ddd; border-radius:0.5rem; background:#fff; cursor:pointer; text-align:center;';
+          btn.innerHTML = `
+            <div style="font-weight:bold; font-size:13px;">${attrNames[attr].split(' ')[0]}</div>
+            <div style="font-size:11px; color:#666;">Actuel: ${currentDisplay}</div>
+            <div style="font-size:10px; color:#27ae60; margin-top:0.25rem;">${effectText}</div>
+          `;
+          btn.addEventListener('click', () => {
+            addLevelUpChoice({
+              type: 'caracteristique',
+              cost: cost,
+              label: `+1 ${attrNames[attr].split(' ')[0]} (${effectText})`,
+              details: { attr: attr }
+            });
+          });
+          btn.addEventListener('mouseover', () => btn.style.borderColor = '#8b0000');
+          btn.addEventListener('mouseout', () => btn.style.borderColor = '#ddd');
+          grid.appendChild(btn);
+        });
+        
+        container.appendChild(grid);
+      }
+      
+      // Vérifie si un avantage est déjà choisi (étapes précédentes ou level ups)
+      function isAdvantageAlreadyChosen(advId) {
+        // Vérifier l'avantage primaire (étape 4)
+        if (creationState.primaryAdvantage && creationState.primaryAdvantage.id === advId) {
+          return true;
+        }
+        
+        // Vérifier les avantages secondaires (étape 6)
+        if (creationState.secondaryAdvantages.some(a => a.id === advId)) {
+          return true;
+        }
+        
+        // Vérifier les avantages personnalisés (étape 6)
+        if (creationState.customAdvantages.some(a => a.id === advId)) {
+          return true;
+        }
+        
+        // Vérifier les choix de level up
+        if (creationState.levelUpChoices.some(c => c.details && c.details.advId === advId)) {
+          return true;
+        }
+        
+        return false;
+      }
+      
+      function renderClasseGeneralSelection(container, cost) {
+        container.innerHTML = '';
+        
+        // Section: Avantages de classe
+        if (creationState.classe && creationState.classe.avantages) {
+          const classSection = document.createElement('div');
+          classSection.innerHTML = `<p style="margin-bottom:0.5rem; color:#666;"><strong>Avantages de votre classe (${creationState.classe.name}) :</strong></p>`;
+          
+          const classGrid = document.createElement('div');
+          classGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:1rem; max-height:150px; overflow-y:auto;';
+          
+          const availableClassAdvantages = creationState.classe.avantages.filter(adv => !isAdvantageAlreadyChosen(adv.id));
+          
+          if (availableClassAdvantages.length === 0) {
+            classGrid.innerHTML = '<p style="color:#999; font-style:italic; padding:0.5rem;">Tous les avantages de classe ont été choisis.</p>';
+          } else {
+            availableClassAdvantages.forEach(adv => {
+              const btn = document.createElement('button');
+              btn.style.cssText = 'padding:0.5rem; border:1px solid #ddd; border-radius:0.25rem; background:#fff; cursor:pointer; text-align:left; font-size:11px;';
+              btn.innerHTML = `<strong>${adv.name}</strong><br><span style="color:#666;">${adv.description.substring(0, 60)}${adv.description.length > 60 ? '...' : ''}</span>`;
+              btn.addEventListener('click', () => {
+                addLevelUpChoice({
+                  type: 'classe-general',
+                  cost: cost,
+                  label: `${adv.name} (Classe)`,
+                  details: { advId: adv.id, advName: adv.name, advDesc: adv.description, source: 'classe' }
+                });
+              });
+              btn.addEventListener('mouseover', () => btn.style.borderColor = '#8b0000');
+              btn.addEventListener('mouseout', () => btn.style.borderColor = '#ddd');
+              classGrid.appendChild(btn);
+            });
+          }
+          
+          classSection.appendChild(classGrid);
+          container.appendChild(classSection);
+        }
+        
+        // Section: Avantages généraux
+        const generalSection = document.createElement('div');
+        generalSection.innerHTML = `<p style="margin-bottom:0.5rem; color:#666;"><strong>Avantages généraux :</strong></p>`;
+        
+        const generalGrid = document.createElement('div');
+        generalGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; max-height:150px; overflow-y:auto;';
+        
+        const availableGeneralAdvantages = (characterData.avantagesGeneraux || []).filter(adv => !isAdvantageAlreadyChosen(adv.id));
+        
+        if (availableGeneralAdvantages.length === 0) {
+          generalGrid.innerHTML = '<p style="color:#999; font-style:italic; padding:0.5rem;">Tous les avantages généraux ont été choisis.</p>';
+        } else {
+          availableGeneralAdvantages.forEach(adv => {
+            const btn = document.createElement('button');
+            btn.style.cssText = 'padding:0.5rem; border:1px solid #ddd; border-radius:0.25rem; background:#fff; cursor:pointer; text-align:left; font-size:11px;';
+            btn.innerHTML = `<strong>${adv.name}</strong><br><span style="color:#666;">${adv.description.substring(0, 60)}${adv.description.length > 60 ? '...' : ''}</span>`;
+            btn.addEventListener('click', () => {
+              addLevelUpChoice({
+                type: 'classe-general',
+                cost: cost,
+                label: `${adv.name} (Général)`,
+                details: { advId: adv.id, advName: adv.name, advDesc: adv.description, source: 'general' }
+              });
+            });
+            btn.addEventListener('mouseover', () => btn.style.borderColor = '#8b0000');
+            btn.addEventListener('mouseout', () => btn.style.borderColor = '#ddd');
+            generalGrid.appendChild(btn);
+          });
+        }
+        
+        generalSection.appendChild(generalGrid);
+        container.appendChild(generalSection);
+      }
+      
+      function renderAutreClasseSelection(container, cost) {
+        container.innerHTML = '<p style="margin-bottom:0.75rem; color:#666;">Sélectionnez d\'abord une classe, puis un avantage :</p>';
+        
+        // Liste des autres classes
+        const classSelect = document.createElement('select');
+        classSelect.style.cssText = 'width:100%; padding:0.5rem; margin-bottom:1rem; border:2px solid #ddd; border-radius:0.25rem; font-size:14px;';
+        classSelect.innerHTML = '<option value="">-- Choisir une classe --</option>';
+        
+        characterData.classes.forEach(cls => {
+          if (!creationState.classe || cls.id !== creationState.classe.id) {
+            classSelect.innerHTML += `<option value="${cls.id}">${cls.name}</option>`;
+          }
+        });
+        
+        const advantagesContainer = document.createElement('div');
+        advantagesContainer.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; max-height:200px; overflow-y:auto;';
+        
+        classSelect.addEventListener('change', () => {
+          advantagesContainer.innerHTML = '';
+          const selectedClass = characterData.classes.find(c => c.id === classSelect.value);
+          if (!selectedClass) return;
+          
+          // Filtrer les avantages déjà choisis
+          const availableAdvantages = (selectedClass.avantages || []).filter(adv => !isAdvantageAlreadyChosen(adv.id));
+          
+          if (availableAdvantages.length === 0) {
+            advantagesContainer.innerHTML = '<p style="color:#999; font-style:italic; padding:0.5rem;">Tous les avantages de cette classe ont été choisis.</p>';
+          } else {
+            availableAdvantages.forEach(adv => {
+              const btn = document.createElement('button');
+              btn.style.cssText = 'padding:0.5rem; border:1px solid #ddd; border-radius:0.25rem; background:#fff; cursor:pointer; text-align:left; font-size:11px;';
+              btn.innerHTML = `<strong>${adv.name}</strong><br><span style="color:#666;">${adv.description.substring(0, 60)}${adv.description.length > 60 ? '...' : ''}</span>`;
+              btn.addEventListener('click', () => {
+                addLevelUpChoice({
+                  type: 'autre-classe',
+                  cost: cost,
+                  label: `${adv.name} (${selectedClass.name})`,
+                  details: { advId: adv.id, advName: adv.name, advDesc: adv.description, className: selectedClass.name }
+                });
+              });
+              btn.addEventListener('mouseover', () => btn.style.borderColor = '#8b0000');
+              btn.addEventListener('mouseout', () => btn.style.borderColor = '#ddd');
+              advantagesContainer.appendChild(btn);
+            });
+          }
+        });
+        
+        container.appendChild(classSelect);
+        container.appendChild(advantagesContainer);
+      }
+      
+      function addLevelUpChoice(choice) {
+        const pointsRemaining = creationState.levelUpPointsTotal - creationState.levelUpPointsSpent;
+        if (choice.cost > pointsRemaining) return;
+        
+        creationState.levelUpChoices.push(choice);
+        creationState.levelUpPointsSpent += choice.cost;
+        creationState.levelUpCurrentSelection = null;
+        
+        renderLevelUpContent();
+      }
+      
+      // Appliquer les choix de Level Up à la fiche
+      function applyLevelUpChoices() {
+        if (creationState.levelUpChoices.length === 0 && creationState.levelUpCount === 0) return;
+        
+        // Mettre à jour le niveau sur la fiche
+        const levelField = document.getElementById('level');
+        if (levelField) {
+          levelField.value = 1 + creationState.levelUpCount;
+        }
+        
+        // Parcourir les choix qui ne sont pas déjà gérés ailleurs
+        // - Compétences : gérées dans updateSheetCompetences()
+        // - Caractéristiques : gérées dans updateSheetAttributes() via getFinalAttribute()
+        creationState.levelUpChoices.forEach(choice => {
+          switch (choice.type) {
+            case 'competence':
+            case 'caracteristique':
+              // Déjà gérés dans les fonctions de mise à jour
+              break;
+            case 'classe-general':
+            case 'autre-classe':
+              applyLevelUpAdvantage(choice);
+              break;
+          }
+        });
+        
+        // Recalculer PV/PF avec le nouveau niveau
+        const { pv } = calculatePV();
+        const { pf } = calculatePF(pv);
+        
+        const pvMaxField = document.getElementById('pv-max');
+        const pvCurrentField = document.getElementById('pv-current');
+        const pfMaxField = document.getElementById('pf-max');
+        const pfCurrentField = document.getElementById('pf-current');
+        
+        if (pvMaxField) pvMaxField.value = pv;
+        if (pvCurrentField) pvCurrentField.value = pv;
+        if (pfMaxField) pfMaxField.value = pf;
+        if (pfCurrentField) pfCurrentField.value = pf;
+      }
+      
+      function applyLevelUpCompetence(details) {
+        // Ajouter +1 à la compétence dans le tableau
+        const skillsBody = document.querySelector('.skill-table tbody');
+        if (!skillsBody) return;
+        
+        const comp = characterData.competences.find(c => c.id === details.compId);
+        if (!comp) return;
+        
+        // Chercher si la compétence existe déjà
+        const rows = skillsBody.querySelectorAll('tr');
+        let found = false;
+        
+        for (const row of rows) {
+          const nameCell = row.querySelector('td:first-child input');
+          if (nameCell && nameCell.value === comp.name) {
+            // Incrémenter le bonus existant
+            const bonusCell = row.querySelector('td:last-child input');
+            if (bonusCell) {
+              let currentBonus = parseInt(bonusCell.value.replace(/[^0-9-]/g, '')) || 0;
+              bonusCell.value = '+' + (currentBonus + 1);
+              found = true;
+              break;
+            }
+          }
+        }
+        
+        // Si pas trouvée, chercher une ligne vide ou en créer une nouvelle
+        if (!found) {
+          // Chercher une ligne vide
+          let emptyRow = null;
+          for (const row of rows) {
+            const nameCell = row.querySelector('td:first-child input');
+            if (nameCell && !nameCell.value.trim()) {
+              emptyRow = row;
+              break;
+            }
+          }
+          
+          if (emptyRow) {
+            // Utiliser la ligne vide
+            const cells = emptyRow.querySelectorAll('td input');
+            if (cells.length >= 3) {
+              cells[0].value = comp.name;
+              cells[1].value = comp.attribut;
+              cells[2].value = '+1';
+            }
+          } else {
+            // Créer une nouvelle ligne
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+              <td><input value="${comp.name}" /></td>
+              <td><input value="${comp.attribut}" /></td>
+              <td><input type="text" value="+1" style="text-align:center;" /></td>
+            `;
+            skillsBody.appendChild(newRow);
+          }
+        }
+      }
+      
+      function applyLevelUpCaracteristique(details) {
+        const attr = details.attr;
+        // Les IDs correspondent aux noms des attributs dans le HTML
+        const attrMapping = { force: 'force', dex: 'dex', emp: 'emp', sag: 'sag', int: 'int' };
+        const fieldId = attrMapping[attr];
+        
+        // Récupérer le champ principal de la caractéristique
+        const valueField = document.getElementById(fieldId);
+        if (!valueField) return;
+        
+        // Le champ bonus est le deuxième input dans le même conteneur (après le dice span)
+        const container = valueField.closest('.value-wrap');
+        const bonusField = container ? container.querySelector('input[type="text"]') : null;
+        
+        let currentValue = parseInt(valueField.value) || 4;
+        let currentBonus = parseInt(bonusField?.value?.replace(/[^0-9-]/g, '')) || 0;
+        
+        if (currentValue < 12) {
+          // Augmenter le dé
+          valueField.value = Math.min(12, currentValue + 2);
+        } else {
+          // Déjà au max, augmenter le bonus
+          if (bonusField) {
+            bonusField.value = '+' + (currentBonus + 1);
+          }
+        }
+      }
+      
+      function applyLevelUpAdvantage(choice) {
+        // Ajouter l'avantage à la liste des capacités
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => {
+          const h3 = section.querySelector('h3');
+          if (h3 && (h3.textContent.includes('Capacités') || h3.textContent.includes('Avantages'))) {
+            const list = section.querySelector('.abilities-list');
+            if (list) {
+              const li = document.createElement('li');
+              const prefix = choice.type === 'autre-classe' ? '⬡ ' : '◆ ';
+              li.innerHTML = `<strong>${prefix}${choice.details.advName}</strong> : ${choice.details.advDesc}`;
+              list.appendChild(li);
+            }
+          }
+        });
+      }
+      
+      // Finaliser la fiche
+      function generateCharacterSheet() {
+        // Appliquer toutes les étapes une dernière fois pour s'assurer que tout est à jour
+        updateSheetRace();
+        updateSheetAttributes();
+        updateSheetClass();
+        updateSheetCapacities();
+        updateSheetCompetences();
+        updateSheetNameAndStats();
+        applyLevelUpChoices();
+        
+        // Afficher l'étape 9 dans la progress bar
+        const step9 = document.querySelector('.progress-step[data-step="9"]');
+        step9.style.display = 'flex';
+        
+        // Marquer toutes les étapes comme complétées et activer l'étape 9
+        document.querySelectorAll('.progress-step').forEach(step => {
+          const stepNum = parseInt(step.dataset.step);
+          step.classList.remove('active', 'completed');
+          if (stepNum === 9) {
+            step.classList.add('active');
+          } else {
+            step.classList.add('completed');
+          }
+        });
+        
+        // Cacher le contenu de l'étape actuelle
+        document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+        
+        // Afficher un message de succès (sans masquer le wizard)
+        const separator = document.getElementById('wizard-separator');
+        separator.style.display = 'block';
+        separator.innerHTML = `
+          <div style="text-align: center; padding: 1rem;">
+            <h3 style="color: #27ae60; margin-bottom: 0.5rem;">✅ Création terminée - Fiche éditable</h3>
+            <p style="color: #666; margin: 0;">Pour revenir sur des éléments de la création, cliquez sur la bulle correspondante au-dessus.<br>
+            <em style="color: #e74c3c;">⚠️ Cela annulera vos modifications manuelles sur la fiche.</em></p>
+          </div>
+        `;
+        
+        // Mettre à jour currentStep pour la navigation
+        currentStep = 9;
+        
+        // Scroller vers la fiche
+        document.getElementById('character-sheet').scrollIntoView({ behavior: 'smooth' });
+        
+        // Afficher une notification temporaire
+        const notification = document.createElement('div');
+        notification.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#27ae60;color:#fff;padding:1rem 2rem;border-radius:0.5rem;font-weight:bold;z-index:9999;box-shadow:0 4px 15px rgba(0,0,0,0.2);';
+        notification.textContent = '✅ Fiche générée ! Cliquez sur une étape pour modifier.';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 4000);
+      }
+      
+      // Initialiser
+      initWizard();
+    })();
   </script>
