@@ -995,6 +995,610 @@
       top: -1.75rem;
     }
     
+    /* ============================================
+       STYLES RESPONSIVES MOBILE
+       ============================================ */
+    
+    /* Tablettes et petits écrans */
+    @media (max-width: 768px) {
+      /* Wizard */
+      .wizard-container {
+        padding: 0.5rem;
+        margin: 1rem auto;
+      }
+      
+      .wizard-header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .wizard-header p {
+        font-size: 0.9rem;
+      }
+      
+      /* Progress bar */
+      .wizard-progress {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+      
+      .progress-step {
+        min-width: 60px;
+        padding: 0.25rem;
+      }
+      
+      .step-number {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
+      
+      .step-label {
+        font-size: 9px;
+      }
+      
+      /* Step content */
+      .step-content {
+        padding: 1rem;
+      }
+      
+      .step-title {
+        font-size: 1.25rem;
+      }
+      
+      .step-description {
+        font-size: 0.85rem;
+      }
+      
+      /* Options grids */
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .options-grid-4col {
+        grid-template-columns: 1fr;
+      }
+      
+      .option-card {
+        flex-direction: column;
+      }
+      
+      .option-card .option-img {
+        width: 100%;
+        min-height: 120px;
+      }
+      
+      .option-card-text-content {
+        width: 100%;
+        max-height: none;
+        padding: 0.75rem;
+      }
+      
+      /* Level up grid */
+      .levelup-options-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      /* Navigation buttons */
+      .step-navigation {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .step-navigation button {
+        width: 100%;
+      }
+      
+      /* Custom advantages */
+      .custom-advantage-card,
+      .custom-advantage-add {
+        min-width: 100%;
+        max-width: 100%;
+      }
+      
+      /* Name and alignment inputs */
+      .step-content div[style*="grid-template-columns: 2fr 1fr"] {
+        display: block !important;
+      }
+      
+      .step-content div[style*="grid-template-columns: 2fr 1fr"] > div {
+        margin-bottom: 1rem;
+      }
+      
+      /* Character sheet */
+      .container {
+        padding: 0.5rem;
+        margin: 0.5rem auto;
+      }
+      
+      .title-box {
+        font-size: 18px;
+        padding: 0.5rem;
+      }
+      
+      .attributes-and-vitals {
+        grid-template-columns: 1fr;
+      }
+      
+      .attributes {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+      
+      .attr-box {
+        padding: 0.5rem;
+      }
+      
+      .attr-box label {
+        font-size: 14px;
+      }
+      
+      .attr-box input[type="number"] {
+        width: 40px;
+        font-size: 16px;
+      }
+      
+      .vitals {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+      
+      .vital-box {
+        padding: 0.5rem;
+      }
+      
+      .vital-box label {
+        font-size: 12px;
+      }
+      
+      .vital-box input {
+        font-size: 14px;
+      }
+      
+      .portrait {
+        min-height: 150px;
+      }
+      
+      .grid-top {
+        grid-template-columns: 1fr;
+      }
+      
+      .row-two-col {
+        grid-template-columns: 1fr;
+      }
+      
+      .half-section {
+        grid-column: span 1;
+      }
+      
+      .section {
+        padding: 0.75rem;
+      }
+      
+      .section h3 {
+        font-size: 18px;
+      }
+      
+      .skill-table th,
+      .skill-table td {
+        padding: 0.2rem;
+      }
+      
+      .skill-table input {
+        font-size: 14px;
+      }
+      
+      /* Stats summary in step 7 */
+      .stats-summary div[style*="grid-template-columns:repeat(2,1fr)"] {
+        display: block !important;
+      }
+      
+      .stats-summary .stat-box {
+        margin-bottom: 0.75rem;
+      }
+    }
+    
+    /* Téléphones (petits écrans) */
+    @media (max-width: 480px) {
+      .wizard-container {
+        padding: 0.25rem;
+        margin: 0.5rem auto;
+      }
+      
+      .wizard-header h1 {
+        font-size: 1.25rem;
+      }
+      
+      .wizard-intro {
+        padding: 1rem;
+      }
+      
+      .wizard-intro h2 {
+        font-size: 1.1rem;
+      }
+      
+      .btn-start-wizard {
+        font-size: 14px;
+        padding: 0.75rem 1.5rem;
+        width: 100%;
+        max-width: 300px;
+      }
+      
+      .btn-skip-wizard {
+        font-size: 13px;
+        padding: 0.5rem 1rem;
+      }
+      
+      /* Progress bar très compact */
+      .progress-step {
+        min-width: 40px;
+        padding: 0.15rem;
+      }
+      
+      .step-number {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+      }
+      
+      .step-label {
+        font-size: 7px;
+        display: none;
+      }
+      
+      .progress-step.active .step-label,
+      .progress-step.completed .step-label {
+        display: block;
+      }
+      
+      /* Step content */
+      .step-content {
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+      }
+      
+      .step-title {
+        font-size: 1.1rem;
+      }
+      
+      .step-description {
+        font-size: 0.8rem;
+      }
+      
+      /* Option cards */
+      .option-card {
+        border-radius: 0.5rem;
+      }
+      
+      .option-card .option-img {
+        min-height: 100px;
+      }
+      
+      .option-name {
+        font-size: 14px;
+      }
+      
+      .option-desc {
+        font-size: 11px;
+      }
+      
+      .option-checkbox-simple {
+        padding: 0.5rem;
+      }
+      
+      .option-checkbox-simple .option-name {
+        font-size: 12px;
+      }
+      
+      .option-checkbox-simple .option-desc {
+        font-size: 10px;
+      }
+      
+      /* Level up */
+      .levelup-option-card {
+        padding: 0.75rem;
+      }
+      
+      .levelup-option-cost {
+        font-size: 12px;
+        padding: 0.2rem 0.5rem;
+      }
+      
+      .levelup-option-name {
+        font-size: 12px;
+      }
+      
+      .levelup-option-desc {
+        font-size: 10px;
+      }
+      
+      /* Attributes distribution */
+      .attr-distribute {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      
+      .attr-item {
+        min-height: 90px !important;
+        padding: 0.5rem !important;
+      }
+      
+      .attr-item label {
+        font-size: 12px !important;
+      }
+      
+      .attr-item .attr-dice-display {
+        font-size: 18px !important;
+      }
+      
+      .attr-item .attr-value-display {
+        font-size: 12px !important;
+      }
+      
+      .dice-pool {
+        gap: 0.25rem !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+      }
+      
+      .dice-item {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 14px !important;
+      }
+      
+      /* Character sheet */
+      .container {
+        padding: 0.25rem;
+      }
+      
+      .title-box {
+        font-size: 14px;
+      }
+      
+      .attributes {
+        grid-template-columns: 1fr;
+      }
+      
+      .attr-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.4rem;
+      }
+      
+      .attr-box label {
+        font-size: 12px;
+        margin-bottom: 0;
+      }
+      
+      .value-wrap {
+        flex-direction: row;
+        gap: 0.25rem;
+      }
+      
+      .vitals {
+        grid-template-columns: 1fr;
+      }
+      
+      .vital-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.4rem;
+      }
+      
+      .vital-box label {
+        font-size: 11px;
+        flex-shrink: 0;
+        margin-right: 0.5rem;
+      }
+      
+      .vital-box input {
+        font-size: 12px;
+        width: 60px;
+      }
+      
+      .portrait {
+        min-height: 100px;
+      }
+      
+      .section {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0.5rem;
+      }
+      
+      .section h3 {
+        font-size: 16px;
+      }
+      
+      .skill-table th {
+        font-size: 12px;
+        padding: 0.15rem !important;
+      }
+      
+      .skill-table td {
+        padding: 0.15rem !important;
+      }
+      
+      .skill-table input {
+        font-size: 11px;
+      }
+      
+      /* Ajuster les largeurs sur mobile */
+      .skill-table th:nth-child(1), 
+      .skill-table td:nth-child(1) { 
+        width: 45% !important; 
+      }
+      .skill-table th:nth-child(2), 
+      .skill-table td:nth-child(2) { 
+        width: 30% !important; 
+      }
+      .skill-table th:nth-child(3), 
+      .skill-table td:nth-child(3) { 
+        width: 25% !important; 
+      }
+      
+      .abilities-list {
+        font-size: 13px;
+      }
+      
+      /* Bonus race section */
+      .bonus-race-content li {
+        font-size: 12px;
+      }
+      
+      /* Selection count */
+      .selection-count {
+        font-size: 0.9rem;
+      }
+      
+      /* Advantages section title */
+      .advantages-section-title {
+        font-size: 0.9rem;
+      }
+      
+      /* Level up mobile */
+      .levelup-selection-panel {
+        padding: 0.75rem;
+      }
+      
+      .levelup-selection-panel h4 {
+        font-size: 0.9rem;
+      }
+      
+      .levelup-choice-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+      
+      .levelup-choice-remove {
+        align-self: flex-end;
+      }
+      
+      /* Competences table */
+      #comp-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      
+      .comp-item {
+        min-width: 45% !important;
+        max-width: 45% !important;
+        font-size: 11px !important;
+      }
+      
+      /* Level up controls */
+      .levelup-controls {
+        flex-direction: column !important;
+        text-align: center;
+      }
+      
+      .levelup-controls label {
+        font-size: 14px !important;
+      }
+      
+      #levelup-total-points {
+        font-size: 16px !important;
+      }
+    }
+    
+    /* Fix pour empêcher le zoom automatique sur iOS lors du focus des inputs */
+    @media (max-width: 768px) {
+      input[type="text"],
+      input[type="number"],
+      select,
+      textarea {
+        font-size: 16px !important;
+      }
+      
+      /* Override inline grid styles */
+      #attr-distribute {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      
+      .name-alignment-grid {
+        display: block !important;
+      }
+      
+      .name-alignment-grid > div {
+        margin-bottom: 1rem;
+      }
+      
+      .stats-recap-grid {
+        display: block !important;
+      }
+      
+      .stats-recap-grid > div {
+        margin-bottom: 0.75rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #attr-distribute {
+        grid-template-columns: 1fr !important;
+      }
+    }
+    
+    /* Amélioration du touch pour mobile */
+    @media (hover: none) and (pointer: coarse) {
+      .option-card,
+      .option-checkbox-simple,
+      .levelup-option-card,
+      .custom-advantage-add,
+      button {
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(139, 0, 0, 0.2);
+      }
+      
+      .btn-next,
+      .btn-prev,
+      .btn-confirm {
+        min-height: 48px;
+        padding: 0.75rem 1.5rem;
+      }
+    }
+    
+    /* Prevent horizontal scroll on mobile */
+    @media (max-width: 768px) {
+      html, body {
+        overflow-x: hidden;
+        width: 100%;
+      }
+      
+      .wizard-container,
+      .container {
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      
+      /* Ensure all cards don't overflow */
+      .option-card,
+      .option-checkbox-simple,
+      .levelup-option-card,
+      .custom-advantage-card,
+      .custom-advantage-add {
+        max-width: 100%;
+        box-sizing: border-box;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+      
+      /* Ensure text doesn't overflow */
+      .option-name,
+      .option-desc,
+      .levelup-option-name,
+      .levelup-option-desc {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+      }
+    }
+    
     @media print {
       .wizard-container, .wizard-separator { display: none !important; }
     }
@@ -1300,7 +1904,7 @@
         <h2 class="step-title">Nommez votre Personnage</h2>
         <p class="step-description">Donnez un nom à votre personnage, choisissez son alignement et validez le calcul de ses statistiques vitales.</p>
         
-        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1rem; margin-bottom: 1.5rem;">
+        <div class="name-alignment-grid" style="display:grid; grid-template-columns: 2fr 1fr; gap:1rem; margin-bottom: 1.5rem;">
           <div class="name-input-section">
             <label for="wizard-name" style="display:block; font-weight:bold; font-size:16px; color:#666; margin-bottom:0.5rem;">Nom du Personnage</label>
             <input type="text" id="wizard-name" placeholder="Entrez le nom de votre personnage..." style="width:100%; padding:0.75rem; font-size:18px; border:2px solid #ddd; border-radius:0.5rem; text-align:center;">
@@ -1324,7 +1928,7 @@
         
         <div class="stats-summary" style="background:#f8f9fa; border-radius:0.75rem; padding:1rem; margin-bottom:1rem;">
           <h4 style="margin:0 0 1rem 0; color:#8b0000; text-align:center;">📊 Récapitulatif des Statistiques</h4>
-          <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:1rem;">
+          <div class="stats-recap-grid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:1rem;">
             <div class="stat-box" style="background:#fff; padding:0.75rem; border-radius:0.5rem; text-align:center; border:2px solid #27ae60;">
               <div style="font-size:14px; color:#666;">Points de Vie (PV)</div>
               <div style="font-size:28px; font-weight:bold; color:#27ae60;" id="calculated-pv">--</div>
@@ -1352,7 +1956,7 @@
         <h2 class="step-title">Améliorations de Niveau (Level Up)</h2>
         <p class="step-description">Chaque Level Up vous donne <strong>10 points de création</strong> à dépenser. Choisissez vos améliorations ci-dessous.</p>
         
-        <div class="levelup-controls" style="display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+        <div class="levelup-controls" style="display:flex; align-items:center; justify-content:center; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; padding: 0 0.5rem;">
           <label style="font-weight:bold; color:#666;">Nombre de Level Up :</label>
           <div style="display:flex; align-items:center; gap:0.5rem;">
             <button id="levelup-minus" class="levelup-btn" style="width:36px; height:36px; font-size:20px; border:2px solid #8b0000; background:#fff; color:#8b0000; border-radius:0.25rem; cursor:pointer;">−</button>
