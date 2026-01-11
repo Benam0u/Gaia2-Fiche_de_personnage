@@ -1,6 +1,6 @@
 <!--
-  Créé par Benam0u – 2025/07/08
-  GAIA 2 – Fiche de personnage
+  Créé par Benam0u - 2025/07/08
+  GAIA 2 - Fiche de personnage
 -->
 
 <!DOCTYPE html>
@@ -1036,6 +1036,179 @@
       top: -1.75rem;
     }
     
+    /* Reference Panel Styles */
+    .reference-panel {
+      max-width: 1000px;
+      margin: 0 auto 2rem;
+      padding: 1rem;
+    }
+    
+    .reference-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    
+    .reference-btn {
+      padding: 0.75rem 1.25rem;
+      border: 2px solid #8b0000;
+      border-radius: 2rem;
+      background: #fff;
+      color: #8b0000;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .reference-btn:hover {
+      background: #8b0000;
+      color: #fff;
+    }
+    
+    .reference-btn.active {
+      background: #8b0000;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3);
+    }
+    
+    .reference-content {
+      display: none;
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      max-height: 60vh;
+      overflow-y: auto;
+      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .reference-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .reference-content h3 {
+      color: #8b0000;
+      text-align: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #8b0000;
+    }
+    
+    .reference-close-btn {
+      display: block;
+      margin: 1rem auto 0;
+      padding: 0.5rem 2rem;
+      background: #666;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .reference-close-btn:hover {
+      background: #8b0000;
+    }
+    
+    /* Styles pour les grilles dans le panneau de référence */
+    .reference-content .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    .reference-content .options-grid-4col {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .reference-content .comp-distribute {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    
+    .reference-content .comp-item {
+      cursor: default;
+    }
+    
+    .reference-content .comp-item:hover {
+      border-color: #ddd;
+      background: #fafafa;
+    }
+    
+    .reference-content .option-card,
+    .reference-content .option-card-simple {
+      cursor: default;
+    }
+    
+    .reference-content .option-card:hover,
+    .reference-content .option-card-simple:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: #ddd;
+    }
+    
+    .reference-content .advantages-section-title {
+      margin-top: 1.5rem;
+    }
+    
+    .reference-content .advantages-section-title:first-of-type {
+      margin-top: 0;
+    }
+    
+    @media screen and (max-width: 768px) {
+      .reference-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .reference-btn {
+        justify-content: center;
+        font-size: 12px;
+        padding: 0.6rem 1rem;
+      }
+      
+      .reference-content {
+        padding: 0.75rem;
+        max-height: 60vh;
+      }
+      
+      .reference-content .options-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+      }
+      
+      .reference-content .options-grid-4col {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+      }
+      
+      .reference-content .comp-distribute {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.3rem !important;
+      }
+    }
+    
+    @media screen and (max-width: 1024px) {
+      .reference-content .options-grid-4col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .reference-content .comp-distribute {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
     /* ============================================
        STYLES RESPONSIVES MOBILE
        ============================================ */
@@ -1727,8 +1900,363 @@
       }
     }
     
+    /* Save / Load buttons */
+    .save-load-container {
+      grid-column: span 4;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .save-btn, .load-btn {
+      padding: 0.6rem 1.5rem;
+      border: 2px solid #333;
+      border-radius: 0.5rem;
+      background: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #333;
+    }
+    
+    .save-btn:hover {
+      background: #2ecc71;
+      color: #fff;
+      border-color: #27ae60;
+    }
+    
+    .load-btn:hover {
+      background: #3498db;
+      color: #fff;
+      border-color: #2980b9;
+    }
+    
+    /* Reference panel interactive items */
+    .ref-item-interactive {
+      position: relative;
+    }
+    
+    .ref-add-btn, .ref-remove-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      z-index: 10;
+    }
+    
+    .ref-add-btn {
+      background: #27ae60;
+      color: #fff;
+    }
+    
+    .ref-add-btn:hover {
+      background: #2ecc71;
+      transform: scale(1.1);
+    }
+    
+    .ref-remove-btn {
+      background: #e74c3c;
+      color: #fff;
+    }
+    
+    .ref-remove-btn:hover {
+      background: #c0392b;
+      transform: scale(1.1);
+    }
+    
+    .ref-item-added {
+      border-color: #27ae60 !important;
+      background: linear-gradient(135deg, #f0fff4 0%, #fff 100%) !important;
+    }
+    
+    .ref-comp-item {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .ref-comp-item:hover {
+      border-color: #27ae60 !important;
+      background: #f0fff4 !important;
+    }
+    
+    .ref-comp-item.added {
+      border-color: #27ae60 !important;
+      background: linear-gradient(135deg, #f0fff4 0%, #fff 100%) !important;
+    }
+    
+    .ref-comp-item .comp-value {
+      font-weight: bold;
+      color: #27ae60;
+      min-width: 30px;
+      text-align: center;
+    }
+    
+    .ref-comp-item .comp-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .ref-comp-item .comp-controls button {
+      width: 22px;
+      height: 22px;
+      border: none;
+      border-radius: 50%;
+      background: #8b0000;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .ref-comp-item .comp-controls button:hover:not(:disabled) {
+      transform: scale(1.1);
+      background: #a52a2a;
+    }
+    
+    .ref-comp-item .comp-controls button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .ref-comp-item .comp-controls button:first-child {
+      background: #e74c3c;
+    }
+    
+    .ref-comp-item .comp-controls button:first-child:hover:not(:disabled) {
+      background: #c0392b;
+    }
+    
+    .ref-comp-item .comp-controls button:last-child {
+      background: #27ae60;
+    }
+    
+    .ref-comp-item .comp-controls button:last-child:hover:not(:disabled) {
+      background: #2ecc71;
+    }
+    
+    @media screen and (max-width: 768px) {
+      .save-load-container {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+        padding: 0 0.5rem !important;
+      }
+      
+      .save-btn, .load-btn {
+        font-size: 12px !important;
+        padding: 0.5rem 1rem !important;
+        width: 100% !important;
+      }
+      
+      .ref-add-btn, .ref-remove-btn {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 14px !important;
+      }
+    }
+    
+    /* Damage and RD boxes - compact version */
+    .damage-rd-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .damage-box, .rd-box {
+      border: 2px solid #333;
+      border-radius: 0.75rem;
+      background: #fff;
+      padding: 0.4rem 0.5rem;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .damage-box h3, .rd-box h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+    }
+    
+    .damage-formula {
+      font-size: 16px;
+      font-weight: normal;
+      color: #333;
+      text-align: center;
+      border: none;
+    }
+    
+    .damage-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      min-height: 50px;
+    }
+    
+    .damage-toggle-btn {
+      background: none;
+      border: 1px solid #8b0000;
+      border-radius: 4px;
+      color: #8b0000;
+      font-size: 9px;
+      padding: 1px 5px;
+      cursor: pointer;
+      margin-left: auto;
+    }
+    
+    .damage-toggle-btn:hover {
+      background: #8b0000;
+      color: white;
+    }
+    
+    .damage-entries {
+      display: none;
+      flex-direction: column;
+      gap: 0.3rem;
+      margin-top: 0.3rem;
+    }
+    
+    .damage-entries.show {
+      display: flex;
+    }
+    
+    .damage-entry {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem;
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 0.25rem;
+      flex-wrap: wrap;
+    }
+    
+    .damage-entry select {
+      padding: 0.1rem;
+      border: 1px solid #ddd;
+      border-radius: 0.2rem;
+      font-size: 11px;
+    }
+    
+    .damage-entry input[type="number"] {
+      width: 35px;
+      padding: 0.1rem;
+      border: 1px solid #ddd;
+      border-radius: 0.2rem;
+      text-align: center;
+      font-size: 11px;
+    }
+    
+    .damage-entry input[type="text"] {
+      flex: 1;
+      padding: 0.1rem;
+      border: 1px solid #ddd;
+      border-radius: 0.2rem;
+      font-size: 10px;
+      min-width: 50px;
+    }
+    
+    .damage-entry .remove-damage-btn {
+      width: 16px;
+      height: 16px;
+      border: none;
+      border-radius: 50%;
+      background: #e74c3c;
+      color: #fff;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .damage-entry .remove-damage-btn:hover {
+      background: #c0392b;
+    }
+    
+    .add-damage-btn {
+      width: 100%;
+      padding: 0.2rem;
+      border: 1px dashed #8b0000;
+      border-radius: 0.25rem;
+      background: #fff;
+      color: #8b0000;
+      font-size: 9px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 0.2rem;
+    }
+    
+    .add-damage-btn:hover {
+      background: #8b0000;
+      color: #fff;
+    }
+    
+    @media screen and (max-width: 768px) {
+      .damage-rd-row {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.25rem !important;
+      }
+      
+      .damage-box, .rd-box {
+        padding: 0.25rem !important;
+      }
+      
+      .damage-box h3, .rd-box h3 {
+        font-size: 9px !important;
+      }
+      
+      .damage-formula {
+        font-size: 12px !important;
+      }
+      
+      .damage-header {
+        min-height: 35px !important;
+        gap: 0.15rem !important;
+      }
+      
+      .damage-toggle-btn {
+        font-size: 7px !important;
+        padding: 1px 3px !important;
+      }
+      
+      .damage-entry {
+        flex-wrap: wrap;
+      }
+      
+      .damage-entry input[type="text"] {
+        width: 100%;
+        margin-top: 0.25rem;
+      }
+    }
+    
     @media print {
-      .wizard-container, .wizard-separator { display: none !important; }
+      .wizard-container, .wizard-separator, .reference-panel, .save-load-container { display: none !important; }
+      .add-damage-btn, .remove-damage-btn, .damage-toggle-btn, .damage-entries { display: none !important; }
+      .damage-rd-row { margin-bottom: 0.25rem !important; gap: 0.25rem !important; }
+      .damage-box, .rd-box { padding: 0.2rem 0.4rem !important; }
+      .page-break-before { page-break-before: always !important; break-before: page !important; margin-top: 0 !important; }
     }
     /* titre principal */
     .title-row{display:grid;grid-template-columns:repeat(4,1fr);margin-bottom:1rem;}
@@ -1884,7 +2412,7 @@
       .section, .attributes-and-vitals, .row-two-col, .grid-top, .title-row{break-inside:avoid;page-break-inside:avoid;}
     }
     
-    /* auto‑grow textarea */
+      /* auto‑grow textarea */
     .auto-grow{overflow:hidden;resize:none;width:100%;border:none;font-size:16px;}
   </style>
 </head>
@@ -2110,6 +2638,20 @@
     <span>📜 Votre Fiche de Personnage</span>
   </div>
 
+  <!-- Panneau de référence -->
+  <div class="reference-panel" id="reference-panel" style="display: none;">
+    <div class="reference-buttons">
+      <button class="reference-btn" data-ref="races">📚 Races</button>
+      <button class="reference-btn" data-ref="classes">⚔️ Classes</button>
+      <button class="reference-btn" data-ref="class-advantages">🎯 Avantages de Classe</button>
+      <button class="reference-btn" data-ref="general-advantages">✨ Avantages Généraux</button>
+      <button class="reference-btn" data-ref="competences">📝 Compétences</button>
+    </div>
+    <div class="reference-content" id="reference-content">
+      <!-- Contenu généré par JS -->
+    </div>
+  </div>
+
   <div class="container" id="character-sheet">
     <!-- Titre centré 2 colonnes -->
     <div class="title-row"><div class="title-box">GAÏA 2 - FICHE DE PERSONNAGE</div></div>
@@ -2151,11 +2693,33 @@
       </div>
 
       <!-- Notes / portrait (cols 3-4) -->
-      <div class="portrait">
-        <h3>Notes – Quêtes – Équipements</h3>
-        <textarea class="auto-grow" rows="1"></textarea>
+        <div class="portrait">
+          <h3>Notes - Quêtes - Équipements</h3>
+          <textarea class="auto-grow" rows="1"></textarea>
+        </div>
       </div>
-    </div>
+      
+      <!-- Dégâts et RD (compact) -->
+      <div class="damage-rd-row">
+        <div class="damage-box">
+          <div class="damage-header">
+            <h3>Dégâts :</h3>
+            <div class="damage-formula" id="damage-formula">—</div>
+            <button class="damage-toggle-btn" id="damage-toggle-btn">Éditer</button>
+          </div>
+          <div class="damage-entries" id="damage-entries"></div>
+          <button class="add-damage-btn" id="add-damage-btn">+ Ajouter</button>
+        </div>
+        <div class="rd-box">
+          <div class="damage-header">
+            <h3>Réduction de Dégâts :</h3>
+            <div class="damage-formula" id="rd-formula">—</div>
+            <button class="damage-toggle-btn" id="rd-toggle-btn">Éditer</button>
+          </div>
+          <div class="damage-entries" id="rd-entries"></div>
+          <button class="add-damage-btn" id="add-rd-btn">+ Ajouter</button>
+        </div>
+      </div>
 
     <!-- Bonus de race -->
     <div class="section">
@@ -2187,8 +2751,8 @@
       <ul class="abilities-list" contenteditable="true"><li></li><li></li><li></li></ul>
     </div>
 
-    <!-- Description + empty box -->
-    <div class="row-two-col">
+    <!-- Description + empty box (page 2 pour PDF) -->
+    <div class="row-two-col page-break-before">
       <div class="half-section">
         <h3>Description Physique</h3>
         <textarea class="auto-grow" rows="1"></textarea>
@@ -2207,13 +2771,20 @@
         <textarea class="auto-grow" rows="1"></textarea>
       </div>
       <div class="half-section">
-        <h3>Relations – Alliés et Enemies</h3>
+        <h3>Relations - Alliés et Enemies</h3>
         <textarea class="auto-grow" rows="1"></textarea>
       </div>
     </div>
 
     <!-- Export / Impression -->
-    <div class="print-box" id="print-btn">Exporter au format PDF – Imprimer la Fiche de Personnage</div>
+    <div class="print-box" id="print-btn">Exporter au format PDF - Imprimer la Fiche de Personnage</div>
+    
+    <!-- Save / Load -->
+    <div class="save-load-container">
+      <button class="save-btn" id="save-profile-btn">💾 Sauvegarder le profil</button>
+      <button class="load-btn" id="load-profile-btn">📂 Charger un profil</button>
+      <input type="file" id="load-profile-input" accept=".json" style="display:none;">
+    </div>
   </div>
 
   <script>
@@ -2286,6 +2857,565 @@
     // Bouton impression
     const printBtn=document.getElementById('print-btn');
     if(printBtn){printBtn.addEventListener('click',()=>window.print());}
+    
+    // ========== SYSTÈME DE DÉGÂTS ==========
+    let damageEntries = [];
+    
+    function initDamageSystem() {
+      const addBtn = document.getElementById('add-damage-btn');
+      if (addBtn) {
+        addBtn.addEventListener('click', function() {
+          createDamageEntry(1, 'D6', 0, '');
+        });
+      }
+      
+      const toggleBtn = document.getElementById('damage-toggle-btn');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          const entries = document.getElementById('damage-entries');
+          const addBtn = document.getElementById('add-damage-btn');
+          if (entries) {
+            entries.classList.toggle('show');
+            addBtn.style.display = entries.classList.contains('show') ? 'block' : 'none';
+            toggleBtn.textContent = entries.classList.contains('show') ? 'Fermer' : 'Éditer';
+          }
+        });
+      }
+      
+      // Hide add button by default
+      const addBtnEl = document.getElementById('add-damage-btn');
+      if (addBtnEl) addBtnEl.style.display = 'none';
+      
+      updateDamageFormula();
+    }
+    
+    function createDamageEntry(diceCount, diceType, bonus, label) {
+      const entry = {
+        id: Date.now() + Math.random(),
+        diceCount: diceCount || 1,
+        diceType: diceType || 'D6',
+        bonus: bonus || 0,
+        label: label || ''
+      };
+      damageEntries.push(entry);
+      renderDamageEntries();
+      updateDamageFormula();
+    }
+    
+    function removeDamageEntry(id) {
+      damageEntries = damageEntries.filter(e => e.id !== id);
+      renderDamageEntries();
+      updateDamageFormula();
+    }
+    
+    function updateDamageEntry(id, field, value) {
+      const entry = damageEntries.find(e => e.id === id);
+      if (entry) {
+        if (field === 'diceCount' || field === 'bonus') {
+          entry[field] = parseInt(value) || 0;
+        } else {
+          entry[field] = value;
+        }
+        updateDamageFormula();
+      }
+    }
+    
+    function renderDamageEntries() {
+      const container = document.getElementById('damage-entries');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      damageEntries.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'damage-entry';
+        div.innerHTML = `
+          <select onchange="updateDamageEntry(${entry.id}, 'diceCount', this.value)">
+            ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => 
+              `<option value="${n}" ${entry.diceCount === n ? 'selected' : ''}>${n}</option>`
+            ).join('')}
+          </select>
+          <select onchange="updateDamageEntry(${entry.id}, 'diceType', this.value)">
+            ${['D4', 'D6', 'D8', 'D10', 'D12', 'D20', 'D100'].map(d => 
+              `<option value="${d}" ${entry.diceType === d ? 'selected' : ''}>${d}</option>`
+            ).join('')}
+          </select>
+          <span style="font-weight:bold;">+</span>
+          <input type="number" value="${entry.bonus}" min="-99" max="99" onchange="updateDamageEntry(${entry.id}, 'bonus', this.value)" placeholder="0">
+          <input type="text" value="${entry.label}" onchange="updateDamageEntry(${entry.id}, 'label', this.value)" placeholder="Source (ex: épée longue)">
+          <button class="remove-damage-btn" onclick="removeDamageEntry(${entry.id})">×</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+    
+    function updateDamageFormula() {
+      const formulaDiv = document.getElementById('damage-formula');
+      if (!formulaDiv) return;
+      
+      if (damageEntries.length === 0) {
+        formulaDiv.textContent = '—';
+        return;
+      }
+      
+      const parts = damageEntries.map(entry => {
+        let part = '';
+        if (entry.diceCount > 1) {
+          part = `${entry.diceCount}${entry.diceType}`;
+        } else {
+          part = entry.diceType;
+        }
+        if (entry.bonus > 0) {
+          part += `+${entry.bonus}`;
+        } else if (entry.bonus < 0) {
+          part += `${entry.bonus}`;
+        }
+        return `(${part})`;
+      });
+      
+      formulaDiv.textContent = parts.join(' + ');
+    }
+    
+    // ========== SYSTÈME DE RD ==========
+    let rdEntries = [];
+    
+    function initRDSystem() {
+      const addBtn = document.getElementById('add-rd-btn');
+      if (addBtn) {
+        addBtn.addEventListener('click', function() {
+          createRDEntry(0, '');
+        });
+      }
+      
+      const toggleBtn = document.getElementById('rd-toggle-btn');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          const entries = document.getElementById('rd-entries');
+          const addBtn = document.getElementById('add-rd-btn');
+          if (entries) {
+            entries.classList.toggle('show');
+            addBtn.style.display = entries.classList.contains('show') ? 'block' : 'none';
+            toggleBtn.textContent = entries.classList.contains('show') ? 'Fermer' : 'Éditer';
+          }
+        });
+      }
+      
+      // Hide add button by default
+      const addBtnEl = document.getElementById('add-rd-btn');
+      if (addBtnEl) addBtnEl.style.display = 'none';
+      
+      updateRDFormula();
+    }
+    
+    function createRDEntry(value, label) {
+      const entry = {
+        id: Date.now() + Math.random(),
+        value: value || 0,
+        label: label || ''
+      };
+      rdEntries.push(entry);
+      renderRDEntries();
+      updateRDFormula();
+    }
+    
+    function removeRDEntry(id) {
+      rdEntries = rdEntries.filter(e => e.id !== id);
+      renderRDEntries();
+      updateRDFormula();
+    }
+    
+    function updateRDEntry(id, field, value) {
+      const entry = rdEntries.find(e => e.id === id);
+      if (entry) {
+        if (field === 'value') {
+          entry[field] = parseInt(value) || 0;
+        } else {
+          entry[field] = value;
+        }
+        updateRDFormula();
+      }
+    }
+    
+    function renderRDEntries() {
+      const container = document.getElementById('rd-entries');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      rdEntries.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'damage-entry';
+        div.innerHTML = `
+          <span style="font-weight:bold; color:#666;">RD</span>
+          <input type="number" value="${entry.value}" min="0" max="999" onchange="updateRDEntry(${entry.id}, 'value', this.value)" placeholder="0" style="width:60px;">
+          <input type="text" value="${entry.label}" onchange="updateRDEntry(${entry.id}, 'label', this.value)" placeholder="Source (ex: Armure)">
+          <button class="remove-damage-btn" onclick="removeRDEntry(${entry.id})">×</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+    
+    function updateRDFormula() {
+      const formulaDiv = document.getElementById('rd-formula');
+      if (!formulaDiv) return;
+      
+      if (rdEntries.length === 0) {
+        formulaDiv.textContent = 'RD —';
+        return;
+      }
+      
+      const total = rdEntries.reduce((sum, entry) => sum + (entry.value || 0), 0);
+      formulaDiv.textContent = `RD ${total}`;
+    }
+    
+    // Expose functions globally
+    window.updateDamageEntry = updateDamageEntry;
+    window.removeDamageEntry = removeDamageEntry;
+    window.updateRDEntry = updateRDEntry;
+    window.removeRDEntry = removeRDEntry;
+    
+    // Initialize systems
+    initDamageSystem();
+    initRDSystem();
+    
+    // ========== SAVE / LOAD PROFILE ==========
+    function collectSheetData() {
+      const data = {
+        version: '1.0',
+        savedAt: new Date().toISOString(),
+        sheet: {
+          name: document.getElementById('name')?.value || '',
+          level: document.getElementById('level')?.value || '',
+          race: document.getElementById('race')?.value || '',
+          classe: document.getElementById('class')?.value || '',
+          alignement: document.getElementById('alignement')?.value || '',
+          attributes: {},
+          attributeBonuses: {},
+          vitals: {},
+          bonusRace: [],
+          skills: [],
+          abilities: [],
+          descriptions: {},
+          notes: '',
+          avatar: ''
+        }
+      };
+      
+      // Collect attributes
+      ['force', 'dex', 'emp', 'sag', 'int'].forEach(attr => {
+        const input = document.getElementById(attr);
+        if (input) {
+          data.sheet.attributes[attr] = input.value;
+          // Get bonus input (the text input next to dice)
+          const box = input.closest('.attr-box');
+          if (box) {
+            const bonusInput = box.querySelector('input[type="text"]');
+            if (bonusInput) {
+              data.sheet.attributeBonuses[attr] = bonusInput.value;
+            }
+          }
+        }
+      });
+      
+      // Collect vitals
+      data.sheet.vitals = {
+        pvMax: document.getElementById('pv-max')?.value || '',
+        pvTemp: document.getElementById('pv-temp')?.value || '',
+        pvCurrent: document.getElementById('pv-current')?.value || '',
+        pfMax: document.getElementById('pf-max')?.value || '',
+        pfCurrent: document.getElementById('pf-current')?.value || ''
+      };
+      
+      // Collect bonus de race
+      const bonusSections = document.querySelectorAll('.section');
+      bonusSections.forEach(section => {
+        const h3 = section.querySelector('h3');
+        if (h3 && h3.textContent.includes('Bonus de race')) {
+          const list = section.querySelector('.abilities-list');
+          if (list) {
+            list.querySelectorAll('li').forEach(li => {
+              const html = li.innerHTML?.trim();
+              if (html) data.sheet.bonusRace.push(html);
+            });
+          }
+        }
+      });
+      
+      // Collect skills
+      const skillRows = document.querySelectorAll('.skill-table tbody tr');
+      skillRows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        if (inputs.length >= 3) {
+          const name = inputs[0].value?.trim();
+          const attr = inputs[1].value?.trim();
+          const bonus = inputs[2].value?.trim();
+          if (name || attr || bonus) {
+            data.sheet.skills.push({ name, attr, bonus });
+          }
+        }
+      });
+      
+      // Collect abilities
+      const abilitySections = document.querySelectorAll('.section');
+      abilitySections.forEach(section => {
+        const h3 = section.querySelector('h3');
+        if (h3 && (h3.textContent.includes('Capacités') || h3.textContent.includes('Avantages'))) {
+          const list = section.querySelector('.abilities-list');
+          if (list) {
+            list.querySelectorAll('li').forEach(li => {
+              const html = li.innerHTML?.trim();
+              if (html) data.sheet.abilities.push(html);
+            });
+          }
+        }
+      });
+      
+      // Collect descriptions (textareas in half-sections)
+      const halfSections = document.querySelectorAll('.half-section');
+      halfSections.forEach(section => {
+        const h3 = section.querySelector('h3')?.textContent?.trim();
+        const ta = section.querySelector('textarea');
+        if (h3 && ta) {
+          data.sheet.descriptions[h3] = ta.value || '';
+        }
+      });
+      
+      // Collect notes (portrait section)
+      const portraitSection = document.querySelector('.portrait');
+      if (portraitSection) {
+        const ta = portraitSection.querySelector('textarea');
+        if (ta) {
+          data.sheet.notes = ta.value || '';
+        }
+      }
+      
+      // Collect avatar
+      const avatarPreview = document.getElementById('avatar-preview');
+      if (avatarPreview && avatarPreview.style.display !== 'none' && avatarPreview.src) {
+        data.sheet.avatar = avatarPreview.src;
+      }
+      
+      // Collect damage entries
+      data.sheet.damageEntries = damageEntries;
+      
+      // Collect RD entries
+      data.sheet.rdEntries = rdEntries;
+      
+      return data;
+    }
+    
+    function restoreSheetData(data) {
+      const sheet = data.sheet;
+      if (!sheet) return;
+      
+      // Restore basic fields
+      if (document.getElementById('name')) document.getElementById('name').value = sheet.name || '';
+      if (document.getElementById('level')) document.getElementById('level').value = sheet.level || '';
+      if (document.getElementById('race')) document.getElementById('race').value = sheet.race || '';
+      if (document.getElementById('class')) document.getElementById('class').value = sheet.classe || '';
+      if (document.getElementById('alignement')) document.getElementById('alignement').value = sheet.alignement || '';
+      
+      // Restore attributes
+      if (sheet.attributes) {
+        ['force', 'dex', 'emp', 'sag', 'int'].forEach(attr => {
+          const input = document.getElementById(attr);
+          if (input && sheet.attributes[attr] !== undefined) {
+            input.value = sheet.attributes[attr];
+            input.dispatchEvent(new Event('input'));
+          }
+          // Restore bonus
+          if (sheet.attributeBonuses && sheet.attributeBonuses[attr] !== undefined) {
+            const box = input?.closest('.attr-box');
+            if (box) {
+              const bonusInput = box.querySelector('input[type="text"]');
+              if (bonusInput) {
+                bonusInput.value = sheet.attributeBonuses[attr];
+              }
+            }
+          }
+        });
+      }
+      
+      // Restore vitals
+      if (sheet.vitals) {
+        if (document.getElementById('pv-max')) document.getElementById('pv-max').value = sheet.vitals.pvMax || '';
+        if (document.getElementById('pv-temp')) document.getElementById('pv-temp').value = sheet.vitals.pvTemp || '';
+        if (document.getElementById('pv-current')) document.getElementById('pv-current').value = sheet.vitals.pvCurrent || '';
+        if (document.getElementById('pf-max')) document.getElementById('pf-max').value = sheet.vitals.pfMax || '';
+        if (document.getElementById('pf-current')) document.getElementById('pf-current').value = sheet.vitals.pfCurrent || '';
+      }
+      
+      // Restore bonus de race
+      if (sheet.bonusRace && sheet.bonusRace.length > 0) {
+        const bonusSections = document.querySelectorAll('.section');
+        bonusSections.forEach(section => {
+          const h3 = section.querySelector('h3');
+          if (h3 && h3.textContent.includes('Bonus de race')) {
+            const list = section.querySelector('.abilities-list');
+            if (list) {
+              list.innerHTML = sheet.bonusRace.map(b => `<li>${b}</li>`).join('');
+            }
+          }
+        });
+      }
+      
+      // Restore skills
+      if (sheet.skills && sheet.skills.length > 0) {
+        const tbody = document.querySelector('.skill-table tbody');
+        if (tbody) {
+          tbody.innerHTML = '';
+          sheet.skills.forEach(skill => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td><input value="${skill.name || ''}" /></td>
+              <td><input value="${skill.attr || ''}" placeholder="FOR" /></td>
+              <td><input type="text" value="${skill.bonus || ''}" placeholder="+0" style="text-align:center;" /></td>
+            `;
+            tbody.appendChild(row);
+          });
+        }
+      }
+      
+      // Restore abilities
+      if (sheet.abilities && sheet.abilities.length > 0) {
+        const abilitySections = document.querySelectorAll('.section');
+        abilitySections.forEach(section => {
+          const h3 = section.querySelector('h3');
+          if (h3 && (h3.textContent.includes('Capacités') || h3.textContent.includes('Avantages'))) {
+            const list = section.querySelector('.abilities-list');
+            if (list) {
+              list.innerHTML = sheet.abilities.map(a => `<li>${a}</li>`).join('');
+            }
+          }
+        });
+      }
+      
+      // Restore descriptions
+      if (sheet.descriptions) {
+        const halfSections = document.querySelectorAll('.half-section');
+        halfSections.forEach(section => {
+          const h3 = section.querySelector('h3')?.textContent?.trim();
+          const ta = section.querySelector('textarea');
+          if (h3 && ta && sheet.descriptions[h3] !== undefined) {
+            ta.value = sheet.descriptions[h3];
+          }
+        });
+      }
+      
+      // Restore notes
+      if (sheet.notes) {
+        const portraitSection = document.querySelector('.portrait');
+        if (portraitSection) {
+          const ta = portraitSection.querySelector('textarea');
+          if (ta) {
+            ta.value = sheet.notes;
+          }
+        }
+      }
+      
+      // Restore avatar
+      if (sheet.avatar && sheet.avatar.startsWith('data:')) {
+        const avatarPreview = document.getElementById('avatar-preview');
+        const avatarInput = document.getElementById('avatar-input');
+        if (avatarPreview) {
+          avatarPreview.src = sheet.avatar;
+          avatarPreview.style.display = 'block';
+          if (avatarInput) avatarInput.style.display = 'none';
+        }
+      }
+      
+      // Restore damage entries
+      if (sheet.damageEntries && Array.isArray(sheet.damageEntries)) {
+        damageEntries = sheet.damageEntries;
+        renderDamageEntries();
+        updateDamageFormula();
+        // Show entries if there are any
+        if (damageEntries.length > 0) {
+          const entries = document.getElementById('damage-entries');
+          const addBtn = document.getElementById('add-damage-btn');
+          const toggleBtn = document.getElementById('damage-toggle-btn');
+          if (entries) entries.classList.add('show');
+          if (addBtn) addBtn.style.display = 'block';
+          if (toggleBtn) toggleBtn.textContent = 'Fermer';
+        }
+      }
+      
+      // Restore RD entries
+      if (sheet.rdEntries && Array.isArray(sheet.rdEntries)) {
+        rdEntries = sheet.rdEntries;
+        renderRDEntries();
+        updateRDFormula();
+        // Show entries if there are any
+        if (rdEntries.length > 0) {
+          const entries = document.getElementById('rd-entries');
+          const addBtn = document.getElementById('add-rd-btn');
+          const toggleBtn = document.getElementById('rd-toggle-btn');
+          if (entries) entries.classList.add('show');
+          if (addBtn) addBtn.style.display = 'block';
+          if (toggleBtn) toggleBtn.textContent = 'Fermer';
+        }
+      }
+    }
+    
+    function saveProfile() {
+      const data = collectSheetData();
+      const charName = data.sheet.name || 'personnage';
+      const filename = `${charName.replace(/[^a-z0-9àâäéèêëïîôùûüç]/gi, '_')}_profile.json`;
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      // Notification
+      showNotification('✅ Profil sauvegardé !', '#27ae60');
+    }
+    
+    function loadProfile(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          restoreSheetData(data);
+          showNotification('✅ Profil chargé avec succès !', '#3498db');
+        } catch (err) {
+          showNotification('❌ Erreur lors du chargement : ' + err.message, '#e74c3c');
+        }
+      };
+      reader.readAsText(file);
+    }
+    
+    function showNotification(message, color) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);background:${color};color:#fff;padding:1rem 2rem;border-radius:0.5rem;font-weight:bold;z-index:9999;box-shadow:0 4px 15px rgba(0,0,0,0.2);`;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 3000);
+    }
+    
+    // Event listeners for save/load
+    const saveBtn = document.getElementById('save-profile-btn');
+    const loadBtn = document.getElementById('load-profile-btn');
+    const loadInput = document.getElementById('load-profile-input');
+    
+    if (saveBtn) {
+      saveBtn.addEventListener('click', saveProfile);
+    }
+    if (loadBtn && loadInput) {
+      loadBtn.addEventListener('click', () => loadInput.click());
+      loadInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          loadProfile(e.target.files[0]);
+          e.target.value = '';
+        }
+      });
+    }
 
     // Chargement de l'image personnage + toggle bouton
     const fileInput = document.getElementById('avatar-input');
@@ -2328,7 +3458,7 @@
           {"id":"troll","name":"Troll","description":"Le troll est une force de la nature, et de ce fait très connecté à celle-ci. Généralement très grands et arborant des teintes proches des arbres, ils sont souvent tournés vers la poésie et le pacifisme. Cependant, la vision la plus terrifiante qui soit serait, selon les rumeurs… un village troll en colère.","bonuses":["Force de la nature : +1 Force, +2 supplémentaires quand il agit contre quelqu'un qui l'énerve","Aura de con-Troll : camouflage basé sur la Force en milieu naturel"],"maluses":["Calme de la montagne : fondamentalement pacifiste (sauf s'il est hors de lui ou riposte). −5 à tous les tests de combat tant qu'il n'est pas énervé, sinon perte de Santé Mentale"]},
           {"id":"nymphe","name":"Nymphe","description":"Portées sur les arts, télépathes et muettes, les nymphes sont particulièrement connues pour leur capacité à transmettre des émotions et maintenir le moral de leur entourage. Elles vivent généralement entre elles et tirent au hasard leur représentant politique. Elles naissent dans un arbre de vie gracile et clair, à leur image, et sont très liées à leur diablotin rouge ailé qui les accompagne très souvent.","bonuses":["Télépathe : communique par télépathie, images, etc. La nymphe émet seulement ; on ne peut lui répondre par le même moyen","Familier : possède un petit diablotin volant comme familier"],"maluses":["Familier fragile : le familier est faible et très attaché. 2 tares mentales si le familier est perdu"]},
           {"id":"sylphe","name":"Sylphe","description":"D'une taille moyenne inférieure aux nains, mais hélas bien moins corpulents, les sylphes ont une peau olivâtre et des ailes évoquant celles des libellules. Ils n'ont pas de société propre et vivent parmi les autres races au gré de leurs voyages. D'un naturel espiègle, leur volonté est de fer et leur sourire d'une douceur sans pareille. Petite anecdote : personne n'a jamais trouvé le palais légendaire de ces êtres, et ce sont les hommes qui portent les enfants.","bonuses":["Ailes : peut voler","Pouvoir de l'Amitié : 1 fois par scénario, le sylphe peut puiser dans les PF du groupe pour un jet"],"maluses":["−1 Force"]},
-          {"id":"vampire","name":"Vampire","description":"Issus d'une transformation par un futur pair, les vampires ont toujours vécu incognito parmi les autres races. Ils se sont toujours faits discrets, avec une hiérarchie très rigide régie par les plus puissants – hélas disparus pour la plupart depuis la nuit de la catastrophe. Les vampires sortent désormais des ombres pour se mêler à la population, encouragés par le fait que les autres races se côtoient.","bonuses":["Veinard : le vampire recouvre un objet de ses veines et récupère la moitié des PV infligés avec","+1 Charisme"],"maluses":["Vulnérable au Feu et à la Lumière Vive : +50% d'effets subis"]},
+          {"id":"vampire","name":"Vampire","description":"Issus d'une transformation par un futur pair, les vampires ont toujours vécu incognito parmi les autres races. Ils se sont toujours faits discrets, avec une hiérarchie très rigide régie par les plus puissants - hélas disparus pour la plupart depuis la nuit de la catastrophe. Les vampires sortent désormais des ombres pour se mêler à la population, encouragés par le fait que les autres races se côtoient.","bonuses":["Veinard : le vampire recouvre un objet de ses veines et récupère la moitié des PV infligés avec","+1 Charisme"],"maluses":["Vulnérable au Feu et à la Lumière Vive : +50% d'effets subis"]},
           {"id":"nezen","name":"Nezen (Homme-Rat)","description":"Connus pour être la lie de la société, les hommes-rats ont effectivement eu le temps de s'adapter à ce genre de vie, mais certains tentent malgré tout de s'élever. Que ce soit à cause de leurs habitudes ou de la vision qu'on a d'eux, ces êtres sont des survivalistes hors pair.","bonuses":["Bouffe-tout : peut manger n'importe quoi, immunisé aux maladies, poisons, etc.","Contact Bas-Fonds : chance d'avoir une connaissance pouvant aider dans la basse société (bien vu dans les bas-fonds)"],"maluses":["Mauvaise réputation : mal vu en milieu aisé"]},
           {"id":"artificiel","name":"Artificiel","description":"Golem, objet mécanique ou magique : ce groupe rassemble toutes les créations non organiques.","bonuses":["Insomniaque / Hyperactif : +1 action inter-séance","Corps de métal : porteur sain de toute toxine"],"maluses":["Compatibilité mécanique : les soins et régénérations ne fonctionnent pas sur le golem. Il doit passer du temps entre les séances pour récupérer les PV perdus"]},
           {"id":"monstruosite","name":"Monstruosité","description":"Golem de chair ou structure magique créée à partir de matière organique : ce groupe rassemble toutes les créations organiques.","bonuses":["Avantage 1 : à déterminer avec le MJ","Avantage 2 : à déterminer avec le MJ"],"maluses":["Apparence monstrueuse : −5 aux interactions sociales basées sur le physique"]},
@@ -2559,6 +3689,7 @@
         // Bouton passer
         document.getElementById('btn-skip-wizard').addEventListener('click', () => {
           document.getElementById('wizard-container').style.display = 'none';
+          document.getElementById('reference-panel').style.display = 'block';
         });
         
         // Navigation
@@ -2627,9 +3758,10 @@
         // Rendre le contenu de l'étape
         renderStep(step);
         
-        // Afficher le séparateur et scroller vers la fiche quand on avance
+        // Afficher le séparateur et le panneau de référence quand on avance
         if (step > 1) {
           document.getElementById('wizard-separator').style.display = 'block';
+          document.getElementById('reference-panel').style.display = 'block';
         }
         
         // Scroll vers le haut du wizard pour voir la nouvelle étape (après un court délai pour le DOM)
@@ -3819,7 +4951,7 @@
         
         const generalGrid = document.createElement('div');
         generalGrid.className = 'levelup-adv-grid';
-        generalGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; max-height:150px; overflow-y:auto;';
+        generalGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:1rem; max-height:150px; overflow-y:auto;';
         
         const availableGeneralAdvantages = (characterData.avantagesGeneraux || []).filter(adv => !isAdvantageAlreadyChosen(adv.id));
         
@@ -3846,6 +4978,61 @@
         
         generalSection.appendChild(generalGrid);
         container.appendChild(generalSection);
+        
+        // Section: Avantage personnalisé
+        const customSection = document.createElement('div');
+        customSection.innerHTML = `<p style="margin-bottom:0.5rem; color:#666;"><strong>Créer un avantage personnalisé :</strong></p>`;
+        
+        const customForm = document.createElement('div');
+        customForm.style.cssText = 'background:#f8f9fa; border-radius:0.5rem; padding:1rem; border:2px dashed #8b0000;';
+        customForm.innerHTML = `
+          <div style="margin-bottom:0.75rem;">
+            <label style="display:block; font-size:12px; color:#666; margin-bottom:0.25rem;">Nom de l'avantage</label>
+            <input type="text" id="levelup-custom-adv-name" placeholder="Ex: Technique spéciale..." style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:0.25rem; font-size:13px; box-sizing:border-box;">
+          </div>
+          <div style="margin-bottom:0.75rem;">
+            <label style="display:block; font-size:12px; color:#666; margin-bottom:0.25rem;">Description</label>
+            <textarea id="levelup-custom-adv-desc" placeholder="Décrivez l'effet de cet avantage..." rows="3" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:0.25rem; font-size:12px; resize:vertical; box-sizing:border-box;"></textarea>
+          </div>
+          <button id="levelup-custom-adv-add" style="padding:0.5rem 1.5rem; background:#8b0000; color:#fff; border:none; border-radius:0.25rem; font-weight:bold; cursor:pointer; font-size:13px;">
+            ✦ Ajouter cet avantage (${cost} pts)
+          </button>
+        `;
+        
+        customSection.appendChild(customForm);
+        container.appendChild(customSection);
+        
+        // Event listener pour le bouton d'ajout d'avantage personnalisé
+        setTimeout(() => {
+          const addBtn = document.getElementById('levelup-custom-adv-add');
+          if (addBtn) {
+            addBtn.addEventListener('click', () => {
+              const nameInput = document.getElementById('levelup-custom-adv-name');
+              const descInput = document.getElementById('levelup-custom-adv-desc');
+              
+              const name = nameInput?.value?.trim();
+              const desc = descInput?.value?.trim();
+              
+              if (!name) {
+                nameInput.style.borderColor = '#e74c3c';
+                nameInput.focus();
+                return;
+              }
+              
+              addLevelUpChoice({
+                type: 'classe-general',
+                cost: cost,
+                label: `${name} (Personnalisé)`,
+                details: { 
+                  advId: 'custom-levelup-' + Date.now(), 
+                  advName: name, 
+                  advDesc: desc || 'Avantage personnalisé', 
+                  source: 'custom' 
+                }
+              });
+            });
+          }
+        }, 0);
       }
       
       function renderAutreClasseSelection(container, cost) {
@@ -4096,6 +5283,9 @@
           </div>
         `;
         
+        // Afficher le panneau de référence
+        document.getElementById('reference-panel').style.display = 'block';
+        
         // Mettre à jour currentStep pour la navigation
         currentStep = 9;
         
@@ -4112,5 +5302,645 @@
       
       // Initialiser
       initWizard();
+      
+      // ========== PANNEAU DE RÉFÉRENCE ==========
+      function initReferencePanel() {
+        const panel = document.getElementById('reference-panel');
+        const content = document.getElementById('reference-content');
+        const buttons = document.querySelectorAll('.reference-btn');
+        
+        buttons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const refType = btn.dataset.ref;
+            const wasActive = btn.classList.contains('active');
+            
+            // Reset all buttons
+            buttons.forEach(b => b.classList.remove('active'));
+            
+            if (wasActive) {
+              // Close panel
+              content.classList.remove('active');
+              content.innerHTML = '';
+            } else {
+              // Open panel with content
+              btn.classList.add('active');
+              content.classList.add('active');
+              renderReferenceContent(refType);
+            }
+          });
+        });
+      }
+      
+      function renderReferenceContent(type) {
+        const content = document.getElementById('reference-content');
+        let html = '';
+        
+        switch (type) {
+          case 'races':
+            html = renderRacesReference();
+            break;
+          case 'classes':
+            html = renderClassesReference();
+            break;
+          case 'class-advantages':
+            html = renderClassAdvantagesReference();
+            break;
+          case 'general-advantages':
+            html = renderGeneralAdvantagesReference();
+            break;
+          case 'competences':
+            html = renderCompetencesReference();
+            break;
+        }
+        
+        content.innerHTML = html + '<button class="reference-close-btn" onclick="closeReferencePanel()">✕ Fermer</button>';
+      }
+      
+      function closeReferencePanel() {
+        const content = document.getElementById('reference-content');
+        const buttons = document.querySelectorAll('.reference-btn');
+        buttons.forEach(b => b.classList.remove('active'));
+        content.classList.remove('active');
+        content.innerHTML = '';
+      }
+      
+      // Exposer la fonction globalement
+      window.closeReferencePanel = closeReferencePanel;
+      
+      function formatTraitRef(trait) {
+        const colonIndex = trait.indexOf(':');
+        if (colonIndex > 0) {
+          const name = trait.substring(0, colonIndex).trim();
+          const desc = trait.substring(colonIndex + 1).trim();
+          return `<li><strong>${name}</strong> : ${desc}</li>`;
+        }
+        return `<li>${trait}</li>`;
+      }
+      
+      function renderRacesReference() {
+        const currentRace = document.getElementById('race')?.value || '';
+        
+        let html = '<h3>📚 Races Disponibles</h3>';
+        html += '<p style="text-align:center; color:#666; font-size:12px; margin-bottom:1rem;">Cliquez sur une race pour la sélectionner et appliquer ses bonus à la fiche</p>';
+        html += '<div class="options-grid">';
+        
+        characterData.races.forEach(race => {
+          const isSelected = currentRace === race.name;
+          const bonusesHtml = race.bonuses?.length > 0 
+            ? `<ul class="option-bonuses">${race.bonuses.map(b => formatTraitRef(b)).join('')}</ul>` 
+            : '';
+          const malusesHtml = race.maluses?.length > 0 
+            ? `<ul class="option-maluses">${race.maluses.map(m => formatTraitRef(m)).join('')}</ul>` 
+            : '';
+          
+          html += `
+            <div class="option-card ref-item-interactive ${isSelected ? 'selected' : ''}" onclick="selectRaceFromRef('${race.id}')" style="cursor:pointer;">
+              <img src="${getRaceImagePath(race.id)}" alt="${race.name}" class="option-img" onerror="this.style.display='none'">
+              <div class="option-content">
+                <div class="option-name">${isSelected ? '✓ ' : ''}${race.name}</div>
+                <div class="option-desc">${race.description}</div>
+                ${bonusesHtml}
+                ${malusesHtml}
+              </div>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        return html;
+      }
+      
+      function renderClassesReference() {
+        const currentClass = document.getElementById('class')?.value || '';
+        
+        let html = '<h3>⚔️ Classes Disponibles</h3>';
+        html += '<p style="text-align:center; color:#666; font-size:12px; margin-bottom:1rem;">Cliquez sur une classe pour la sélectionner (les avantages de classe seront mis à jour)</p>';
+        html += '<div class="options-grid">';
+        
+        characterData.classes.forEach(cls => {
+          const isSelected = currentClass === cls.name;
+          const avantagesHtml = (cls.avantages || []).map(adv => 
+            `<li><strong>${adv.name}</strong> : ${adv.description}</li>`
+          ).join('');
+          
+          html += `
+            <div class="option-card ref-item-interactive ${isSelected ? 'selected' : ''}" onclick="selectClassFromRef('${cls.id}')" style="cursor:pointer;">
+              <img src="${getClassImagePath(cls.id)}" alt="${cls.name}" class="option-img" onerror="this.style.display='none'">
+              <div class="option-content">
+                <div class="option-name">${isSelected ? '✓ ' : ''}${cls.name}</div>
+                <div class="option-desc">${cls.description}</div>
+                ${avantagesHtml ? `<ul class="option-bonuses">${avantagesHtml}</ul>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        return html;
+      }
+      
+      function renderClassAdvantagesReference() {
+        const currentClassName = document.getElementById('class')?.value || '';
+        const currentClass = characterData.classes.find(c => c.name === currentClassName);
+        
+        let html = '<h3>🎯 Avantages par Classe</h3>';
+        html += '<p style="text-align:center; color:#666; font-size:12px; margin-bottom:1rem;">Cliquez sur <span style="color:#27ae60;">+</span> pour ajouter ou <span style="color:#e74c3c;">−</span> pour retirer de la fiche</p>';
+        
+        // If a class is selected, show it first with highlight
+        if (currentClass) {
+          html += `<h4 class="advantages-section-title" style="background:#fff5f5; padding:0.5rem; border-radius:0.5rem;">⭐ ${currentClass.name} (Votre classe)</h4>`;
+          html += '<div class="options-grid-4col">';
+          
+          (currentClass.avantages || []).forEach(adv => {
+            const isOnSheet = isAdvantageOnSheet(adv.name);
+            html += `
+              <div class="option-card-simple ref-item-interactive ${isOnSheet ? 'ref-item-added' : ''}" data-adv-name="${adv.name}" data-adv-desc="${adv.description.replace(/"/g, '&quot;')}" data-source="classe">
+                <button class="${isOnSheet ? 'ref-remove-btn' : 'ref-add-btn'}" onclick="toggleAdvantageOnSheet('${adv.name.replace(/'/g, "\\'")}', '${adv.description.replace(/'/g, "\\'")}', 'classe', this)">${isOnSheet ? '−' : '+'}</button>
+                <div class="option-name">${adv.name}</div>
+                <div class="option-desc">${adv.description}</div>
+              </div>
+            `;
+          });
+          
+          html += '</div>';
+          html += '<hr style="margin:1.5rem 0; border:none; border-top:2px dashed #ddd;">';
+          html += '<p style="text-align:center; color:#999; font-size:11px; margin-bottom:1rem;">Autres classes (coût: 6 pts en Level Up)</p>';
+        }
+        
+        // Show other classes
+        characterData.classes.forEach(cls => {
+          // Skip current class if already shown
+          if (currentClass && cls.id === currentClass.id) return;
+          
+          html += `<h4 class="advantages-section-title">${cls.name}</h4>`;
+          html += '<div class="options-grid-4col">';
+          
+          (cls.avantages || []).forEach(adv => {
+            const isOnSheet = isAdvantageOnSheet(adv.name);
+            html += `
+              <div class="option-card-simple ref-item-interactive ${isOnSheet ? 'ref-item-added' : ''}" data-adv-name="${adv.name}" data-adv-desc="${adv.description.replace(/"/g, '&quot;')}" data-source="autre-classe">
+                <button class="${isOnSheet ? 'ref-remove-btn' : 'ref-add-btn'}" onclick="toggleAdvantageOnSheet('${adv.name.replace(/'/g, "\\'")}', '${adv.description.replace(/'/g, "\\'")}', 'autre-classe', this)">${isOnSheet ? '−' : '+'}</button>
+                <div class="option-name">${adv.name}</div>
+                <div class="option-desc">${adv.description}</div>
+              </div>
+            `;
+          });
+          
+          html += '</div>';
+        });
+        
+        return html;
+      }
+      
+      function renderGeneralAdvantagesReference() {
+        let html = '<h3>✨ Avantages Généraux</h3>';
+        html += '<p style="text-align:center; color:#666; font-size:12px; margin-bottom:1rem;">Cliquez sur <span style="color:#27ae60;">+</span> pour ajouter ou <span style="color:#e74c3c;">−</span> pour retirer de la fiche</p>';
+        html += '<div class="options-grid-4col">';
+        
+        (characterData.avantagesGeneraux || []).forEach(adv => {
+          const isOnSheet = isAdvantageOnSheet(adv.name);
+          html += `
+            <div class="option-card-simple ref-item-interactive ${isOnSheet ? 'ref-item-added' : ''}" data-adv-name="${adv.name}" data-adv-desc="${adv.description.replace(/"/g, '&quot;')}" data-source="general">
+              <button class="${isOnSheet ? 'ref-remove-btn' : 'ref-add-btn'}" onclick="toggleAdvantageOnSheet('${adv.name.replace(/'/g, "\\'")}', '${adv.description.replace(/'/g, "\\'")}', 'general', this)">${isOnSheet ? '−' : '+'}</button>
+              <div class="option-name">${adv.name}</div>
+              <div class="option-desc">${adv.description}</div>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        return html;
+      }
+      
+      function renderCompetencesReference() {
+        let html = '<h3>📝 Compétences</h3>';
+        html += '<p style="text-align:center; color:#666; font-size:12px; margin-bottom:1rem;">Utilisez les boutons <span style="color:#8b0000;">−</span> et <span style="color:#27ae60;">+</span> pour ajuster les bonus</p>';
+        html += '<div class="comp-distribute">';
+        
+        // Trier par nom alphabétique
+        const sortedComps = [...characterData.competences].sort((a, b) => a.name.localeCompare(b.name));
+        
+        sortedComps.forEach(comp => {
+          const currentBonus = getCompetenceBonus(comp.name);
+          const isOnSheet = currentBonus > 0;
+          html += `
+            <div class="comp-item ref-comp-item ${isOnSheet ? 'added' : ''}" data-comp-name="${comp.name}" data-comp-attr="${comp.attribut}">
+              <div class="comp-info">
+                <span class="comp-name">${comp.name}</span>
+                <span class="comp-attr">${comp.attribut}</span>
+              </div>
+              <div class="comp-controls">
+                <button onclick="adjustCompetenceOnSheet('${comp.name}', '${comp.attribut}', -1, this.closest('.ref-comp-item'))" ${currentBonus <= 0 ? 'disabled' : ''}>−</button>
+                <span class="comp-value">${currentBonus > 0 ? '+' + currentBonus : '+0'}</span>
+                <button onclick="adjustCompetenceOnSheet('${comp.name}', '${comp.attribut}', 1, this.closest('.ref-comp-item'))">+</button>
+              </div>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+        return html;
+      }
+      
+      // Helper functions for reference panel interactivity
+      function isAdvantageOnSheet(advName) {
+        const abilitySections = document.querySelectorAll('.section');
+        let found = false;
+        abilitySections.forEach(section => {
+          const h3 = section.querySelector('h3');
+          if (h3 && (h3.textContent.includes('Capacités') || h3.textContent.includes('Avantages'))) {
+            const list = section.querySelector('.abilities-list');
+            if (list) {
+              list.querySelectorAll('li').forEach(li => {
+                if (li.textContent.includes(advName)) {
+                  found = true;
+                }
+              });
+            }
+          }
+        });
+        return found;
+      }
+      
+      function getCompetenceBonus(compName) {
+        const skillRows = document.querySelectorAll('.skill-table tbody tr');
+        for (const row of skillRows) {
+          const nameInput = row.querySelector('td:first-child input');
+          if (nameInput && nameInput.value.trim() === compName) {
+            const bonusInput = row.querySelector('td:last-child input');
+            if (bonusInput) {
+              return parseInt(bonusInput.value.replace(/[^0-9-]/g, '')) || 0;
+            }
+          }
+        }
+        return 0;
+      }
+      
+      function toggleAdvantageOnSheet(name, description, source, btnElement) {
+        const abilitySections = document.querySelectorAll('.section');
+        let targetList = null;
+        
+        abilitySections.forEach(section => {
+          const h3 = section.querySelector('h3');
+          if (h3 && (h3.textContent.includes('Capacités') || h3.textContent.includes('Avantages'))) {
+            targetList = section.querySelector('.abilities-list');
+          }
+        });
+        
+        if (!targetList) return;
+        
+        const isOnSheet = isAdvantageOnSheet(name);
+        const card = btnElement.closest('.ref-item-interactive');
+        
+        if (isOnSheet) {
+          // Remove from sheet
+          const items = targetList.querySelectorAll('li');
+          items.forEach(li => {
+            if (li.textContent.includes(name)) {
+              li.remove();
+            }
+          });
+          // Update button and card
+          btnElement.className = 'ref-add-btn';
+          btnElement.textContent = '+';
+          card.classList.remove('ref-item-added');
+          showNotification(`❌ "${name}" retiré de la fiche`, '#e74c3c');
+        } else {
+          // Add to sheet with appropriate prefix
+          let prefix = '';
+          if (source === 'general') {
+            prefix = '◆ ';
+          } else if (source === 'autre-classe') {
+            prefix = '⬡ ';
+          }
+          
+          const li = document.createElement('li');
+          li.innerHTML = `<strong>${prefix}${name}</strong> : ${description}`;
+          
+          // Find first empty li or append
+          let emptyLi = null;
+          targetList.querySelectorAll('li').forEach(item => {
+            if (!item.innerHTML.trim() && !emptyLi) {
+              emptyLi = item;
+            }
+          });
+          
+          if (emptyLi) {
+            emptyLi.innerHTML = li.innerHTML;
+          } else {
+            targetList.appendChild(li);
+          }
+          
+          // Update button and card
+          btnElement.className = 'ref-remove-btn';
+          btnElement.textContent = '−';
+          card.classList.add('ref-item-added');
+          
+          const sourceLabel = source === 'general' ? '(Général)' : source === 'autre-classe' ? '(Autre classe)' : '(Classe)';
+          showNotification(`✅ "${name}" ajouté ${sourceLabel}`, '#27ae60');
+        }
+      }
+      
+      function adjustCompetenceOnSheet(name, attr, delta, itemElement) {
+        const tbody = document.querySelector('.skill-table tbody');
+        if (!tbody) return;
+        
+        const currentBonus = getCompetenceBonus(name);
+        const newBonus = currentBonus + delta;
+        
+        // Find existing row
+        let existingRow = null;
+        const rows = tbody.querySelectorAll('tr');
+        for (const row of rows) {
+          const nameInput = row.querySelector('td:first-child input');
+          if (nameInput && nameInput.value.trim() === name) {
+            existingRow = row;
+            break;
+          }
+        }
+        
+        if (newBonus <= 0) {
+          // Remove from sheet if exists
+          if (existingRow) {
+            existingRow.remove();
+          }
+          // Update UI
+          itemElement.classList.remove('added');
+          itemElement.querySelector('.comp-value').textContent = '+0';
+          // Disable minus button
+          const minusBtn = itemElement.querySelector('.comp-controls button:first-child');
+          if (minusBtn) minusBtn.disabled = true;
+          
+          if (delta < 0) {
+            showNotification(`❌ "${name}" retiré de la fiche`, '#e74c3c');
+          }
+        } else {
+          if (existingRow) {
+            // Update existing row
+            const bonusInput = existingRow.querySelector('td:last-child input');
+            if (bonusInput) {
+              bonusInput.value = '+' + newBonus;
+            }
+          } else {
+            // Create new row
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+              <td><input value="${name}" /></td>
+              <td><input value="${attr}" /></td>
+              <td><input type="text" value="+${newBonus}" style="text-align:center;" /></td>
+            `;
+            tbody.appendChild(newRow);
+          }
+          
+          // Update UI
+          itemElement.classList.add('added');
+          itemElement.querySelector('.comp-value').textContent = '+' + newBonus;
+          // Enable minus button
+          const minusBtn = itemElement.querySelector('.comp-controls button:first-child');
+          if (minusBtn) minusBtn.disabled = false;
+          
+          if (delta > 0) {
+            showNotification(`✅ "${name}" : +${newBonus}`, '#27ae60');
+          } else {
+            showNotification(`📝 "${name}" : +${newBonus}`, '#f39c12');
+          }
+        }
+      }
+      
+      // Mapping complet des bonus/malus de caractéristiques par race
+      const raceAttrBonuses = {
+        'orc': { force: 1 },           // Athl'Orc : +1 Force
+        'troll': { force: 1 },         // Force de la nature : +1 Force
+        'gobelin': { dex: 1 },         // Mains agiles : +1 Dextérité
+        'sylphe': { force: -1 },       // −1 Force
+        'daedroth': { int: -1 },       // −1 Intelligence
+        'vampire': { emp: 1 }          // +1 Charisme (Empathie)
+        // hybride: choix +1 DEX ou FOR - à gérer manuellement
+      };
+      
+      // Variable pour stocker la race actuellement appliquée sur la fiche
+      let currentAppliedRaceId = null;
+      
+      // Détecte la race actuellement sur la fiche
+      function detectCurrentRaceFromSheet() {
+        const raceName = document.getElementById('race')?.value || '';
+        const race = characterData.races.find(r => r.name === raceName);
+        return race ? race.id : null;
+      }
+      
+      // Progression des dés
+      const diceProgression = [4, 6, 8, 10, 12];
+      
+      // Obtient la valeur actuelle d'un attribut sur la fiche (dé + bonus)
+      function getSheetAttribute(attrId) {
+        const input = document.getElementById(attrId);
+        if (!input) return { die: 10, bonus: 0 };
+        
+        const dieValue = parseInt(input.value) || 10;
+        const box = input.closest('.attr-box');
+        const bonusInput = box?.querySelector('input[type="text"]');
+        const bonusValue = parseInt(bonusInput?.value?.replace(/[^0-9-]/g, '')) || 0;
+        
+        return { die: dieValue, bonus: bonusValue };
+      }
+      
+      // Met à jour un attribut sur la fiche
+      function setSheetAttribute(attrId, dieValue, bonusValue) {
+        const input = document.getElementById(attrId);
+        if (!input) return;
+        
+        input.value = dieValue;
+        input.dispatchEvent(new Event('input')); // Met à jour l'affichage du dé
+        
+        const box = input.closest('.attr-box');
+        const bonusInput = box?.querySelector('input[type="text"]');
+        if (bonusInput) {
+          bonusInput.value = bonusValue > 0 ? `+${bonusValue}` : '+0';
+        }
+      }
+      
+      // Applique un modificateur à un attribut (positif ou négatif)
+      function applyAttrModifier(attrId, modifier) {
+        const current = getSheetAttribute(attrId);
+        let newDie = current.die;
+        let newBonus = current.bonus;
+        
+        if (modifier > 0) {
+          // Bonus positif : augmenter
+          for (let i = 0; i < modifier; i++) {
+            const dieIndex = diceProgression.indexOf(newDie);
+            if (dieIndex < diceProgression.length - 1) {
+              // Peut encore augmenter le dé
+              newDie = diceProgression[dieIndex + 1];
+            } else {
+              // Déjà au D12, augmenter le bonus
+              newBonus++;
+            }
+          }
+        } else if (modifier < 0) {
+          // Malus : diminuer
+          for (let i = 0; i < Math.abs(modifier); i++) {
+            if (newBonus > 0) {
+              // Réduire le bonus d'abord
+              newBonus--;
+            } else {
+              // Puis réduire le dé
+              const dieIndex = diceProgression.indexOf(newDie);
+              if (dieIndex > 0) {
+                newDie = diceProgression[dieIndex - 1];
+              }
+              // Ne pas descendre en dessous de D4
+            }
+          }
+        }
+        
+        setSheetAttribute(attrId, newDie, newBonus);
+      }
+      
+      // Retire les bonus d'une race
+      function removeRaceBonuses(raceId) {
+        const bonuses = raceAttrBonuses[raceId];
+        if (!bonuses) return;
+        
+        // Appliquer l'inverse des bonus
+        for (const [attr, value] of Object.entries(bonuses)) {
+          applyAttrModifier(attr, -value);
+        }
+      }
+      
+      // Applique les bonus d'une race
+      function applyRaceAttrBonuses(raceId) {
+        const bonuses = raceAttrBonuses[raceId];
+        if (!bonuses) return;
+        
+        for (const [attr, value] of Object.entries(bonuses)) {
+          applyAttrModifier(attr, value);
+        }
+      }
+      
+      function selectRaceFromRef(raceId) {
+        const race = characterData.races.find(r => r.id === raceId);
+        if (!race) return;
+        
+        // Détecter la race actuellement sur la fiche
+        const previousRaceId = detectCurrentRaceFromSheet();
+        
+        // Si c'est la même race, ne rien faire
+        if (previousRaceId === raceId) {
+          showNotification(`ℹ️ "${race.name}" est déjà sélectionnée`, '#3498db');
+          return;
+        }
+        
+        // Retirer les bonus de l'ancienne race
+        if (previousRaceId) {
+          removeRaceBonuses(previousRaceId);
+        }
+        
+        // Appliquer les bonus de la nouvelle race
+        applyRaceAttrBonuses(raceId);
+        
+        // Update race field on sheet
+        const raceField = document.getElementById('race');
+        if (raceField) {
+          raceField.value = race.name;
+        }
+        
+        // Update bonus de race section
+        const bonusSections = document.querySelectorAll('.section');
+        bonusSections.forEach(section => {
+          const h3 = section.querySelector('h3');
+          if (h3 && h3.textContent.includes('Bonus de race')) {
+            const list = section.querySelector('.abilities-list');
+            if (list) {
+              const allTraits = [];
+              if (race.bonuses) {
+                race.bonuses.forEach(b => allTraits.push(formatTraitRef(b)));
+              }
+              if (race.maluses && race.maluses.length > 0) {
+                race.maluses.forEach(m => allTraits.push(formatTraitRef(m)));
+              }
+              list.innerHTML = allTraits.join('');
+            }
+          }
+        });
+        
+        // Recalculer PV/PF si possible
+        recalculatePVPF();
+        
+        // Re-render the races reference to update selection
+        renderReferenceContent('races');
+        
+        // Construire le message de notification
+        const oldBonuses = previousRaceId ? raceAttrBonuses[previousRaceId] : null;
+        const newBonuses = raceAttrBonuses[raceId];
+        let details = [];
+        
+        if (oldBonuses) {
+          for (const [attr, val] of Object.entries(oldBonuses)) {
+            const sign = val > 0 ? '+' : '';
+            details.push(`${sign}${val} ${attr.toUpperCase()} retiré`);
+          }
+        }
+        if (newBonuses) {
+          for (const [attr, val] of Object.entries(newBonuses)) {
+            const sign = val > 0 ? '+' : '';
+            details.push(`${sign}${val} ${attr.toUpperCase()} appliqué`);
+          }
+        }
+        
+        const detailStr = details.length > 0 ? ` (${details.join(', ')})` : '';
+        showNotification(`✅ Race "${race.name}" sélectionnée${detailStr}`, '#27ae60');
+      }
+      
+      // Recalcule PV et PF
+      function recalculatePVPF() {
+        const forceAttr = getSheetAttribute('force');
+        const intAttr = getSheetAttribute('int');
+        const level = parseInt(document.getElementById('level')?.value) || 1;
+        
+        // Valeur totale = dé + bonus extra
+        const forceValue = forceAttr.die + forceAttr.bonus;
+        const intValue = intAttr.die + intAttr.bonus;
+        
+        // PV = FOR×2 + INT×2 + 10 + Niveau
+        const pv = (forceValue * 2) + (intValue * 2) + 10 + level;
+        // PF = PV
+        const pf = pv;
+        
+        const pvMaxField = document.getElementById('pv-max');
+        const pvCurrentField = document.getElementById('pv-current');
+        const pfMaxField = document.getElementById('pf-max');
+        const pfCurrentField = document.getElementById('pf-current');
+        
+        if (pvMaxField) pvMaxField.value = pv;
+        if (pvCurrentField) pvCurrentField.value = pv;
+        if (pfMaxField) pfMaxField.value = pf;
+        if (pfCurrentField) pfCurrentField.value = pf;
+      }
+      
+      function selectClassFromRef(classId) {
+        const cls = characterData.classes.find(c => c.id === classId);
+        if (!cls) return;
+        
+        // Update class field on sheet
+        const classField = document.getElementById('class');
+        if (classField) {
+          classField.value = cls.name;
+        }
+        
+        // Re-render the classes reference to update selection
+        renderReferenceContent('classes');
+        
+        showNotification(`✅ Classe "${cls.name}" sélectionnée - Les avantages de classe ont été mis à jour`, '#27ae60');
+      }
+      
+      // Expose functions globally for onclick handlers
+      window.toggleAdvantageOnSheet = toggleAdvantageOnSheet;
+      window.adjustCompetenceOnSheet = adjustCompetenceOnSheet;
+      window.selectRaceFromRef = selectRaceFromRef;
+      window.selectClassFromRef = selectClassFromRef;
+      
+      // Initialiser le panneau de référence
+      initReferencePanel();
     })();
   </script>
