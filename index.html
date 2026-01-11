@@ -36,41 +36,113 @@
     }
     
     .btn-start-wizard {
-      display: inline-block;
-      background: linear-gradient(135deg, #8b0000 0%, #a52a2a 100%);
+      display: block;
+      width: 100%;
+      background: #8b0000;
       color: #fff;
       font-size: 18px;
       font-weight: bold;
-      padding: 1rem 2.5rem;
-      border: none;
-      border-radius: 2rem;
+      padding: 1.25rem 2rem;
+      border: 2px solid #8b0000;
+      border-radius: 1rem;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      margin-top: 1rem;
+      transition: all 0.2s ease;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
     }
     
     .btn-start-wizard:hover {
+      background: #a52a2a;
+      border-color: #a52a2a;
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+      box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
     }
     
     .btn-skip-wizard {
-      display: block;
-      margin: 1rem auto 0;
-      background: transparent;
-      border: 2px solid #bdc3c7;
-      color: #7f8c8d;
-      padding: 0.5rem 1.5rem;
-      border-radius: 1rem;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.3s ease;
+      display: none; /* Plus utilisé */
     }
     
-    .btn-skip-wizard:hover {
+    .main-menu-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .btn-menu-option {
+      display: block;
+      width: 100%;
+      background: #fff;
+      color: #333;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 1rem 1.5rem;
+      border: 2px solid #333;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    
+    .btn-menu-option:hover {
+      background: #8b0000;
+      color: #fff;
       border-color: #8b0000;
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-menu-option .btn-icon {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 0.25rem;
+    }
+    
+    /* Bouton retour au menu */
+    .btn-back-menu {
+      display: block;
+      margin: 1rem auto;
+      background: #fff;
       color: #8b0000;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 0.75rem 1.5rem;
+      border: 2px solid #8b0000;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-back-menu:hover {
+      background: #8b0000;
+      color: #fff;
+    }
+    
+    /* Bouton Level Up depuis fiche libre */
+    .btn-levelup-free {
+      display: block;
+      margin: 0.5rem auto;
+      background: #fff;
+      color: #8b0000;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 0.75rem 1.5rem;
+      border: 2px solid #8b0000;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-levelup-free:hover {
+      background: #8b0000;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
     }
     
     /* Wizard Steps Container */
@@ -1256,12 +1328,20 @@
       
       .btn-start-wizard {
         font-size: 14px !important;
-        padding: 0.75rem 1.25rem !important;
-        width: 90% !important;
-        max-width: 280px !important;
+        padding: 0.75rem 1rem !important;
       }
       
-      .btn-skip-wizard {
+      .main-menu-buttons {
+        padding: 0 1rem !important;
+        gap: 0.75rem !important;
+      }
+      
+      .btn-menu-option {
+        font-size: 13px !important;
+        padding: 0.75rem 1rem !important;
+      }
+      
+      .btn-back-menu, .btn-levelup-free {
         font-size: 12px !important;
         padding: 0.5rem 1rem !important;
       }
@@ -2252,11 +2332,12 @@
     }
     
     @media print {
-      .wizard-container, .wizard-separator, .reference-panel, .save-load-container { display: none !important; }
+      .wizard-container, .wizard-separator, .reference-panel, .save-load-container, .free-mode-buttons { display: none !important; }
       .add-damage-btn, .remove-damage-btn, .damage-toggle-btn, .damage-entries { display: none !important; }
       .damage-rd-row { margin-bottom: 0.25rem !important; gap: 0.25rem !important; }
       .damage-box, .rd-box { padding: 0.2rem 0.4rem !important; }
       .page-break-before { page-break-before: always !important; break-before: page !important; margin-top: 0 !important; }
+      #character-sheet { display: block !important; }
     }
     /* titre principal */
     .title-row{display:grid;grid-template-columns:repeat(4,1fr);margin-bottom:1rem;}
@@ -2420,10 +2501,15 @@
   <!-- ========== WIZARD DE CRÉATION DE PERSONNAGE ========== -->
   <div class="wizard-container" id="wizard-container">
     <div class="wizard-header" id="wizard-intro">
-      <h1 class="wizard-title">🎲 Création de Personnage</h1>
-      <p class="wizard-subtitle">Bienvenue, aventurier ! Laissez-vous guider dans la création de votre personnage.</p>
-      <button class="btn-start-wizard" id="btn-start-wizard">Démarrer la création de personnage</button>
-      <button class="btn-skip-wizard" id="btn-skip-wizard">Remplir la fiche librement</button>
+      <h1 class="wizard-title">🎲 Gaïa 2 - Fiche de Personnage</h1>
+      <p class="wizard-subtitle">Bienvenue, que souhaitez-vous faire ?</p>
+      <div class="main-menu-buttons">
+        <button class="btn-start-wizard" id="btn-start-wizard">Démarrer la création de Personnage</button>
+        <button class="btn-menu-option" id="btn-consult-ref">Consulter les Races / Classes / Avantages-Capacités / Compétences</button>
+        <button class="btn-menu-option" id="btn-fill-free">Remplir la fiche de personnage librement</button>
+        <button class="btn-menu-option" id="btn-import-json">Importer sa fiche de personnage (format JSON)</button>
+        <input type="file" id="import-json-input" accept=".json" style="display:none;">
+      </div>
     </div>
 
     <div class="wizard-steps" id="wizard-steps">
@@ -2650,11 +2736,18 @@
     <div class="reference-content" id="reference-content">
       <!-- Contenu généré par JS -->
     </div>
+    <button class="btn-back-menu" id="btn-back-from-ref" style="display: none;">← Retour au menu principal</button>
+  </div>
+  
+  <!-- Boutons mode fiche libre -->
+  <div class="free-mode-buttons" id="free-mode-buttons" style="display: none; max-width: 1000px; margin: 0 auto 1rem; text-align: center;">
+    <button class="btn-levelup-free" id="btn-levelup-free">🚀 Faire un ou plusieurs Level Up</button>
+    <button class="btn-back-menu" id="btn-back-from-free">← Retour au menu principal</button>
   </div>
 
-  <div class="container" id="character-sheet">
+  <div class="container" id="character-sheet" style="display: none;">
     <!-- Titre centré 2 colonnes -->
-    <div class="title-row"><div class="title-box">GAÏA 2 - FICHE DE PERSONNAGE</div></div>
+    <div class="title-row"><div class="title-box">GAÏA 2 - FICHE DE PERSONNAGE</div></div>
     <!-- Ligne supérieure -->
     <div class="grid-top">
       <div class="field"><label for="name">Nom du Personnage</label><input id="name" /></div>
@@ -3621,7 +3714,7 @@
         
         // Compter les augmentations de Level Up pour cette caractéristique
         const levelUpBonus = creationState.levelUpChoices
-          .filter(c => c.type === 'caracteristique' && c.details && c.details.attr === attr)
+          .filter(c => c.type === 'caracteristique' && c.details && (c.details.attrKey === attr || c.details.attr === attr))
           .length;
         
         // Bonus total = race + level ups (chaque level up = +1 niveau de dé)
@@ -3676,27 +3769,220 @@
         int: 'Intelligence'
       };
       
+      // Mode actuel de la page (accessible globalement)
+      let currentMode = 'menu'; // 'menu', 'wizard', 'consult', 'free'
+      
       // Initialiser le wizard
       function initWizard() {
         
-        // Bouton démarrer
+        // Fonction pour réinitialiser au menu principal
+        function backToMainMenu() {
+          currentMode = 'menu';
+          document.getElementById('wizard-container').style.display = 'block';
+          document.getElementById('wizard-intro').style.display = 'block';
+          document.getElementById('wizard-steps').classList.remove('active');
+          document.getElementById('wizard-separator').style.display = 'none';
+          document.getElementById('reference-panel').style.display = 'none';
+          document.getElementById('free-mode-buttons').style.display = 'none';
+          document.getElementById('btn-back-from-ref').style.display = 'none';
+          document.getElementById('character-sheet').style.display = 'none';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Bouton 1: Démarrer la création de Personnage
         document.getElementById('btn-start-wizard').addEventListener('click', () => {
+          currentMode = 'wizard';
           document.getElementById('wizard-intro').style.display = 'none';
           document.getElementById('wizard-steps').classList.add('active');
+          document.getElementById('character-sheet').style.display = 'block';
+          document.getElementById('free-mode-buttons').style.display = 'none';
+          document.getElementById('btn-back-from-ref').style.display = 'none';
           renderStep(1);
         });
         
-        // Bouton passer
-        document.getElementById('btn-skip-wizard').addEventListener('click', () => {
+        // Bouton 2: Consulter les références (Races/Classes/etc.)
+        document.getElementById('btn-consult-ref').addEventListener('click', () => {
+          currentMode = 'consult';
           document.getElementById('wizard-container').style.display = 'none';
+          document.getElementById('wizard-separator').style.display = 'none';
           document.getElementById('reference-panel').style.display = 'block';
+          document.getElementById('btn-back-from-ref').style.display = 'block';
+          document.getElementById('free-mode-buttons').style.display = 'none';
+          document.getElementById('character-sheet').style.display = 'none';
+          // Cliquer sur le premier bouton par défaut
+          document.querySelector('.reference-btn[data-ref="races"]').click();
         });
+        
+        // Bouton 3: Remplir la fiche librement
+        document.getElementById('btn-fill-free').addEventListener('click', () => {
+          currentMode = 'free';
+          document.getElementById('wizard-container').style.display = 'none';
+          document.getElementById('wizard-separator').style.display = 'none';
+          document.getElementById('reference-panel').style.display = 'block';
+          document.getElementById('btn-back-from-ref').style.display = 'none';
+          document.getElementById('free-mode-buttons').style.display = 'block';
+          document.getElementById('character-sheet').style.display = 'block';
+        });
+        
+        // Bouton 4: Importer JSON
+        document.getElementById('btn-import-json').addEventListener('click', () => {
+          document.getElementById('import-json-input').click();
+        });
+        
+        document.getElementById('import-json-input').addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const data = JSON.parse(event.target.result);
+              
+              // Passer en mode libre
+              currentMode = 'free';
+              document.getElementById('wizard-container').style.display = 'none';
+              document.getElementById('wizard-separator').style.display = 'none';
+              document.getElementById('reference-panel').style.display = 'block';
+              document.getElementById('btn-back-from-ref').style.display = 'none';
+              document.getElementById('free-mode-buttons').style.display = 'block';
+              document.getElementById('character-sheet').style.display = 'block';
+              
+              // Restaurer les données
+              restoreSheetData(data);
+              
+              alert('Profil chargé avec succès !');
+            } catch (err) {
+              alert('Erreur lors du chargement du fichier : ' + err.message);
+            }
+          };
+          reader.readAsText(file);
+          e.target.value = ''; // Reset input
+        });
+        
+        // Bouton retour depuis consultation
+        document.getElementById('btn-back-from-ref').addEventListener('click', backToMainMenu);
+        
+        // Bouton retour depuis mode libre
+        document.getElementById('btn-back-from-free').addEventListener('click', backToMainMenu);
+        
+        // Bouton Level Up depuis mode libre
+        document.getElementById('btn-levelup-free').addEventListener('click', () => {
+          // Vérifier que la fiche est complétée
+          const name = document.getElementById('name').value.trim();
+          const level = document.getElementById('level').value.trim();
+          const race = document.getElementById('race').value.trim();
+          const classe = document.getElementById('class').value.trim();
+          
+          if (!name || !level || !race || !classe) {
+            alert('⚠️ Veuillez compléter la fiche avant de passer au Level Up.\n\nChamps requis :\n- Nom du Personnage\n- Niveau\n- Race\n- Classe');
+            return;
+          }
+          
+          // Rester en mode libre pour le retour
+          currentMode = 'free';
+          document.getElementById('wizard-container').style.display = 'block';
+          document.getElementById('wizard-intro').style.display = 'none';
+          document.getElementById('wizard-steps').classList.add('active');
+          document.getElementById('free-mode-buttons').style.display = 'none';
+          
+          // Modifier le texte du bouton Précédent pour le mode libre
+          const prevBtn8 = document.getElementById('btn-prev-8');
+          if (prevBtn8) prevBtn8.textContent = '← Annuler';
+          
+          // Réinitialiser le Level Up state pour une nouvelle session
+          creationState.levelUpCount = 1; // Commencer avec 1 Level Up par défaut
+          creationState.levelUpPointsTotal = 10;
+          creationState.levelUpPointsSpent = 0;
+          creationState.levelUpChoices = [];
+          creationState.levelUpCurrentSelection = null;
+          creationState.existingBonuses = {};
+          
+          // Charger les données de la fiche dans creationState
+          loadSheetIntoCreationState();
+          
+          // Mettre à jour l'input de compteur
+          const countInput = document.getElementById('levelup-count');
+          if (countInput) countInput.value = 1;
+          
+          // Afficher uniquement l'étape Level Up
+          goToStep(8);
+        });
+        
+        // Fonction pour charger les données de la fiche dans creationState (pour le Level Up)
+        function loadSheetIntoCreationState() {
+          const raceName = document.getElementById('race').value.trim();
+          const className = document.getElementById('class').value.trim();
+          
+          // Trouver la race et la classe correspondantes
+          const race = characterData.races.find(r => r.name === raceName);
+          const cls = characterData.classes.find(c => c.name === className);
+          
+          if (race) creationState.race = race;
+          if (cls) creationState.classe = cls;
+          
+          // Mapping des IDs de la fiche vers les clés du creationState
+          const attrMapping = {
+            'force': 'for',
+            'dex': 'dex',
+            'emp': 'emp',
+            'sag': 'sag',
+            'int': 'int'
+          };
+          
+          // Charger les caractéristiques depuis la fiche (avec bonus)
+          Object.entries(attrMapping).forEach(([sheetId, stateKey]) => {
+            const input = document.getElementById(sheetId);
+            if (input) {
+              const dieValue = parseInt(input.value) || 6;
+              creationState.attributes[stateKey] = dieValue;
+              
+              // Charger aussi le bonus
+              const box = input.closest('.attr-box');
+              const bonusInput = box?.querySelector('input[type="text"]');
+              const bonusValue = parseInt(bonusInput?.value?.replace(/[^0-9-]/g, '')) || 0;
+              
+              // Stocker le bonus dans levelUpChoices si > 0
+              if (bonusValue > 0) {
+                // Trouver si on a déjà un choice pour cette caractéristique
+                const existingChoice = creationState.levelUpChoices.find(
+                  c => c.type === 'caracteristique' && c.details?.attrKey === stateKey
+                );
+                if (!existingChoice) {
+                  // Ajouter un pseudo-choice pour représenter les bonus existants
+                  creationState.existingBonuses = creationState.existingBonuses || {};
+                  creationState.existingBonuses[stateKey] = bonusValue;
+                }
+              }
+            }
+          });
+          
+          // Charger le niveau actuel
+          creationState.currentLevel = parseInt(document.getElementById('level').value) || 1;
+        };
         
         // Navigation
         for (let i = 1; i <= totalSteps; i++) {
           const prevBtn = document.getElementById(`btn-prev-${i}`);
           const nextBtn = document.getElementById(`btn-next-${i}`);
-          if (prevBtn) prevBtn.addEventListener('click', () => goToStep(i - 1));
+          if (prevBtn) {
+            if (i === 8) {
+              // Gestion spéciale pour le bouton Précédent à l'étape Level Up
+              prevBtn.addEventListener('click', () => {
+                // Si on vient du mode libre, retourner au mode libre
+                if (currentMode === 'free') {
+                  document.getElementById('wizard-container').style.display = 'none';
+                  document.getElementById('wizard-separator').style.display = 'none';
+                  document.getElementById('reference-panel').style.display = 'block';
+                  document.getElementById('btn-back-from-ref').style.display = 'none';
+                  document.getElementById('free-mode-buttons').style.display = 'block';
+                  return;
+                }
+                goToStep(i - 1);
+              });
+            } else {
+              prevBtn.addEventListener('click', () => goToStep(i - 1));
+            }
+          }
           if (nextBtn) nextBtn.addEventListener('click', () => goToStep(i + 1));
         }
         
@@ -3758,10 +4044,11 @@
         // Rendre le contenu de l'étape
         renderStep(step);
         
-        // Afficher le séparateur et le panneau de référence quand on avance
+        // Afficher le séparateur, le panneau de référence et la fiche quand on avance
         if (step > 1) {
           document.getElementById('wizard-separator').style.display = 'block';
           document.getElementById('reference-panel').style.display = 'block';
+          document.getElementById('character-sheet').style.display = 'block';
         }
         
         // Scroll vers le haut du wizard pour voir la nouvelle étape (après un court délai pour le DOM)
@@ -4808,28 +5095,50 @@
       function renderCaracteristiqueSelection(container, cost) {
         container.innerHTML = '<p style="margin-bottom:0.75rem; color:#666;">Sélectionnez une caractéristique à améliorer :</p>';
         
-        const attrs = ['force', 'dex', 'emp', 'sag', 'int'];
-        const attrNames = { force: 'Force (FOR)', dex: 'Dextérité (DEX)', emp: 'Empathie (EMP)', sag: 'Sagesse (SAG)', int: 'Intelligence (INT)' };
+        // Mapping des clés: displayKey -> stateKey
+        const attrMapping = {
+          'for': { name: 'Force (FOR)', sheetId: 'force' },
+          'dex': { name: 'Dextérité (DEX)', sheetId: 'dex' },
+          'emp': { name: 'Empathie (EMP)', sheetId: 'emp' },
+          'sag': { name: 'Sagesse (SAG)', sheetId: 'sag' },
+          'int': { name: 'Intelligence (INT)', sheetId: 'int' }
+        };
         const diceProgression = [4, 6, 8, 10, 12];
         
         const grid = document.createElement('div');
         grid.className = 'levelup-carac-grid';
         grid.style.cssText = 'display:grid; grid-template-columns:repeat(5, 1fr); gap:0.5rem;';
         
-        attrs.forEach(attr => {
-          const baseDie = creationState.attributes[attr] || 4;
-          const raceBonus = creationState.attributeBonuses[attr] || 0;
+        Object.entries(attrMapping).forEach(([stateKey, attrInfo]) => {
+          // Récupérer la valeur actuelle depuis le creationState ou directement depuis la fiche
+          let baseDie = creationState.attributes[stateKey] || 4;
           
-          // Nombre de level ups déjà choisis pour cette caractéristique
+          // Si en mode libre, récupérer directement depuis la fiche
+          if (currentMode === 'free') {
+            const sheetInput = document.getElementById(attrInfo.sheetId);
+            if (sheetInput) {
+              baseDie = parseInt(sheetInput.value) || 4;
+            }
+          }
+          
+          const raceBonus = creationState.attributeBonuses[stateKey] || 0;
+          
+          // Bonus existants sur la fiche (au-delà du D12)
+          const existingBonus = (creationState.existingBonuses && creationState.existingBonuses[stateKey]) || 0;
+          
+          // Nombre de level ups déjà choisis pour cette caractéristique dans cette session
           const levelUpCount = creationState.levelUpChoices
-            .filter(c => c.type === 'caracteristique' && c.details && c.details.attr === attr)
+            .filter(c => c.type === 'caracteristique' && c.details && c.details.attrKey === stateKey)
             .length;
           
-          // Calculer l'état actuel (base + race + level ups existants)
+          // Calculer l'état actuel
           let currentIndex = diceProgression.indexOf(baseDie);
-          if (currentIndex === -1) currentIndex = 0;
+          if (currentIndex === -1) currentIndex = diceProgression.length - 1; // Assume D12 if not found
           
-          let currentExtraBonus = 0;
+          // Ajouter les bonus existants de la fiche
+          let currentExtraBonus = existingBonus;
+          
+          // Ajouter les bonus de race et de level ups de cette session
           const totalBonusSteps = raceBonus + levelUpCount;
           
           for (let i = 0; i < totalBonusSteps; i++) {
@@ -4853,15 +5162,15 @@
           }
           
           // Construire le texte d'effet
-          let effectText = '';
+          const attrDisplayName = attrInfo.name.split(' ')[0];
           let currentDisplay = `D${currentDie}${currentExtraBonus > 0 ? '+' + currentExtraBonus : ''}`;
           let nextDisplay = `D${nextDie}${nextExtraBonus > 0 ? '+' + nextExtraBonus : ''}`;
-          effectText = `${currentDisplay} → ${nextDisplay}`;
+          const effectText = `${currentDisplay} → ${nextDisplay}`;
           
           const btn = document.createElement('button');
           btn.style.cssText = 'padding:0.75rem 0.5rem; border:2px solid #ddd; border-radius:0.5rem; background:#fff; cursor:pointer; text-align:center;';
           btn.innerHTML = `
-            <div style="font-weight:bold; font-size:13px;">${attrNames[attr].split(' ')[0]}</div>
+            <div style="font-weight:bold; font-size:13px;">${attrDisplayName}</div>
             <div style="font-size:11px; color:#666;">Actuel: ${currentDisplay}</div>
             <div style="font-size:10px; color:#27ae60; margin-top:0.25rem;">${effectText}</div>
           `;
@@ -4869,8 +5178,8 @@
             addLevelUpChoice({
               type: 'caracteristique',
               cost: cost,
-              label: `+1 ${attrNames[attr].split(' ')[0]} (${effectText})`,
-              details: { attr: attr }
+              label: `+1 ${attrDisplayName} (${effectText})`,
+              details: { attrKey: stateKey, sheetId: attrInfo.sheetId }
             });
           });
           btn.addEventListener('mouseover', () => btn.style.borderColor = '#8b0000');
@@ -5102,20 +5411,28 @@
       function applyLevelUpChoices() {
         if (creationState.levelUpChoices.length === 0 && creationState.levelUpCount === 0) return;
         
-        // Mettre à jour le niveau sur la fiche
-        const levelField = document.getElementById('level');
-        if (levelField) {
-          levelField.value = 1 + creationState.levelUpCount;
+        // En mode wizard normal, mettre à jour le niveau
+        if (currentMode !== 'free') {
+          const levelField = document.getElementById('level');
+          if (levelField) {
+            levelField.value = 1 + creationState.levelUpCount;
+          }
         }
         
-        // Parcourir les choix qui ne sont pas déjà gérés ailleurs
-        // - Compétences : gérées dans updateSheetCompetences()
-        // - Caractéristiques : gérées dans updateSheetAttributes() via getFinalAttribute()
+        // Parcourir les choix
         creationState.levelUpChoices.forEach(choice => {
           switch (choice.type) {
             case 'competence':
+              // Appliquer directement à la fiche en mode libre
+              if (currentMode === 'free') {
+                applyLevelUpCompetenceToSheet(choice.details);
+              }
+              break;
             case 'caracteristique':
-              // Déjà gérés dans les fonctions de mise à jour
+              // Appliquer directement à la fiche en mode libre
+              if (currentMode === 'free') {
+                applyLevelUpCharacteristicToSheet(choice.details);
+              }
               break;
             case 'classe-general':
             case 'autre-classe':
@@ -5124,10 +5441,55 @@
           }
         });
         
-        // Recalculer PV/PF avec le nouveau niveau
-        const { pv } = calculatePV();
-        const { pf } = calculatePF(pv);
+        // Si pas en mode libre, utiliser les fonctions standard
+        if (currentMode !== 'free') {
+          // Recalculer PV/PF avec le nouveau niveau
+          const { pv } = calculatePV();
+          const { pf } = calculatePF(pv);
+          
+          const pvMaxField = document.getElementById('pv-max');
+          const pvCurrentField = document.getElementById('pv-current');
+          const pfMaxField = document.getElementById('pf-max');
+          const pfCurrentField = document.getElementById('pf-current');
+          
+          if (pvMaxField) pvMaxField.value = pv;
+          if (pvCurrentField) pvCurrentField.value = pv;
+          if (pfMaxField) pfMaxField.value = pf;
+          if (pfCurrentField) pfCurrentField.value = pf;
+        }
+      }
+      
+      // Recalculer PV/PF directement depuis les valeurs de la fiche
+      // Formule: PV = (2 x Force) + (2 x Intel) + 10 + Level
+      // PF = PV
+      function recalculatePVPFFromSheet() {
+        // Lire les valeurs directement depuis la fiche
+        const forceInput = document.getElementById('force');
+        const intInput = document.getElementById('int');
+        const levelInput = document.getElementById('level');
         
+        // Lire les valeurs des dés
+        const forceDie = parseInt(forceInput?.value) || 10;
+        const intDie = parseInt(intInput?.value) || 10;
+        const level = parseInt(levelInput?.value) || 1;
+        
+        // Lire les bonus au-delà de D12 (+1, +2, etc.)
+        const forceBox = forceInput?.closest('.attr-box');
+        const intBox = intInput?.closest('.attr-box');
+        const forceBonusInput = forceBox?.querySelector('input[type="text"]');
+        const intBonusInput = intBox?.querySelector('input[type="text"]');
+        const forceBonus = parseInt(forceBonusInput?.value?.replace(/[^0-9-]/g, '')) || 0;
+        const intBonus = parseInt(intBonusInput?.value?.replace(/[^0-9-]/g, '')) || 0;
+        
+        // Valeur totale = dé + bonus
+        const forceValue = forceDie + forceBonus;
+        const intValue = intDie + intBonus;
+        
+        // Calcul PV = (2 x Force) + (2 x Intel) + 10 + Level
+        const pv = (forceValue * 2) + (intValue * 2) + 10 + level;
+        const pf = pv; // PF = PV
+        
+        // Mettre à jour les champs
         const pvMaxField = document.getElementById('pv-max');
         const pvCurrentField = document.getElementById('pv-current');
         const pfMaxField = document.getElementById('pf-max');
@@ -5137,6 +5499,73 @@
         if (pvCurrentField) pvCurrentField.value = pv;
         if (pfMaxField) pfMaxField.value = pf;
         if (pfCurrentField) pfCurrentField.value = pf;
+        
+        console.log(`PV/PF recalculés: Force(${forceDie}+${forceBonus}=${forceValue}) + Intel(${intDie}+${intBonus}=${intValue}) + Level(${level}) = ${pv}`);
+      }
+      
+      // Appliquer une amélioration de caractéristique directement à la fiche
+      function applyLevelUpCharacteristicToSheet(details) {
+        const sheetId = details.sheetId;
+        if (!sheetId) return;
+        
+        const input = document.getElementById(sheetId);
+        if (!input) return;
+        
+        const box = input.closest('.attr-box');
+        const bonusInput = box?.querySelector('input[type="text"]');
+        
+        const currentDie = parseInt(input.value) || 4;
+        const currentBonus = parseInt(bonusInput?.value?.replace(/[^0-9-]/g, '')) || 0;
+        
+        const diceProgression = [4, 6, 8, 10, 12];
+        const currentIndex = diceProgression.indexOf(currentDie);
+        
+        if (currentIndex < diceProgression.length - 1) {
+          // Monter le dé d'un cran
+          input.value = diceProgression[currentIndex + 1];
+          input.dispatchEvent(new Event('input')); // Met à jour l'affichage (D8), etc.
+        } else {
+          // Déjà à D12, ajouter +1 au bonus
+          if (bonusInput) {
+            bonusInput.value = `+${currentBonus + 1}`;
+          }
+        }
+      }
+      
+      // Appliquer une amélioration de compétence directement à la fiche
+      function applyLevelUpCompetenceToSheet(details) {
+        const skillsBody = document.querySelector('.skill-table tbody');
+        if (!skillsBody) return;
+        
+        const comp = characterData.competences.find(c => c.id === details.compId);
+        if (!comp) return;
+        
+        // Chercher si la compétence existe déjà
+        const rows = skillsBody.querySelectorAll('tr');
+        let found = false;
+        
+        rows.forEach(row => {
+          const nameCell = row.querySelector('td:first-child');
+          if (nameCell && nameCell.textContent.trim() === comp.name) {
+            found = true;
+            const bonusInput = row.querySelector('input');
+            if (bonusInput) {
+              const currentValue = parseInt(bonusInput.value.replace(/[^0-9-]/g, '')) || 0;
+              bonusInput.value = `+${currentValue + 1}`;
+            }
+          }
+        });
+        
+        // Si pas trouvée, l'ajouter
+        if (!found) {
+          const newRow = document.createElement('tr');
+          newRow.innerHTML = `
+            <td>${comp.name}</td>
+            <td>${comp.attribut}</td>
+            <td><input type="text" value="+1" style="width:100%;border:none;text-align:center;font-size:16px;" /></td>
+          `;
+          skillsBody.appendChild(newRow);
+        }
       }
       
       function applyLevelUpCompetence(details) {
@@ -5245,14 +5674,50 @@
       
       // Finaliser la fiche
       function generateCharacterSheet() {
-        // Appliquer toutes les étapes une dernière fois pour s'assurer que tout est à jour
+        // Appliquer les level ups
+        applyLevelUpChoices();
+        
+        // Si on vient du mode libre (Level Up depuis fiche libre)
+        if (currentMode === 'free') {
+          // Mettre à jour le niveau sur la fiche
+          const levelUpCount = parseInt(document.getElementById('levelup-count')?.value) || 0;
+          let newLevel = parseInt(document.getElementById('level').value) || 1;
+          if (levelUpCount > 0) {
+            newLevel = newLevel + levelUpCount;
+            document.getElementById('level').value = newLevel;
+          }
+          
+          // Recalculer les PV/PF avec les nouvelles valeurs de la fiche
+          recalculatePVPFFromSheet();
+          
+          // Retourner au mode libre
+          document.getElementById('wizard-container').style.display = 'none';
+          document.getElementById('wizard-separator').style.display = 'none';
+          document.getElementById('reference-panel').style.display = 'block';
+          document.getElementById('btn-back-from-ref').style.display = 'none';
+          document.getElementById('free-mode-buttons').style.display = 'block';
+          document.getElementById('character-sheet').style.display = 'block';
+          
+          // Réinitialiser les choices pour un prochain level up
+          creationState.levelUpChoices = [];
+          creationState.levelUpPointsSpent = 0;
+          
+          alert('✅ Level Up appliqué avec succès !');
+          
+          // Scroll vers la fiche
+          setTimeout(() => {
+            document.getElementById('character-sheet').scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+          return;
+        }
+        
+        // Mode wizard normal - appliquer toutes les étapes
         updateSheetRace();
         updateSheetAttributes();
         updateSheetClass();
         updateSheetCapacities();
         updateSheetCompetences();
         updateSheetNameAndStats();
-        applyLevelUpChoices();
         
         // Afficher l'étape 9 dans la progress bar
         const step9 = document.querySelector('.progress-step[data-step="9"]');
