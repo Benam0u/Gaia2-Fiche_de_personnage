@@ -2156,8 +2156,8 @@
     .damage-rd-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
     
     .damage-box, .rd-box {
@@ -2172,7 +2172,7 @@
       margin: 0;
       font-size: 18px;
       font-weight: bold;
-      color: #333;
+      color: #666;
       text-align: center;
     }
     
@@ -2334,7 +2334,7 @@
     @media print {
       .wizard-container, .wizard-separator, .reference-panel, .save-load-container, .free-mode-buttons { display: none !important; }
       .add-damage-btn, .remove-damage-btn, .damage-toggle-btn, .damage-entries { display: none !important; }
-      .damage-rd-row { margin-bottom: 0.25rem !important; gap: 0.25rem !important; }
+      .damage-rd-row { margin-bottom: 1rem !important; gap: 1rem !important; }
       .damage-box, .rd-box { padding: 0.2rem 0.4rem !important; }
       .page-break-before { page-break-before: always !important; break-before: page !important; margin-top: 0 !important; }
       #character-sheet { display: block !important; }
@@ -2731,6 +2731,8 @@
       <button class="reference-btn" data-ref="classes">⚔️ Classes</button>
       <button class="reference-btn" data-ref="class-advantages">🎯 Avantages de Classe</button>
       <button class="reference-btn" data-ref="general-advantages">✨ Avantages Généraux</button>
+      <button class="reference-btn" data-ref="custom-advantages">✦ Avantages Personnalisés</button>
+      <button class="reference-btn" data-ref="session-advantages">⟐ Avantages de Session</button>
       <button class="reference-btn" data-ref="competences">📝 Compétences</button>
     </div>
     <div class="reference-content" id="reference-content">
@@ -2788,7 +2790,16 @@
       <!-- Notes / portrait (cols 3-4) -->
         <div class="portrait">
           <h3>Notes - Quêtes - Équipements</h3>
-          <textarea class="auto-grow" rows="1"></textarea>
+          <textarea class="auto-grow" rows="1">- Point d'espoir : 
+- Point d'anarchisme : 
+- Santé mentale : 15
+
+- Pièces d'or = 
+- Pièces d'argent = 
+- Pièces de cuivre = 
+
+Equipement :
+- </textarea>
         </div>
       </div>
       
@@ -2796,7 +2807,7 @@
       <div class="damage-rd-row">
         <div class="damage-box">
           <div class="damage-header">
-            <h3>Dégâts :</h3>
+            <h3>Dégâts</h3>
             <div class="damage-formula" id="damage-formula">—</div>
             <button class="damage-toggle-btn" id="damage-toggle-btn">Éditer</button>
           </div>
@@ -2805,7 +2816,7 @@
         </div>
         <div class="rd-box">
           <div class="damage-header">
-            <h3>Réduction de Dégâts :</h3>
+            <h3>Réduction de Dégâts</h3>
             <div class="damage-formula" id="rd-formula">—</div>
             <button class="damage-toggle-btn" id="rd-toggle-btn">Éditer</button>
           </div>
@@ -2814,28 +2825,28 @@
         </div>
       </div>
 
-    <!-- Bonus de race -->
-    <div class="section">
-      <h3>Bonus de race</h3>
-      <ul class="abilities-list" contenteditable="true"><li></li><li></li><li></li></ul>
-    </div>
-
-    <!-- Compétences -->
-    <div class="section">
-      <h3>Compétences</h3>
-      <table class="skill-table">
-        <thead>
-          <tr><th>Nom</th><th>Attribut</th><th>Bonus</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
-        </tbody>
-      </table>
+    <!-- Bonus de race + Compétences (côte à côte) -->
+    <div class="row-two-col bonus-comp-row">
+      <div class="half-section">
+        <h3>Bonus de race</h3>
+        <ul class="abilities-list" contenteditable="true"><li></li><li></li><li></li></ul>
+      </div>
+      <div class="half-section">
+        <h3>Compétences</h3>
+        <table class="skill-table">
+          <thead>
+            <tr><th>Nom</th><th>Attribut</th><th>Bonus</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
+            <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
+            <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
+            <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
+            <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
+            <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Capacités -->
@@ -3220,7 +3231,7 @@
       };
       
       // Collect bonus de race
-      const bonusSections = document.querySelectorAll('.section');
+      const bonusSections = document.querySelectorAll('.section, .half-section');
       bonusSections.forEach(section => {
         const h3 = section.querySelector('h3');
         if (h3 && h3.textContent.includes('Bonus de race')) {
@@ -3340,7 +3351,7 @@
       
       // Restore bonus de race
       if (sheet.bonusRace && sheet.bonusRace.length > 0) {
-        const bonusSections = document.querySelectorAll('.section');
+        const bonusSections = document.querySelectorAll('.section, .half-section');
         bonusSections.forEach(section => {
           const h3 = section.querySelector('h3');
           if (h3 && h3.textContent.includes('Bonus de race')) {
@@ -3448,6 +3459,17 @@
           if (toggleBtn) toggleBtn.textContent = 'Fermer';
         }
       }
+      
+      // Auto-resize all textareas after import
+      autoResizeTextareas();
+    }
+    
+    // Helper function to auto-resize all textareas
+    function autoResizeTextareas() {
+      document.querySelectorAll('.half-section textarea, .portrait textarea').forEach(ta => {
+        ta.style.height = 'auto';
+        ta.style.height = (ta.scrollHeight) + 'px';
+      });
     }
     
     function saveProfile() {
@@ -3798,6 +3820,8 @@
           document.getElementById('free-mode-buttons').style.display = 'none';
           document.getElementById('btn-back-from-ref').style.display = 'none';
           renderStep(1);
+          // Auto-resize textareas after sheet becomes visible
+          setTimeout(() => autoResizeTextareas(), 50);
         });
         
         // Bouton 2: Consulter les références (Races/Classes/etc.)
@@ -3822,6 +3846,8 @@
           document.getElementById('btn-back-from-ref').style.display = 'none';
           document.getElementById('free-mode-buttons').style.display = 'block';
           document.getElementById('character-sheet').style.display = 'block';
+          // Auto-resize textareas after sheet becomes visible
+          setTimeout(() => autoResizeTextareas(), 50);
         });
         
         // Bouton 4: Importer JSON
@@ -3849,6 +3875,9 @@
               
               // Restaurer les données
               restoreSheetData(data);
+              
+              // Auto-resize textareas after sheet becomes visible
+              setTimeout(() => autoResizeTextareas(), 100);
               
               alert('Profil chargé avec succès !');
             } catch (err) {
@@ -4057,6 +4086,8 @@
           if (wizardContainer) {
             wizardContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
+          // Auto-resize textareas after sheet becomes visible
+          autoResizeTextareas();
         }, 100);
       }
       
@@ -4134,7 +4165,7 @@
         }
         
         // Bonus de race
-        const sections = document.querySelectorAll('.section');
+        const sections = document.querySelectorAll('.section, .half-section');
         sections.forEach(section => {
           const h3 = section.querySelector('h3');
           if (h3 && h3.textContent.includes('Bonus de race')) {
@@ -4207,14 +4238,14 @@
               
               // Avantages secondaires (classe + généraux)
               creationState.secondaryAdvantages.forEach(adv => {
-                const prefix = adv.isGeneral ? '◆ ' : '';
-                capacities.push(`<li><strong>${prefix}${adv.name}</strong> : ${adv.description}</li>`);
+                const marker = adv.isGeneral ? ' ◆' : '';
+                capacities.push(`<li><strong>${adv.name}${marker}</strong> : ${adv.description}</li>`);
               });
               
               // Avantages personnalisés
               creationState.customAdvantages.forEach(adv => {
                 if (adv.name && adv.name.trim() !== '') {
-                  capacities.push(`<li><strong>✦ ${adv.name}</strong> : ${adv.description || 'Pas de description'}</li>`);
+                  capacities.push(`<li><strong>${adv.name} ✦</strong> : ${adv.description || 'Pas de description'}</li>`);
                 }
               });
               
@@ -5225,7 +5256,7 @@
           
           const classGrid = document.createElement('div');
           classGrid.className = 'levelup-adv-grid';
-          classGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:1rem; max-height:150px; overflow-y:auto;';
+          classGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:0.75rem; margin-bottom:1rem; max-height:300px; overflow-y:auto;';
           
           const availableClassAdvantages = creationState.classe.avantages.filter(adv => !isAdvantageAlreadyChosen(adv.id));
           
@@ -5234,8 +5265,8 @@
           } else {
             availableClassAdvantages.forEach(adv => {
               const btn = document.createElement('button');
-              btn.style.cssText = 'padding:0.5rem; border:1px solid #ddd; border-radius:0.25rem; background:#fff; cursor:pointer; text-align:left; font-size:11px;';
-              btn.innerHTML = `<strong>${adv.name}</strong><br><span style="color:#666;">${adv.description.substring(0, 60)}${adv.description.length > 60 ? '...' : ''}</span>`;
+              btn.style.cssText = 'padding:0.75rem; border:1px solid #ddd; border-radius:0.5rem; background:#fff; cursor:pointer; text-align:left; font-size:12px; line-height:1.4;';
+              btn.innerHTML = `<strong style="color:#333;">${adv.name}</strong><br><span style="color:#666; font-size:11px;">${adv.description}</span>`;
               btn.addEventListener('click', () => {
                 addLevelUpChoice({
                   type: 'classe-general',
@@ -5260,7 +5291,7 @@
         
         const generalGrid = document.createElement('div');
         generalGrid.className = 'levelup-adv-grid';
-        generalGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:1rem; max-height:150px; overflow-y:auto;';
+        generalGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:0.75rem; margin-bottom:1rem; max-height:300px; overflow-y:auto;';
         
         const availableGeneralAdvantages = (characterData.avantagesGeneraux || []).filter(adv => !isAdvantageAlreadyChosen(adv.id));
         
@@ -5269,8 +5300,8 @@
         } else {
           availableGeneralAdvantages.forEach(adv => {
             const btn = document.createElement('button');
-            btn.style.cssText = 'padding:0.5rem; border:1px solid #ddd; border-radius:0.25rem; background:#fff; cursor:pointer; text-align:left; font-size:11px;';
-            btn.innerHTML = `<strong>${adv.name}</strong><br><span style="color:#666;">${adv.description.substring(0, 60)}${adv.description.length > 60 ? '...' : ''}</span>`;
+            btn.style.cssText = 'padding:0.75rem; border:1px solid #ddd; border-radius:0.5rem; background:#fff; cursor:pointer; text-align:left; font-size:12px; line-height:1.4;';
+            btn.innerHTML = `<strong style="color:#333;">${adv.name}</strong><br><span style="color:#666; font-size:11px;">${adv.description}</span>`;
             btn.addEventListener('click', () => {
               addLevelUpChoice({
                 type: 'classe-general',
@@ -5329,9 +5360,9 @@
               }
               
               addLevelUpChoice({
-                type: 'classe-general',
+                type: 'custom-levelup',
                 cost: cost,
-                label: `${name} (Personnalisé)`,
+                label: `${name} (Personnalisé ✦)`,
                 details: { 
                   advId: 'custom-levelup-' + Date.now(), 
                   advName: name, 
@@ -5360,7 +5391,7 @@
         
         const advantagesContainer = document.createElement('div');
         advantagesContainer.className = 'levelup-adv-grid';
-        advantagesContainer.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:0.5rem; max-height:200px; overflow-y:auto;';
+        advantagesContainer.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:0.75rem; max-height:300px; overflow-y:auto;';
         
         classSelect.addEventListener('change', () => {
           advantagesContainer.innerHTML = '';
@@ -5375,8 +5406,8 @@
           } else {
             availableAdvantages.forEach(adv => {
               const btn = document.createElement('button');
-              btn.style.cssText = 'padding:0.5rem; border:1px solid #ddd; border-radius:0.25rem; background:#fff; cursor:pointer; text-align:left; font-size:11px;';
-              btn.innerHTML = `<strong>${adv.name}</strong><br><span style="color:#666;">${adv.description.substring(0, 60)}${adv.description.length > 60 ? '...' : ''}</span>`;
+              btn.style.cssText = 'padding:0.75rem; border:1px solid #ddd; border-radius:0.5rem; background:#fff; cursor:pointer; text-align:left; font-size:12px; line-height:1.4;';
+              btn.innerHTML = `<strong style="color:#333;">${adv.name}</strong><br><span style="color:#666; font-size:11px;">${adv.description}</span>`;
               btn.addEventListener('click', () => {
                 addLevelUpChoice({
                   type: 'autre-classe',
@@ -5664,8 +5695,17 @@
             const list = section.querySelector('.abilities-list');
             if (list) {
               const li = document.createElement('li');
-              const prefix = choice.type === 'autre-classe' ? '⬡ ' : '◆ ';
-              li.innerHTML = `<strong>${prefix}${choice.details.advName}</strong> : ${choice.details.advDesc}`;
+              // Determine marker based on type and source
+              let marker = '';
+              if (choice.type === 'autre-classe') {
+                marker = ' ⬡';
+              } else if (choice.type === 'custom-levelup') {
+                marker = ' ✦';
+              } else if (choice.type === 'classe-general' && choice.details?.source === 'general') {
+                marker = ' ◆';
+              }
+              // No marker for same-class advantages (choice.type === 'classe-general' without source='general')
+              li.innerHTML = `<strong>${choice.details.advName}${marker}</strong> : ${choice.details.advDesc}`;
               list.appendChild(li);
             }
           }
@@ -5718,6 +5758,24 @@
         updateSheetCapacities();
         updateSheetCompetences();
         updateSheetNameAndStats();
+        
+        // Mettre le texte par défaut des Notes avec les valeurs de création
+        const notesTextarea = document.querySelector('.portrait textarea');
+        if (notesTextarea) {
+          notesTextarea.value = `- Point d'espoir : 1
+- Point d'anarchisme : 1
+- Santé mentale : 15
+
+- Pièces d'or = 0
+- Pièces d'argent = 0
+- Pièces de cuivre = 0
+
+Equipement :
+- `;
+          // Auto-resize the textarea
+          notesTextarea.style.height = 'auto';
+          notesTextarea.style.height = (notesTextarea.scrollHeight) + 'px';
+        }
         
         // Afficher l'étape 9 dans la progress bar
         const step9 = document.querySelector('.progress-step[data-step="9"]');
@@ -5812,6 +5870,12 @@
             break;
           case 'general-advantages':
             html = renderGeneralAdvantagesReference();
+            break;
+          case 'custom-advantages':
+            html = renderCustomAdvantagesReference();
+            break;
+          case 'session-advantages':
+            html = renderSessionAdvantagesReference();
             break;
           case 'competences':
             html = renderCompetencesReference();
@@ -5977,6 +6041,158 @@
         return html;
       }
       
+      function renderCustomAdvantagesReference() {
+        let html = '<h3>✦ Avantages Personnalisés de Classe</h3>';
+        html += '<p style="text-align:center; color:#666; font-size:12px; margin-bottom:1rem;">Créez vos propres avantages en rapport avec votre classe (3 pts de création lors d\'un Level Up)</p>';
+        html += '<p style="text-align:center; color:#8b0000; font-size:14px; margin-bottom:1rem;"><strong>Marqueur :</strong> ✦ (après le nom)</p>';
+        
+        html += '<div class="custom-advantage-creator">';
+        html += `
+          <div class="custom-adv-form" style="max-width:600px; margin:0 auto; padding:1rem; border:2px solid #333; border-radius:1rem; background:#f9f9f9;">
+            <div style="margin-bottom:1rem;">
+              <label style="display:block; font-weight:bold; margin-bottom:0.25rem;">Nom de l'avantage :</label>
+              <input type="text" id="custom-adv-name" placeholder="Ex: Technique du Dragon" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:0.5rem; font-size:14px;" />
+            </div>
+            <div style="margin-bottom:1rem;">
+              <label style="display:block; font-weight:bold; margin-bottom:0.25rem;">Description :</label>
+              <textarea id="custom-adv-desc" placeholder="Décrivez l'effet de cet avantage..." rows="3" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:0.5rem; font-size:14px; resize:vertical;"></textarea>
+            </div>
+            <button onclick="addCustomAdvantageToSheet()" style="width:100%; padding:0.75rem; background:#8b0000; color:#fff; border:none; border-radius:0.5rem; font-size:16px; font-weight:bold; cursor:pointer;">+ Ajouter à la fiche</button>
+          </div>
+        `;
+        html += '</div>';
+        
+        return html;
+      }
+      
+      function renderSessionAdvantagesReference() {
+        let html = '<h3>⟐ Avantages Gagnés en Session</h3>';
+        html += '<p style="text-align:center; color:#666; font-size:12px; margin-bottom:1rem;">Ces avantages sont accordés par le MJ pendant les sessions de jeu. Ils ne peuvent pas être achetés avec des points de création.</p>';
+        html += '<p style="text-align:center; color:#8b0000; font-size:14px; margin-bottom:1rem;"><strong>Marqueur :</strong> ⟐ (après le nom)</p>';
+        
+        html += '<div class="session-advantage-info" style="max-width:600px; margin:0 auto; padding:1.5rem; border:2px dashed #666; border-radius:1rem; background:#f5f5f5; text-align:center;">';
+        html += `
+          <p style="font-size:18px; color:#333; margin-bottom:1rem;">🎲 <strong>Comment ça marche ?</strong></p>
+          <ul style="text-align:left; list-style:disc; padding-left:2rem; font-size:14px; color:#555;">
+            <li style="margin-bottom:0.5rem;">Les avantages de session sont des récompenses narratives données par le MJ.</li>
+            <li style="margin-bottom:0.5rem;">Ils représentent des capacités spéciales acquises pendant l'aventure (artefacts, bénédictions, mutations, etc.).</li>
+            <li style="margin-bottom:0.5rem;">Seul le MJ peut vous attribuer ces avantages.</li>
+            <li style="margin-bottom:0.5rem;">Ils sont identifiés par le symbole ⟐ après leur nom.</li>
+          </ul>
+          <hr style="margin:1.5rem 0; border:none; border-top:1px solid #ccc;" />
+          <p style="font-size:14px; color:#666;">Pour ajouter manuellement un avantage de session :</p>
+          <div style="margin-top:1rem;">
+            <input type="text" id="session-adv-name" placeholder="Nom de l'avantage" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:0.5rem; font-size:14px; margin-bottom:0.5rem;" />
+            <textarea id="session-adv-desc" placeholder="Description..." rows="2" style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:0.5rem; font-size:14px; resize:vertical; margin-bottom:0.5rem;"></textarea>
+            <button onclick="addSessionAdvantageToSheet()" style="width:100%; padding:0.5rem; background:#666; color:#fff; border:none; border-radius:0.5rem; font-size:14px; cursor:pointer;">⟐ Ajouter comme avantage de session</button>
+          </div>
+        `;
+        html += '</div>';
+        
+        return html;
+      }
+      
+      // Functions to add custom/session advantages to sheet
+      function addCustomAdvantageToSheet() {
+        const nameInput = document.getElementById('custom-adv-name');
+        const descInput = document.getElementById('custom-adv-desc');
+        
+        const name = nameInput?.value?.trim();
+        const desc = descInput?.value?.trim() || 'Pas de description';
+        
+        if (!name) {
+          showNotification('❌ Veuillez entrer un nom pour l\'avantage', '#e74c3c');
+          return;
+        }
+        
+        // Add to abilities list
+        const abilitySections = document.querySelectorAll('.section');
+        abilitySections.forEach(section => {
+          const h3 = section.querySelector('h3');
+          if (h3 && (h3.textContent.includes('Capacités') || h3.textContent.includes('Avantages'))) {
+            const list = section.querySelector('.abilities-list');
+            if (list) {
+              // Find first empty li or create new
+              let emptyLi = null;
+              for (const item of list.querySelectorAll('li')) {
+                const content = item.innerHTML.replace(/<br\s*\/?>/gi, '').trim();
+                if (!content) {
+                  emptyLi = item;
+                  break;
+                }
+              }
+              
+              const newContent = `<strong>${name} ✦</strong> : ${desc}`;
+              
+              if (emptyLi) {
+                emptyLi.innerHTML = newContent;
+                cleanupEmptyListItems(list);
+              } else {
+                const li = document.createElement('li');
+                li.innerHTML = newContent;
+                list.appendChild(li);
+              }
+            }
+          }
+        });
+        
+        // Clear inputs
+        nameInput.value = '';
+        descInput.value = '';
+        
+        showNotification(`✅ "${name} ✦" ajouté à la fiche`, '#27ae60');
+      }
+      
+      function addSessionAdvantageToSheet() {
+        const nameInput = document.getElementById('session-adv-name');
+        const descInput = document.getElementById('session-adv-desc');
+        
+        const name = nameInput?.value?.trim();
+        const desc = descInput?.value?.trim() || 'Accordé par le MJ';
+        
+        if (!name) {
+          showNotification('❌ Veuillez entrer un nom pour l\'avantage', '#e74c3c');
+          return;
+        }
+        
+        // Add to abilities list
+        const abilitySections = document.querySelectorAll('.section');
+        abilitySections.forEach(section => {
+          const h3 = section.querySelector('h3');
+          if (h3 && (h3.textContent.includes('Capacités') || h3.textContent.includes('Avantages'))) {
+            const list = section.querySelector('.abilities-list');
+            if (list) {
+              // Find first empty li or create new
+              let emptyLi = null;
+              for (const item of list.querySelectorAll('li')) {
+                const content = item.innerHTML.replace(/<br\s*\/?>/gi, '').trim();
+                if (!content) {
+                  emptyLi = item;
+                  break;
+                }
+              }
+              
+              const newContent = `<strong>${name} ⟐</strong> : ${desc}`;
+              
+              if (emptyLi) {
+                emptyLi.innerHTML = newContent;
+                cleanupEmptyListItems(list);
+              } else {
+                const li = document.createElement('li');
+                li.innerHTML = newContent;
+                list.appendChild(li);
+              }
+            }
+          }
+        });
+        
+        // Clear inputs
+        nameInput.value = '';
+        descInput.value = '';
+        
+        showNotification(`✅ "${name} ⟐" ajouté à la fiche`, '#27ae60');
+      }
+      
       function renderCompetencesReference() {
         let html = '<h3>📝 Compétences</h3>';
         html += '<p style="text-align:center; color:#666; font-size:12px; margin-bottom:1rem;">Utilisez les boutons <span style="color:#8b0000;">−</span> et <span style="color:#27ae60;">+</span> pour ajuster les bonus</p>';
@@ -6071,28 +6287,38 @@
           card.classList.remove('ref-item-added');
           showNotification(`❌ "${name}" retiré de la fiche`, '#e74c3c');
         } else {
-          // Add to sheet with appropriate prefix
-          let prefix = '';
+          // Add to sheet with appropriate marker (after name)
+          let marker = '';
           if (source === 'general') {
-            prefix = '◆ ';
+            marker = ' ◆';
           } else if (source === 'autre-classe') {
-            prefix = '⬡ ';
+            marker = ' ⬡';
+          } else if (source === 'custom') {
+            marker = ' ✦';
+          } else if (source === 'session') {
+            marker = ' ⟐';
           }
           
-          const li = document.createElement('li');
-          li.innerHTML = `<strong>${prefix}${name}</strong> : ${description}`;
+          const newContent = `<strong>${name}${marker}</strong> : ${description}`;
           
-          // Find first empty li or append
+          // Find first empty li (check for empty innerHTML, only <br>, or only whitespace)
           let emptyLi = null;
-          targetList.querySelectorAll('li').forEach(item => {
-            if (!item.innerHTML.trim() && !emptyLi) {
+          const allItems = targetList.querySelectorAll('li');
+          for (const item of allItems) {
+            const content = item.innerHTML.replace(/<br\s*\/?>/gi, '').trim();
+            if (!content) {
               emptyLi = item;
+              break;
             }
-          });
+          }
           
           if (emptyLi) {
-            emptyLi.innerHTML = li.innerHTML;
+            emptyLi.innerHTML = newContent;
+            // Clean up remaining empty placeholders after this one
+            cleanupEmptyListItems(targetList);
           } else {
+            const li = document.createElement('li');
+            li.innerHTML = newContent;
             targetList.appendChild(li);
           }
           
@@ -6103,6 +6329,20 @@
           
           const sourceLabel = source === 'general' ? '(Général)' : source === 'autre-classe' ? '(Autre classe)' : '(Classe)';
           showNotification(`✅ "${name}" ajouté ${sourceLabel}`, '#27ae60');
+        }
+      }
+      
+      // Helper to clean up empty list items at the end of a list
+      function cleanupEmptyListItems(list) {
+        const items = list.querySelectorAll('li');
+        // Remove empty items from the end
+        for (let i = items.length - 1; i >= 0; i--) {
+          const content = items[i].innerHTML.replace(/<br\s*\/?>/gi, '').trim();
+          if (!content) {
+            items[i].remove();
+          } else {
+            break; // Stop at first non-empty item from the end
+          }
         }
       }
       
@@ -6147,14 +6387,34 @@
               bonusInput.value = '+' + newBonus;
             }
           } else {
-            // Create new row
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
+            // Find first empty placeholder row or create new one
+            let emptyRow = null;
+            for (const row of rows) {
+              const nameInput = row.querySelector('td:first-child input');
+              if (nameInput && !nameInput.value.trim()) {
+                emptyRow = row;
+                break;
+              }
+            }
+            
+            if (emptyRow) {
+              // Use the empty placeholder row
+              const inputs = emptyRow.querySelectorAll('input');
+              if (inputs[0]) inputs[0].value = name;
+              if (inputs[1]) inputs[1].value = attr;
+              if (inputs[2]) inputs[2].value = '+' + newBonus;
+              // Clean up remaining empty rows after this one
+              cleanupEmptySkillRows(tbody);
+            } else {
+              // Create new row
+              const newRow = document.createElement('tr');
+              newRow.innerHTML = `
               <td><input value="${name}" /></td>
               <td><input value="${attr}" /></td>
               <td><input type="text" value="+${newBonus}" style="text-align:center;" /></td>
             `;
-            tbody.appendChild(newRow);
+              tbody.appendChild(newRow);
+            }
           }
           
           // Update UI
@@ -6168,6 +6428,20 @@
             showNotification(`✅ "${name}" : +${newBonus}`, '#27ae60');
           } else {
             showNotification(`📝 "${name}" : +${newBonus}`, '#f39c12');
+          }
+        }
+      }
+      
+      // Helper to clean up empty skill table rows at the end
+      function cleanupEmptySkillRows(tbody) {
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        // Remove empty rows from the end
+        for (let i = rows.length - 1; i >= 0; i--) {
+          const nameInput = rows[i].querySelector('td:first-child input');
+          if (nameInput && !nameInput.value.trim()) {
+            rows[i].remove();
+          } else {
+            break; // Stop at first non-empty row from the end
           }
         }
       }
@@ -6404,6 +6678,8 @@
       window.adjustCompetenceOnSheet = adjustCompetenceOnSheet;
       window.selectRaceFromRef = selectRaceFromRef;
       window.selectClassFromRef = selectClassFromRef;
+      window.addCustomAdvantageToSheet = addCustomAdvantageToSheet;
+      window.addSessionAdvantageToSheet = addSessionAdvantageToSheet;
       
       // Initialiser le panneau de référence
       initReferencePanel();
