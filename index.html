@@ -1892,6 +1892,19 @@
       .portrait textarea {
         font-size: 12px !important;
       }
+      
+      /* Textareas auto-grow (Notes, Description, Histoire, Relations) */
+      textarea.auto-grow {
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+      }
+      
+      /* Inputs source dans Dégâts et RD */
+      .damage-entry input[type="text"],
+      .damage-entry select,
+      .damage-entry input[type="number"] {
+        font-size: 10px !important;
+      }
     }
     
     /* Très petits écrans (iPhone SE, etc.) */
@@ -1956,6 +1969,17 @@
       /* Level up - 1 column for characteristics on very small screens */
       .levelup-carac-grid {
         grid-template-columns: 1fr !important;
+      }
+      
+      /* Textareas et inputs plus petits sur très petits écrans */
+      textarea.auto-grow {
+        font-size: 11px !important;
+      }
+      
+      .damage-entry input[type="text"],
+      .damage-entry select,
+      .damage-entry input[type="number"] {
+        font-size: 9px !important;
       }
     }
     
@@ -2328,27 +2352,6 @@
       .damage-entry input[type="text"] {
         width: 100%;
         margin-top: 0.25rem;
-        font-size: 9px !important;
-      }
-      
-      .damage-entry select,
-      .damage-entry input[type="number"] {
-        font-size: 9px !important;
-      }
-    }
-    
-    /* Mobile - Character Sheet textareas (doit être après les styles de base) */
-    @media screen and (max-width: 768px) {
-      .portrait textarea,
-      .half-section textarea,
-      textarea.auto-grow {
-        font-size: 11px !important;
-        line-height: 1.4 !important;
-      }
-      
-      .portrait h3,
-      .half-section h3 {
-        font-size: 10px !important;
       }
     }
     
@@ -2809,7 +2812,7 @@
       </div>
 
       <!-- Notes / portrait (cols 3-4) -->
-        <div class="portrait">
+      <div class="portrait">
           <h3>Notes - Quêtes - Équipements</h3>
           <textarea class="auto-grow" rows="1">- Point d'espoir : 
 - Point d'anarchisme : 
@@ -2821,9 +2824,9 @@
 
 Equipement :
 - </textarea>
-        </div>
       </div>
-      
+    </div>
+
       <!-- Dégâts et RD (compact) -->
       <div class="damage-rd-row">
         <div class="damage-box">
@@ -2849,24 +2852,24 @@ Equipement :
     <!-- Bonus de race + Compétences (côte à côte) -->
     <div class="row-two-col bonus-comp-row">
       <div class="half-section">
-        <h3>Bonus de race</h3>
-        <ul class="abilities-list" contenteditable="true"><li></li><li></li><li></li></ul>
-      </div>
+      <h3>Bonus de race</h3>
+      <ul class="abilities-list" contenteditable="true"><li></li><li></li><li></li></ul>
+    </div>
       <div class="half-section">
-        <h3>Compétences</h3>
-        <table class="skill-table">
-          <thead>
-            <tr><th>Nom</th><th>Attribut</th><th>Bonus</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
-            <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
-            <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
-            <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
-            <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
-            <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          </tbody>
-        </table>
+      <h3>Compétences</h3>
+      <table class="skill-table">
+        <thead>
+          <tr><th>Nom</th><th>Attribut</th><th>Bonus</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
+        </tbody>
+      </table>
       </div>
     </div>
 
