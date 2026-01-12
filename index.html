@@ -2328,6 +2328,27 @@
       .damage-entry input[type="text"] {
         width: 100%;
         margin-top: 0.25rem;
+        font-size: 9px !important;
+      }
+      
+      .damage-entry select,
+      .damage-entry input[type="number"] {
+        font-size: 9px !important;
+      }
+    }
+    
+    /* Mobile - Character Sheet textareas (doit être après les styles de base) */
+    @media screen and (max-width: 768px) {
+      .portrait textarea,
+      .half-section textarea,
+      textarea.auto-grow {
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+      }
+      
+      .portrait h3,
+      .half-section h3 {
+        font-size: 10px !important;
       }
     }
     
