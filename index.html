@@ -1834,18 +1834,19 @@
       }
       
       .abilities-list {
-        font-size: 12px !important;
+        font-size: 11px !important;
         padding-left: 1.2rem !important;
+        line-height: 1.4 !important;
       }
       
       .abilities-list li {
         padding: 0.2rem 0 !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
         line-height: 1.4 !important;
       }
       
       .abilities-list li::marker {
-        font-size: 12px !important;
+        font-size: 11px !important;
       }
       
       /* Bonus de race */
@@ -1875,7 +1876,9 @@
       }
       
       .half-section textarea {
-        font-size: 12px !important;
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+        font-family: Arial, Helvetica, sans-serif !important;
       }
       
       .half-section input[type="file"] {
@@ -1886,17 +1889,22 @@
       
       /* Textarea et notes (inventaire) */
       textarea {
-        font-size: 12px !important;
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+        font-family: Arial, Helvetica, sans-serif !important;
       }
       
       .portrait textarea {
-        font-size: 12px !important;
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+        font-family: Arial, Helvetica, sans-serif !important;
       }
       
       /* Textareas auto-grow (Notes, Description, Histoire, Relations) */
       textarea.auto-grow {
-        font-size: 12px !important;
+        font-size: 11px !important;
         line-height: 1.4 !important;
+        font-family: Arial, Helvetica, sans-serif !important;
       }
       
       /* Inputs source dans Dégâts et RD */
@@ -1972,8 +1980,19 @@
       }
       
       /* Textareas et inputs plus petits sur très petits écrans */
-      textarea.auto-grow {
-        font-size: 11px !important;
+      textarea,
+      textarea.auto-grow,
+      .portrait textarea,
+      .half-section textarea {
+        font-size: 10px !important;
+        line-height: 1.4 !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+      }
+      
+      .abilities-list,
+      .abilities-list li {
+        font-size: 10px !important;
+        line-height: 1.4 !important;
       }
       
       .damage-entry input[type="text"],
@@ -2505,9 +2524,18 @@
     .half-section textarea{width:100%;box-sizing:border-box;border:none;border-radius:0.5rem;padding:0.5rem;background:#fff;font-size:16px;overflow:hidden;resize:none;}
 
     /* listes à puces éditables */
-    .abilities-list { list-style-type: disc; padding-left: 1.2rem; margin: 0; font-size: 16px; }
+    .abilities-list { list-style-type: disc; padding-left: 1.2rem; margin: 0; font-size: 14px; line-height: 1.5; font-family: Arial, Helvetica, sans-serif; }
     .abilities-list li{ margin-bottom:0.25rem; border-bottom:1px solid #ccc; padding:0.25rem 0; }
     .abilities-list li:first-child{border-top:1px solid #ccc;}
+    
+    /* Harmonisation des textareas avec abilities-list */
+    .portrait textarea,
+    .half-section textarea,
+    textarea.auto-grow {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
 
     @media print {
       /* forcer le zoom 100 % et conserver les couleurs/polices du web */
@@ -2798,10 +2826,18 @@
           <label style="font-weight:bold; color:#666;">Nombre de Level Up :</label>
           <div style="display:flex; align-items:center; gap:0.5rem;">
             <button id="levelup-minus" class="levelup-btn" style="width:36px; height:36px; font-size:20px; border:2px solid #8b0000; background:#fff; color:#8b0000; border-radius:0.25rem; cursor:pointer;">−</button>
-            <input type="number" id="levelup-count" min="0" max="10" value="0" style="width:60px; text-align:center; font-size:18px; font-weight:bold; border:2px solid #ddd; border-radius:0.25rem; padding:0.25rem;">
+            <input type="number" id="levelup-count" min="0" max="20" value="0" style="width:60px; text-align:center; font-size:18px; font-weight:bold; border:2px solid #ddd; border-radius:0.25rem; padding:0.25rem;">
             <button id="levelup-plus" class="levelup-btn" style="width:36px; height:36px; font-size:20px; border:2px solid #8b0000; background:#8b0000; color:#fff; border-radius:0.25rem; cursor:pointer;">+</button>
           </div>
           <span id="levelup-total-points" style="font-size:18px; font-weight:bold; color:#27ae60;">= 0 points</span>
+        </div>
+        
+        <div id="level-summary" style="display:none; text-align:center; margin:0.75rem 0; padding:0.75rem; background:linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius:0.5rem; border:2px solid #8b0000;">
+          <span style="font-size:14px; color:#666;">Niveau actuel :</span>
+          <span id="level-current-display" style="font-size:24px; font-weight:bold; color:#333; margin:0 0.5rem;">1</span>
+          <span style="font-size:20px; color:#8b0000;">→</span>
+          <span id="level-future-display" style="font-size:24px; font-weight:bold; color:#8b0000; margin:0 0.5rem;">1</span>
+          <span style="font-size:14px; color:#666;">après Level Up</span>
         </div>
         
         <div id="level-up-container">
@@ -2886,16 +2922,16 @@
       <!-- Notes / portrait (cols 3-4) -->
       <div class="portrait">
           <h3>Notes - Quêtes - Équipements</h3>
-          <textarea class="auto-grow" rows="1">- Point d'espoir : 
-- Point d'anarchisme : 
-- Santé mentale : 15
+          <textarea class="auto-grow" rows="1">• Point d'espoir : 
+• Point d'anarchisme : 
+• Santé mentale : 15
 
-- Pièces d'or = 
-- Pièces d'argent = 
-- Pièces de cuivre = 
+• Pièces d'or = 
+• Pièces d'argent = 
+• Pièces de cuivre = 
 
 Equipement :
-- </textarea>
+• </textarea>
       </div>
     </div>
 
@@ -3129,20 +3165,23 @@ Equipement :
       damageEntries.forEach(entry => {
         const div = document.createElement('div');
         div.className = 'damage-entry';
+        
+        const isFlat = entry.diceType === 'Flat';
+        
         div.innerHTML = `
-          <select onchange="updateDamageEntry(${entry.id}, 'diceCount', this.value)">
+          <select onchange="updateDamageEntry(${entry.id}, 'diceCount', this.value)" ${isFlat ? 'style="display:none;"' : ''}>
             ${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => 
               `<option value="${n}" ${entry.diceCount === n ? 'selected' : ''}>${n}</option>`
             ).join('')}
           </select>
-          <select onchange="updateDamageEntry(${entry.id}, 'diceType', this.value)">
-            ${['D4', 'D6', 'D8', 'D10', 'D12', 'D20', 'D100'].map(d => 
+          <select onchange="updateDamageEntry(${entry.id}, 'diceType', this.value); renderDamageEntries();">
+            ${['D4', 'D6', 'D8', 'D10', 'D12', 'D20', 'D100', 'Flat'].map(d => 
               `<option value="${d}" ${entry.diceType === d ? 'selected' : ''}>${d}</option>`
             ).join('')}
           </select>
-          <span style="font-weight:bold;">+</span>
+          <span style="font-weight:bold;">${isFlat ? '=' : '+'}</span>
           <input type="number" value="${entry.bonus}" min="-99" max="99" onchange="updateDamageEntry(${entry.id}, 'bonus', this.value)" placeholder="0">
-          <input type="text" value="${entry.label}" onchange="updateDamageEntry(${entry.id}, 'label', this.value)" placeholder="Source (ex: épée longue)">
+          <input type="text" value="${entry.label}" onchange="updateDamageEntry(${entry.id}, 'label', this.value)" placeholder="Source (ex: ${isFlat ? 'Main de fer' : 'épée longue'})">
           <button class="remove-damage-btn" onclick="removeDamageEntry(${entry.id})">×</button>
         `;
         container.appendChild(div);
@@ -3158,22 +3197,42 @@ Equipement :
         return;
       }
       
-      const parts = damageEntries.map(entry => {
-        let part = '';
-        if (entry.diceCount > 1) {
-          part = `${entry.diceCount}${entry.diceType}`;
+      // Séparer les dés et les bonus flats
+      const diceParts = [];
+      let flatTotal = 0;
+      
+      damageEntries.forEach(entry => {
+        if (entry.diceType === 'Flat') {
+          // Dégâts flats: juste ajouter le bonus au total
+          flatTotal += entry.bonus || 0;
         } else {
-          part = entry.diceType;
+          // Dégâts avec dés
+          let part = '';
+          if (entry.diceCount > 1) {
+            part = `${entry.diceCount}${entry.diceType}`;
+          } else {
+            part = entry.diceType;
+          }
+          if (entry.bonus > 0) {
+            part += `+${entry.bonus}`;
+          } else if (entry.bonus < 0) {
+            part += `${entry.bonus}`;
+          }
+          diceParts.push(`(${part})`);
         }
-        if (entry.bonus > 0) {
-          part += `+${entry.bonus}`;
-        } else if (entry.bonus < 0) {
-          part += `${entry.bonus}`;
-        }
-        return `(${part})`;
       });
       
-      formulaDiv.textContent = parts.join(' + ');
+      // Construire la formule finale
+      let formula = diceParts.join(' + ');
+      
+      // Ajouter le total flat à la fin
+      if (flatTotal > 0) {
+        formula = formula ? `${formula} + ${flatTotal}` : `${flatTotal}`;
+      } else if (flatTotal < 0) {
+        formula = formula ? `${formula} ${flatTotal}` : `${flatTotal}`;
+      }
+      
+      formulaDiv.textContent = formula || '—';
     }
     
     // ========== SYSTÈME DE RD ==========
@@ -3568,6 +3627,42 @@ Equipement :
       });
     }
     
+    // Convertit les tirets en début de ligne en puces rondes (•)
+    function convertDashesToBullets(textarea) {
+      const cursorPos = textarea.selectionStart;
+      const cursorEnd = textarea.selectionEnd;
+      const originalValue = textarea.value;
+      
+      // Remplacer les tirets en début de ligne par des puces
+      // - au début du texte
+      // - après un saut de ligne
+      let newValue = originalValue
+        .replace(/^- /gm, '• ')  // Tiret suivi d'espace en début de ligne
+        .replace(/^-$/gm, '•');   // Tiret seul en début de ligne
+      
+      // Ne mettre à jour que si le texte a changé
+      if (newValue !== originalValue) {
+        // Calculer le décalage du curseur (chaque - devient •, même longueur donc pas de décalage)
+        textarea.value = newValue;
+        
+        // Restaurer la position du curseur
+        textarea.setSelectionRange(cursorPos, cursorEnd);
+      }
+    }
+    
+    // Initialiser la conversion automatique des tirets en puces pour les textareas
+    function initBulletConversion() {
+      document.querySelectorAll('.half-section textarea, .portrait textarea').forEach(ta => {
+        // Convertir les tirets existants
+        convertDashesToBullets(ta);
+        
+        // Écouter les changements
+        ta.addEventListener('input', function() {
+          convertDashesToBullets(this);
+        });
+      });
+    }
+    
     function saveProfile() {
       const data = collectSheetData();
       const charName = data.sheet.name || 'personnage';
@@ -3663,7 +3758,7 @@ Equipement :
       const characterData = {
         "races": [
           {"id":"humain","name":"Humain","description":"Espèce « dominante », réputée pour son adaptabilité et son sens des affaires. Souvent ouverts aux nouveautés, les humains sont une espèce essentiellement citadine.","bonuses":["Compétent : +1 point de création/niveau (niveau 1 compris)","Adaptable : peut apprendre un avantage racial d'une autre race en trouvant un Maître et en y consacrant du temps"],"maluses":["Complexé : raciste/haineux envers une race au choix. Perd 2 niveaux de Charisme lors des interactions avec cette race"]},
-          {"id":"cryx","name":"Cryx","description":"Espèce la moins courante, en trouver un est toujours un événement majeur. On dit qu'ils sont nés du cristal et qu'en voir un peut changer une vie.","bonuses":["Mage-né : +2 niveaux de dé en Sagesse","Pacifistes : commence avec la compétence Diplomatie à 3"],"maluses":["Destin lié : chaque Cryx entre en résonance avec une seule et unique personne dans le monde. Un jour il rencontrera cette personne, sera incapable de lui causer du tort et deviendra son génie personnel"]},
+          {"id":"cryx","name":"Cryx","description":"Espèce la moins courante, en trouver un est toujours un événement majeur. On dit qu'ils sont nés du cristal et qu'en voir un peut changer une vie.","bonuses":["Mage-né : +2 points en Sagesse","Pacifistes : commence avec la compétence Diplomatie à 3"],"maluses":["Destin lié : chaque Cryx entre en résonance avec une seule et unique personne dans le monde. Un jour il rencontrera cette personne, sera incapable de lui causer du tort et deviendra son génie personnel"]},
           {"id":"corion","name":"Corion","description":"Race souterraine, ils protègent jalousement le lieu de leurs bastions. Civilisation mystérieuse aux mœurs étranges, par exemple ils utilisent les odeurs pour délimiter leur territoire personnel à la manière d'animaux. Les guerriers Corions sont réputés pour leur brutalité.","bonuses":["Nageroche : le personnage peut nager dans la terre ou creuser facilement","Odorat développé : gagne un niveau de dé sur les tests où l'odorat est en jeu"],"maluses":["Aveugle : le personnage est aveugle, perd un niveau de dé pour toute action où la vue est importante"]},
           {"id":"haut-nain","name":"Haut-Nain","description":"La légende raconte que les nains étaient à l'époque faits de chair et de sang comme toutes autres races. Mais nul n'en a vu ces derniers siècles. Les Haut-Nains sont connus pour leur sens des affaires et leurs talents magiques et d'artisanat. C'est un peuple divisé en castes : selon le matériau dont est composé le nain, une tâche lui est dévolue dans la société archinaine.","bonuses":["Artisa'Nain : commence avec une rune d'un ancêtre gravée à même le corps, magique, qui donne +2 niveaux de compétence selon le domaine d'expertise de l'ancêtre","Corps de métal : porteur sain de toute toxine"],"maluses":["Sang de fer : les PV rendus magiquement sont divisés par 2. Soigner un nain non magiquement se fait avec le métal constitutif du nain et un jet d'Artisanat (Forge)"]},
           {"id":"troll","name":"Troll","description":"Les Trolls vivent dans de gigantesques ruches creusées dans le sol, d'argile et de boue. Ils sont d'un naturel curieux et adorent essayer des choses pour « la science ». Fait important : leur biologie fait que les Trolls naissent gigantesques et se ratatinent avec le temps, gagnant des capacités mentales en échange de leur force.","bonuses":["Évolution : le personnage commence avec −2 niveaux en Sagesse et Intelligence, et +2 niveaux en Force et Dextérité. À chaque palier de 5 niveaux (5, 10, 15, 20), il échange un −1 et un +1","Pour la Reine ! : les Trolls sont loyaux envers leur nation. Toute action menaçant la ruche est proscrite"],"maluses":["Esprit faible : le Troll possède naturellement −5 dans la compétence Volonté"]},
@@ -3672,22 +3767,22 @@ Equipement :
           {"id":"elfe-vent","name":"Elfe du Vent","description":"Les elfes du vent sont les seuls elfes rescapés de la colère d'Axell. Peuple traumatisé issu d'un ancien empire, ils ont perdu beaucoup pour en arriver à l'enclave restante. Ce sont les maîtres des bateaux volants et malgré leur passé impérialiste, leur bienveillance a laissé des populations non hostiles envers eux.","bonuses":["Magie du vent : les elfes du vent manipulent le vent","Vision nocturne : les elfes voient dans le noir absolu"],"maluses":["Gemme du Vent : les elfes du vent possèdent une gemme qui est le siège de leur essence sur le front ou le thorax. Tout dégât ou modification de cette gemme se répercute de manière accentuée sur lui"]},
           {"id":"vestal","name":"Vestal","description":"Les vestals vivent dans les cieux, sur des rochers escarpés à l'écart des autres populations. Ce peuple volant possède une affinité avec les milieux chauds car nichant parfois à flanc de volcan. Ils vivent dans des nids creusés dans des cavernes à même les falaises et se nourrissent principalement des fruits qu'ils vont cueillir.","bonuses":["Ailes : le vestal sait voler","Résistance élémentaire : résiste naturellement au feu et aux températures élevées"],"maluses":["Ossature légère : la Force n'est pas dans le calcul des PV du vestal"]},
           {"id":"orc","name":"Orc","description":"Souvent plus athlétiques et coriaces, les orcs vivent dans une société clanique patriarcale. Ils sont connus pour leur soif d'aventure et leur goût de l'adrénaline dû à leur espérance de vie relativement courte. L'idée est de vivre un maximum d'expériences exceptionnelles. Le sens de l'honneur est apprécié chez ces peaux vertes. On les voit souvent dans des rôles de mercenaires ou de gardes du corps.","bonuses":["Berz'Orc : ignore 1 blessure en combat","Aware : l'orc commence avec +1 dans les compétences Perception et Discrétion"],"maluses":["« Shot Magus First » : les Orcs se méfient de la magie et n'aiment pas les mages. Lui lancer un sort, même gentil, c'est prendre l'aggro"]},
-          {"id":"ogre","name":"Ogre","description":"Un ogre, c'est moche. OK. Mais un ogre, est-ce que c'est méchant ? Souvent, c'est le méchant de l'histoire, probablement dû au passé et aux ambitions de leur roi Argold qui n'a jamais caché son sentiment de supériorité vis-à-vis des autres races. Les ogres sont des experts de la discrétion et de l'alchimie, ce qui fait d'eux le coupable idéal quel que soit le problème.","bonuses":["Esprit scientifique : +2 niveaux de dé en Intelligence","Sans trace : un ogre ne laisse pas de trace ni d'odeur"],"maluses":["Sale réputation : en plus d'être la cible de racisme, l'ogre n'inspire pas confiance. Il a −5 à ses jets sociaux quand il ne s'adresse pas à un ogre"]},
-          {"id":"canitaure","name":"Canitaure","description":"Probablement les invités les plus rares à un banquet. Pas qu'ils soient de mauvaise compagnie, mais il est connu que les canitaures ont un appétit démesuré. Continuellement en guerre avec leurs cousins équidés, les canitaures sont malgré tout de bons vivants qui apprécient les plaisirs de la vie. En ville, ils font de terribles gardes et geôliers, mais d'excellents chasseurs.","bonuses":["Chef naturel : le canitaure s'impose par son physique. +1 niveau de dé en Charisme et +1 niveau de dé en Dextérité","Rapide : ça court vite cette saloperie ! +2 en Athlétisme"],"maluses":["Compétiteur : que ce soit un individu qui court ou une baballe, le canitaure ne supporte pas qu'une compétition se déroule sans lui, et il fera tout pour la gagner"]},
-          {"id":"gravel","name":"Gravel","description":"Les Gravels vivent en caravanes lentes qui parcourent les routes commerciales les plus dangereuses, là où nul autre peuple n'ose s'installer durablement. Ils valorisent la constance, la fiabilité et la parole donnée plus que l'or ou les titres. Chez eux, rompre une promesse est considéré comme pire qu'un crime, car « ce qui est lourd ne doit pas mentir ».","bonuses":["Force gravitationnelle : incroyablement résistants, quasi impossibles à repousser ou renverser. +2 niveaux de dé en Force","Inertie contrôlée : résistent aux explosions, vents violents, champs de force. +4 pour ne pas bouger"],"maluses":["Lenteur chronique : déplacements plus lents, esquives difficiles, poursuites compliquées. −1 niveau de dé en Dextérité"]},
+          {"id":"ogre","name":"Ogre","description":"Un ogre, c'est moche. OK. Mais un ogre, est-ce que c'est méchant ? Souvent, c'est le méchant de l'histoire, probablement dû au passé et aux ambitions de leur roi Argold qui n'a jamais caché son sentiment de supériorité vis-à-vis des autres races. Les ogres sont des experts de la discrétion et de l'alchimie, ce qui fait d'eux le coupable idéal quel que soit le problème.","bonuses":["Esprit scientifique : +2 points en Intelligence","Sans trace : un ogre ne laisse pas de trace ni d'odeur"],"maluses":["Sale réputation : en plus d'être la cible de racisme, l'ogre n'inspire pas confiance. Il a −5 à ses jets sociaux quand il ne s'adresse pas à un ogre"]},
+          {"id":"canitaure","name":"Canitaure","description":"Probablement les invités les plus rares à un banquet. Pas qu'ils soient de mauvaise compagnie, mais il est connu que les canitaures ont un appétit démesuré. Continuellement en guerre avec leurs cousins équidés, les canitaures sont malgré tout de bons vivants qui apprécient les plaisirs de la vie. En ville, ils font de terribles gardes et geôliers, mais d'excellents chasseurs.","bonuses":["Chef naturel : le canitaure s'impose par son physique. +1 point en Charisme et +1 point en Dextérité","Rapide : ça court vite cette saloperie ! +2 en Athlétisme"],"maluses":["Compétiteur : que ce soit un individu qui court ou une baballe, le canitaure ne supporte pas qu'une compétition se déroule sans lui, et il fera tout pour la gagner"]},
+          {"id":"gravel","name":"Gravel","description":"Les Gravels vivent en caravanes lentes qui parcourent les routes commerciales les plus dangereuses, là où nul autre peuple n'ose s'installer durablement. Ils valorisent la constance, la fiabilité et la parole donnée plus que l'or ou les titres. Chez eux, rompre une promesse est considéré comme pire qu'un crime, car « ce qui est lourd ne doit pas mentir ».","bonuses":["Force gravitationnelle : incroyablement résistants, quasi impossibles à repousser ou renverser. +2 points en Force","Inertie contrôlée : résistent aux explosions, vents violents, champs de force. +4 pour ne pas bouger"],"maluses":["Lenteur chronique : déplacements plus lents, esquives difficiles, poursuites compliquées. −1 point en Dextérité"]},
           {"id":"goule","name":"Goule","description":"D'apparence repoussante (tête rappelant des êtres troglodytes, sabots, etc.), les goules ont trouvé jadis un moyen de passer inaperçu… la métamorphose ! Elles étaient à l'origine une création de magiciens, mais ont réussi pour certaines à échapper aux maîtres pour s'organiser et s'établir. Dotées d'une grande adaptabilité mais aussi d'une grosse allergie à la flore, elles ont réussi à se faire une place discrète dans le monde.","bonuses":["Aruspice des entrailles : permet de lire une partie de l'avenir dans des entrailles","Formes supplémentaires : vieillard ou chien. 5 PF pour changer de forme, passage possible de l'une à l'autre sans repasser par la forme de base. Revenir à la forme de base est gratuit"],"maluses":["Allergie aux plantes : allergie SUPRA sévère, même au simple contact"]},
           {"id":"sylphide-cendre","name":"Sylphide Cendré","description":"Peau gris clair, cheveux comme de la fumée, voix sifflante. Les Sylphides cendrés vivent autour des volcans, des plaines brûlées et des régions que le feu a déjà traversées, qu'ils considèrent comme des lieux sacrés de renouveau. Ils voient la destruction non comme une fin, mais comme une transition nécessaire. Leur société est légère, presque nomade, et ils évitent de s'attacher durablement aux choses matérielles.","bonuses":["Né dans l'horreur : ruines et massacres sont des lieux de naissance pour les sylphides. Immunisés à la peur et au désespoir","Insaisissables : bonus pour échapper aux prises, filets, attaques d'opportunité. +4"],"maluses":["Corps fragile : faiblesse aux dégâts contondants"]},
           {"id":"vermelune","name":"Vermelune","description":"Les Vermelunes organisent toute leur société autour de cycles internes invisibles qu'eux seuls perçoivent : périodes de force, de retrait, de lucidité ou de rêve. Leurs villes sont construites pour accueillir ces rythmes. Ils considèrent l'immobilité comme une forme de mort et le changement comme une vertu cardinale. Ils vivent selon des « marées personnelles » que seuls eux ressentent.","bonuses":["Adaptation cyclique : à chaque début de séance, le joueur lance un D6 pour connaître sa « marée » : 1-2 physique (+2 Force ou Dex), 3-4 mentale (+2 Int ou Sag), 5-6 sociale (+2 Charisme)","Résistance adaptative : gagne une résistance au dernier type de dégât subi"],"maluses":["Imprévisibles : malus aux actions répétitives, aux routines et aux plans longs (ils détestent la monotonie)"]},
           {"id":"mits","name":"Mits","description":"Les Mits vivent rarement entre eux : ils préfèrent s'insérer dans les sociétés existantes, comme s'ils cherchaient à accomplir un rôle plutôt qu'à fonder un peuple. Ils accordent une immense importance aux récits, aux légendes et aux symboles, qu'ils considèrent comme aussi réels que la pierre ou le sang. Beaucoup choisissent une « fonction » dans la société : gardien, messager, traître, prophète, et s'efforcent de l'incarner parfaitement. Ils ne naissent pas biologiquement mais conceptuellement : nés d'un rêve, d'une prière, d'un mythe ancien presque oublié.","bonuses":["Nature symbolique : immunisé aux attaques non intentionnelles (pièges, accidents, effets « sans volonté », éboulements). Ce qui n'est pas dirigé contre eux explicitement les affecte peu","Présence mythique : les peuples simples les prennent pour des signes, des élus ou des mauvais présages. +2 en social"],"maluses":["Vulnérables à la magie"]},
           {"id":"ananostegit","name":"Ananostégit","description":"Les Ananostégits vivent légèrement décalés par rapport au monde qui les entoure : ils perçoivent le temps comme un flux élastique et agissent parfois « avant » ou « après » les événements. Leur société est fondée sur la patience et la prévoyance. Ils considèrent l'improvisation comme une faiblesse et enseignent à leurs jeunes à observer les cycles invisibles du monde. Pour les étrangers, ils paraissent distraits ou imprévisibles, mais chaque Ananostégit sait exactement quand frapper, parler ou disparaître.","bonuses":["Décalage temporel : peut une fois par séance : relancer une action ratée (comme s'il « corrigeait » la timeline), agir avant l'initiative normale, ou ignorer une attaque en disant « non, ça n'est pas arrivé comme ça »","Résistance au paradoxe : quand le temps s'arrête, pas toi"],"maluses":["Conservateur : pour l'Ananostégit, les autres races sont des enfants qui doivent être guidés. Regard désapprobateur à toute innovation qui n'est pas de leur fait, et très maniaque"]},
           {"id":"lustrien","name":"Lustrien","description":"Doués dans des sphères spécifiques dès la naissance, les lustriens se sont organisés comme des fourmis, se répartissant les rôles telles des ouvrières pour être plus efficaces. Ayant pris les commandes de leur continent d'origine et s'y étant confinés, les lustriens, tant chez eux que dans le reste du monde, attirent les regards car il est extrêmement rare d'en voir mêlés à d'autres races.","bonuses":["Génie : une caractéristique à déterminer à la création ne coûtera plus que 4 points à monter","Mémoire eidétique : les lustriens se rappellent parfaitement de tout ce qu'ils ont vu, entendu ou vécu"],"maluses":["Outsider : les lustriens sont par défaut assez peu discrets et on les voit dans une foule. −5 en Discrétion"]},
-          {"id":"centaure","name":"Centaure","description":"Créature extrêmement rare vue par certains comme des gardiens et par d'autres comme des monstres, les centaures parcourant Gaïa sont peu nombreux mais semblent investis d'une mission chaque fois qu'on les voit.","bonuses":["Force : +1 niveau de dé en Force","Charge : action gratuite pour aller à la rencontre d'un individu ou se désengager"],"maluses":["Héritage de Bambi : si le Centaure se fait charger ou est aveuglé, il rate sa défense. Si les 2 conditions sont réunies, c'est un critique"]}
+          {"id":"centaure","name":"Centaure","description":"Créature extrêmement rare vue par certains comme des gardiens et par d'autres comme des monstres, les centaures parcourant Gaïa sont peu nombreux mais semblent investis d'une mission chaque fois qu'on les voit.","bonuses":["Force : +1 point en Force","Charge : action gratuite pour aller à la rencontre d'un individu ou se désengager"],"maluses":["Héritage de Bambi : si le Centaure se fait charger ou est aveuglé, il rate sa défense. Si les 2 conditions sont réunies, c'est un critique"]}
         ],
         "classes": [
           {"id":"monteur-meubles","name":"Monteur de Meubles","description":"Artisan robuste et polyvalent, le monteur de meubles excelle dans le bricolage et sait transformer n'importe quoi en arme redoutable.","avantages":[{"id":"bidouille","name":"La Bidouil' !","description":"+Niveau/2 aux jets relatifs au bricolage"},{"id":"ferrailleur","name":"Ferrailleur","description":"1 contact donne 1 cargaison d'un matériau au début de la séance, dans la limite des stocks disponibles"},{"id":"boutique","name":"Boutique","description":"C'est une boutique, tout ce qu'il y a de plus boutiqual"},{"id":"apprenti","name":"Apprenti","description":"Il peut aider mais il ne fera jamais mieux ou aussi bien que toi"},{"id":"chef-oeuvre","name":"Chef-d'œuvre","description":"Bonus de qualité permanent ou gros boost sur 1 objet"},{"id":"flip-table","name":"Flip the Table","description":"Attaque de zone tournoyante"},{"id":"fureur","name":"Fureur","description":"+Niveau/2 dégâts"},{"id":"ensevelir","name":"Ensevelir","description":"Enchevêtrement"},{"id":"cri-rage","name":"Cri de Rage","description":"+Niveau/2 attaque PJ pendant Force tours"},{"id":"il-en-faut-plus","name":"IL EN FAUT PLUS","description":"Permet de revenir full PV, seulement s'il t'en restait au moins un peu. Prochaines actions à −5"}]},
-          {"id":"inspecteur-impots","name":"Inspecteur des Impôts","description":"Expert en infiltration urbaine et en analyse, l'inspecteur des impôts sait se fondre dans la masse et débusquer les secrets les mieux gardés.","avantages":[{"id":"tout-le-monde","name":"M. Tout-Le-Monde","description":"+Niveau/2 Discrétion en ville"},{"id":"main-habile","name":"Main habile","description":"+2 niveaux de dé en Dextérité"},{"id":"dossier","name":"Nous allons devoir étudier votre dossier","description":"+Niveau/2 Baratin"},{"id":"perception-ultime","name":"Perception Ultime","description":"+Niveau/2 Perception en ville"},{"id":"analyse","name":"Analyse","description":"Quantité et qualité des objets"},{"id":"appel-monture","name":"Appel de la Monture","description":"Appelle sa monture à distance"},{"id":"monture-inspecteur","name":"Monture d'Inspecteur","description":"Possède une monture loyale"},{"id":"combat-monte","name":"Combat Monté","description":"+Niveau/2 combat à cheval"},{"id":"monture-guerre","name":"Monture de Guerre","description":"Amélioration combat de la monture"},{"id":"ne-faire-quun","name":"Ne Faire Qu'Un","description":"Transfert de PV avec la monture"}]},
+          {"id":"inspecteur-impots","name":"Inspecteur des Impôts","description":"Expert en infiltration urbaine et en analyse, l'inspecteur des impôts sait se fondre dans la masse et débusquer les secrets les mieux gardés.","avantages":[{"id":"tout-le-monde","name":"M. Tout-Le-Monde","description":"+Niveau/2 Discrétion en ville"},{"id":"main-habile","name":"Main habile","description":"+2 points en Dextérité"},{"id":"dossier","name":"Nous allons devoir étudier votre dossier","description":"+Niveau/2 Baratin"},{"id":"perception-ultime","name":"Perception Ultime","description":"+Niveau/2 Perception en ville"},{"id":"analyse","name":"Analyse","description":"Quantité et qualité des objets"},{"id":"appel-monture","name":"Appel de la Monture","description":"Appelle sa monture à distance"},{"id":"monture-inspecteur","name":"Monture d'Inspecteur","description":"Possède une monture loyale"},{"id":"combat-monte","name":"Combat Monté","description":"+Niveau/2 Équitation"},{"id":"monture-guerre","name":"Monture de Guerre","description":"Amélioration combat de la monture"},{"id":"ne-faire-quun","name":"Ne Faire Qu'Un","description":"Transfert de PV avec la monture"}]},
           {"id":"laborantin","name":"Laborantin","description":"Scientifique et guérisseur, le laborantin maîtrise l'art des soins et possède une résistance naturelle à la magie.","avantages":[{"id":"diagnostic-rapide","name":"Diagnostic Rapide","description":"Identifie rapidement blessures et maladies"},{"id":"soin-rapide","name":"Soin Rapide","description":"Soigne plus vite"},{"id":"cuisine","name":"Cuisine","description":"+Niveau/2 Cuisine"},{"id":"resurrection","name":"Résurrection","description":"Fait revenir à 1 PV un héros, 1×/scénario"},{"id":"cultiver-herbes","name":"Cultiver les herbes","description":"Fait pousser des herbes médicinales"},{"id":"insensibilite-magie","name":"Insensibilité à la Magie","description":"+Niveau/2 Volonté contre magie"},{"id":"drain-magie","name":"Drain de Magie","description":"Par contact, Volonté vs Volonté pour prendre des PF à une cible"},{"id":"desenchantement","name":"Désenchantement","description":"Rituel, permet de retirer la magie d'un objet"},{"id":"aimantation-repulsion","name":"Aimantation/Répulsion Magique","description":"Permet sur Volonté d'attirer ou repousser les individus ou objets magiques"},{"id":"stockage-magie","name":"Stockage de Magie","description":"Permet de dépasser le maximum de PF"}]},
-          {"id":"croque-mort","name":"Croque-Mort","description":"Spécialiste de l'antimagie et de l'anatomie, le croque-mort est à la fois un expert en neutralisation magique et un connaisseur des corps.","avantages":[{"id":"decharge-magique","name":"Décharge Magique","description":"Si stock de magie, produit une décharge offensive en zone épuisant tous les PF du stock, sinon tous les PF du personnage"},{"id":"coupure-magie","name":"Coupure de la Magie","description":"Rituel, permet de couper un individu de la magie"},{"id":"zone-antimagique","name":"Zone Antimagique","description":"Rituel, permet de mettre une résistance magique à une zone"},{"id":"philosophie","name":"Philosophie","description":"+2 niveaux de dé en Sagesse"},{"id":"analyse-magique","name":"Analyse Magique","description":"Permet de repérer les éléments et types de magie"},{"id":"maitrise-poisons","name":"Maîtrise des Poisons","description":"Expert en poisons et antidotes"},{"id":"connaissances-anatomiques","name":"Connaissances Anatomiques","description":"Dex à répartir attaque et dégâts, cibles humanoïdes"},{"id":"transplantation","name":"Transplantation Miraculeuse","description":"Implants"},{"id":"zone-bienfaisance","name":"Zone de Bienfaisance","description":"Zone autour du personnage, soin de DEX pendant 3 tours, 1×/scénario"},{"id":"glauque","name":"Glauque","description":"Les gens vous laissent passer dans les moments dramatiques, et vous avez +Niveau en Intimidation"}]},
+          {"id":"croque-mort","name":"Croque-Mort","description":"Spécialiste de l'antimagie et de l'anatomie, le croque-mort est à la fois un expert en neutralisation magique et un connaisseur des corps.","avantages":[{"id":"decharge-magique","name":"Décharge Magique","description":"Si stock de magie, produit une décharge offensive en zone épuisant tous les PF du stock, sinon tous les PF du personnage"},{"id":"coupure-magie","name":"Coupure de la Magie","description":"Rituel, permet de couper un individu de la magie"},{"id":"zone-antimagique","name":"Zone Antimagique","description":"Rituel, permet de mettre une résistance magique à une zone"},{"id":"philosophie","name":"Philosophie","description":"+2 points en Sagesse"},{"id":"analyse-magique","name":"Analyse Magique","description":"Permet de repérer les éléments et types de magie"},{"id":"maitrise-poisons","name":"Maîtrise des Poisons","description":"Expert en poisons et antidotes"},{"id":"connaissances-anatomiques","name":"Connaissances Anatomiques","description":"Dex à répartir attaque et dégâts, cibles humanoïdes"},{"id":"transplantation","name":"Transplantation Miraculeuse","description":"Implants"},{"id":"zone-bienfaisance","name":"Zone de Bienfaisance","description":"Zone autour du personnage, soin de DEX pendant 3 tours, 1×/scénario"},{"id":"glauque","name":"Glauque","description":"Les gens vous laissent passer dans les moments dramatiques, et vous avez +Niveau en Intimidation"}]},
           {"id":"garde","name":"Garde","description":"Combattant discipliné et vigilant, le garde excelle dans la protection et le combat à distance.","avantages":[{"id":"parade-reactive","name":"Parade Réactive","description":"1 défense supplémentaire par tour"},{"id":"botte","name":"Botte","description":"+Niveau attaque, 1 fois par combat"},{"id":"arme-favorite","name":"Arme favorite","description":"+Niveau/2 avec un type d'arme"},{"id":"arme-nommee","name":"Arme nommée","description":"+Niveau/2 avec une arme spécifique"},{"id":"charge","name":"Charge","description":"Renverser/choc"},{"id":"vision-aigle","name":"Vision d'aigle","description":"+Niveau/2 Perception"},{"id":"compagnon-animal","name":"Compagnon animal","description":"Possède un compagnon animal fidèle"},{"id":"tir-precis","name":"Tir précis","description":"Relance dégât"},{"id":"tir-rapide","name":"Tir rapide","description":"Attaque plus souvent"},{"id":"acrobatir","name":"Acrobatir","description":"Bonus pour le gunfight stylé"}]},
           {"id":"fraudeur","name":"Fraudeur","description":"Rôdeur des bas-fonds et expert en survie, le fraudeur connaît tous les chemins secrets et les contacts douteux.","avantages":[{"id":"langage-foret","name":"Langage de la forêt","description":"Permet de connaître la situation globale du milieu, danger, etc."},{"id":"signalisation","name":"Signalisation des Fraudeurs","description":"Connaissance de la signalisation des fraudeurs"},{"id":"pas-loup","name":"Pas de loup","description":"+Niveau/2 discrétion nature"},{"id":"depecage","name":"Dépeçage avancé","description":"Composants plus rares sur les créatures"},{"id":"planques","name":"Connaissance des planques","description":"Connaissance des planques de fraudeur"},{"id":"connais-gars","name":"J'connais un gars","description":"1 contact bas-fonds"},{"id":"par-la","name":"Par là !","description":"+Niveau/2 Fouille"},{"id":"toc-toc","name":"Toc-Toc","description":"Dégâts ×2 par surprise"},{"id":"tracage-piecette","name":"Traçage de la piécette","description":"Permet via bol enchanté de retrouver quelqu'un qui a donné de l'argent"},{"id":"fondu-ombres","name":"Fondu dans les ombres","description":"Permet de faire un fondu, même par temps couvert, ou de devenir invisible dans les ombres"}]},
           {"id":"avanturier","name":"Aventurier","description":"Combattant polyvalent et tacticien, l'aventurier sait s'adapter à toutes les situations et protéger ses alliés.","avantages":[{"id":"interception","name":"Interception","description":"Défend une attaque pour un allié, 1×/combat"},{"id":"coup-assommant","name":"Coup Assommant","description":"Peut assommer un adversaire"},{"id":"briser","name":"Briser","description":"Dégât sur équipement/arme accru"},{"id":"organisation-combat","name":"Organisation du combat","description":"Jet tactique par combat, permet de repositionner"},{"id":"connaissance-armure","name":"Connaissance armure","description":"+Niveau/2 Défense et RD et +Niveau/2 attaque contre armure similaire"},{"id":"demonstration","name":"Démonstration","description":"Manœuvre offensive pour intimider"},{"id":"coup-bas","name":"Coup bas","description":"1 action par combat, +Niveau/2 initiative"},{"id":"repliques-percutantes","name":"Répliques percutantes","description":"Rajouter Baratin à répartir entre attaque et dégâts"},{"id":"provocation-masse","name":"Provocation de masse","description":"Bonne chance"},{"id":"perfection-etincelante","name":"Perfection Étincelante","description":"Peut ajouter sa Force sur des jets sociaux"}]},
@@ -3747,7 +3842,10 @@ Equipement :
           {"id":"seduction","name":"Séduction","attribut":"EMP"},
           {"id":"deguisement","name":"Déguisement","attribut":"DEX"},
           {"id":"baratin","name":"Baratin","attribut":"EMP"},
-          {"id":"resistance","name":"Résistance","attribut":"FOR"}
+          {"id":"resistance","name":"Résistance","attribut":"FOR"},
+          {"id":"bricolage","name":"Bricolage","attribut":"DEX"},
+          {"id":"cuisine","name":"Cuisine","attribut":"INT"},
+          {"id":"marchandage","name":"Marchandage","attribut":"EMP"}
         ],
         "avantagesGeneraux": [
           {"id":"connaissance-magie","name":"Connaissance d'une magie","description":"Le personnage a la capacité d'utiliser l'une des nombreuses formes de magie disponibles sur Gaïa."},
@@ -3815,17 +3913,44 @@ Equipement :
         // Note: Vermelune a un bonus aléatoire par séance - à gérer séparément si besoin
       };
       
-      // Applique les bonus de race aux caractéristiques
+      // Mapping des bonus de caractéristiques par avantage de classe
+      // Note: +2 points = +1 niveau de dé (sauf si D12, alors +1 bonus)
+      // Les valeurs ici sont en "niveaux de dé", pas en "points"
+      const advantageAttrBonuses = {
+        'main-habile': { dex: 1 },        // Inspecteur des Impôts: +2 points en Dextérité = +1 niveau de dé
+        'philosophie': { sag: 1 }         // Croque-Mort: +2 points en Sagesse = +1 niveau de dé
+      };
+      
+      // Applique les bonus de race et d'avantages aux caractéristiques
       function applyRaceBonuses() {
         // Reset des bonus
         creationState.attributeBonuses = { force: 0, dex: 0, emp: 0, sag: 0, int: 0 };
         
+        // Appliquer les bonus de race
         if (creationState.race && raceBonuses[creationState.race.id]) {
           const bonuses = raceBonuses[creationState.race.id];
           for (const [attr, value] of Object.entries(bonuses)) {
             creationState.attributeBonuses[attr] = value;
           }
         }
+        
+        // Appliquer les bonus d'avantages (primaire + secondaires)
+        const allAdvantages = [];
+        if (creationState.primaryAdvantage) {
+          allAdvantages.push(creationState.primaryAdvantage);
+        }
+        if (creationState.secondaryAdvantages) {
+          allAdvantages.push(...creationState.secondaryAdvantages);
+        }
+        
+        allAdvantages.forEach(adv => {
+          if (advantageAttrBonuses[adv.id]) {
+            const advBonuses = advantageAttrBonuses[adv.id];
+            for (const [attr, value] of Object.entries(advBonuses)) {
+              creationState.attributeBonuses[attr] = (creationState.attributeBonuses[attr] || 0) + value;
+            }
+          }
+        });
         
         // Ajouter le bonus de Dryade si applicable
         if (creationState.race && creationState.race.id === 'dryade' && creationState.dryadeChosenAttr) {
@@ -4209,13 +4334,21 @@ Equipement :
             updateSheetClass(); 
             break;
           case 4: 
-            updateSheetCapacities(); 
+            // Avantage primaire sélectionné - recalculer les bonus de caractéristiques
+            applyRaceBonuses(); // Recalcule race + avantages
+            updateSheetAttributes(); // Met à jour les caractéristiques avec les nouveaux bonus
+            updateSheetCapacities();
+            updateSheetCompetencesFromAdvantages(); // Applique les bonus de compétences des avantages
             break;
           case 5: 
             updateSheetCompetences(); 
             break;
           case 6: 
-            updateSheetCapacities(); 
+            // Avantages secondaires sélectionnés - recalculer les bonus de caractéristiques
+            applyRaceBonuses(); // Recalcule race + avantages
+            updateSheetAttributes(); // Met à jour les caractéristiques avec les nouveaux bonus
+            updateSheetCapacities();
+            updateSheetCompetencesFromAdvantages(); // Applique les bonus de compétences des avantages
             break;
           case 7: 
             updateSheetNameAndStats(); 
@@ -4389,10 +4522,32 @@ Equipement :
         
         // Ajouter les bonus de compétences de la race
         if (creationState.race && raceCompBonuses[creationState.race.id]) {
-          const raceBonuses = raceCompBonuses[creationState.race.id];
-          for (const [compId, value] of Object.entries(raceBonuses)) {
+          const raceBonusesData = raceCompBonuses[creationState.race.id];
+          for (const [compId, value] of Object.entries(raceBonusesData)) {
             allComps[compId] = (allComps[compId] || 0) + value;
           }
+        }
+        
+        // Ajouter les bonus de compétences basés sur le niveau (avantages sélectionnés)
+        const niveau = 1 + (creationState.levelUpCount || 0);
+        const allAdvantages = [];
+        if (creationState.primaryAdvantage) allAdvantages.push(creationState.primaryAdvantage);
+        if (creationState.secondaryAdvantages) allAdvantages.push(...creationState.secondaryAdvantages);
+        
+        // Ajouter aussi les avantages de Level Up
+        if (creationState.levelUpChoices) {
+          creationState.levelUpChoices.forEach(choice => {
+            if (choice.type === 'classe-general' || choice.type === 'autre-classe') {
+              if (choice.details && choice.details.advId) {
+                allAdvantages.push({ id: choice.details.advId, name: choice.details.advName });
+              }
+            }
+          });
+        }
+        
+        const levelCompBonuses = getLevelBasedCompBonuses(allAdvantages, niveau);
+        for (const [compId, value] of Object.entries(levelCompBonuses)) {
+          allComps[compId] = (allComps[compId] || 0) + value;
         }
         
         // Construire la liste des compétences avec leurs infos
@@ -4435,6 +4590,69 @@ Equipement :
       }
       
       // Calculer les PV (FOR×2 + INT×2 + 10 + Niveau + Bonus)
+      // Met à jour les compétences sur la fiche en fonction des avantages sélectionnés
+      // Cette fonction est appelée après les étapes 4 et 6
+      function updateSheetCompetencesFromAdvantages() {
+        // Appeler updateSheetCompetences pour mettre à jour avec les bonus d'avantages basés sur le niveau
+        updateSheetCompetences();
+      }
+      
+      // Met à jour les dégâts sur la fiche en fonction des avantages sélectionnés
+      // Ajoute automatiquement les bonus de dégâts flats des avantages avec +Niveau/x dégâts
+      function updateSheetDamagesFromAdvantages() {
+        // Récupérer tous les avantages sélectionnés
+        const allAdvantages = [];
+        
+        // Avantage primaire (étape 4)
+        if (creationState.primaryAdvantage) {
+          allAdvantages.push(creationState.primaryAdvantage);
+        }
+        
+        // Avantages secondaires (étape 6)
+        if (creationState.secondaryAdvantages) {
+          allAdvantages.push(...creationState.secondaryAdvantages);
+        }
+        
+        // Avantages personnalisés (étape 6)
+        if (creationState.customAdvantages) {
+          creationState.customAdvantages.forEach(adv => {
+            if (adv.name && adv.name.trim()) {
+              allAdvantages.push({ id: adv.id || 'custom-' + adv.name.toLowerCase().replace(/\s+/g, '-'), name: adv.name });
+            }
+          });
+        }
+        
+        // Avantages de Level Up (étape 8)
+        if (creationState.levelUpChoices) {
+          creationState.levelUpChoices.forEach(choice => {
+            if (choice.type === 'classe-general' || choice.type === 'autre-classe') {
+              if (choice.details && choice.details.advId) {
+                allAdvantages.push({ id: choice.details.advId, name: choice.details.advName });
+              }
+            }
+          });
+        }
+        
+        // Calculer le niveau
+        const niveau = 1 + (creationState.levelUpCount || 0);
+        
+        // Récupérer les bonus de dégâts basés sur le niveau
+        const damageBonuses = getLevelBasedDamageBonuses(allAdvantages, niveau);
+        
+        // Ajouter chaque bonus comme une entrée Flat dans les dégâts
+        damageBonuses.forEach(bonus => {
+          // Vérifier si cette source existe déjà (pour éviter les doublons)
+          const existingEntry = damageEntries.find(e => e.diceType === 'Flat' && e.label === bonus.source);
+          if (!existingEntry && bonus.value > 0) {
+            createDamageEntry(1, 'Flat', bonus.value, bonus.source);
+          } else if (existingEntry) {
+            // Mettre à jour la valeur si elle existe déjà
+            existingEntry.bonus = bonus.value;
+            updateDamageFormula();
+          }
+        });
+      }
+      
       function calculatePV() {
         const niveau = 1 + (creationState.levelUpCount || 0); // Niveau de base + level ups
         let bonusPV = 0;
@@ -4486,7 +4704,8 @@ Equipement :
         }
         
         if (levelField) {
-          levelField.value = 1;
+          // Niveau = 1 (base) + nombre de level ups
+          levelField.value = 1 + (creationState.levelUpCount || 0);
         }
         
         const { pv } = calculatePV();
@@ -4756,7 +4975,10 @@ Equipement :
         const maxPerComp = 3; // Maximum +3 par compétence
         const pointsRemaining = maxPoints - creationState.compPointsUsed;
         
-        characterData.competences.forEach(comp => {
+        // Trier les compétences par ordre alphabétique
+        const sortedCompetences = [...characterData.competences].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+        
+        sortedCompetences.forEach(comp => {
           const value = creationState.competences[comp.id] || 0;
           const isMaxed = value >= maxPerComp;
           
@@ -5084,7 +5306,7 @@ Equipement :
           
           plusBtn.addEventListener('click', () => {
             const current = parseInt(countInput.value) || 0;
-            if (current < 10) {
+            if (current < 20) {
               countInput.value = current + 1;
               updateLevelUpPoints();
             }
@@ -5092,7 +5314,7 @@ Equipement :
           
           countInput.addEventListener('change', () => {
             let val = parseInt(countInput.value) || 0;
-            val = Math.max(0, Math.min(10, val));
+            val = Math.max(0, Math.min(20, val));
             countInput.value = val;
             updateLevelUpPoints();
           });
@@ -5116,6 +5338,27 @@ Equipement :
         creationState.levelUpPointsSpent = creationState.levelUpChoices.reduce((sum, c) => sum + c.cost, 0);
         
         totalPointsSpan.textContent = `= ${creationState.levelUpPointsTotal} points`;
+        
+        // Mettre à jour l'affichage du niveau
+        const currentLevelDisplay = document.getElementById('level-current-display');
+        const futureLevelDisplay = document.getElementById('level-future-display');
+        const levelSummary = document.getElementById('level-summary');
+        
+        if (currentLevelDisplay && futureLevelDisplay && levelSummary) {
+          // En mode wizard, le niveau de base est 1
+          // En mode libre, le niveau de base est le niveau actuel de la fiche
+          const baseLevel = currentMode === 'free' 
+            ? (parseInt(document.getElementById('level')?.value) || 1)
+            : 1;
+          
+          const futureLevel = baseLevel + creationState.levelUpCount;
+          
+          currentLevelDisplay.textContent = baseLevel;
+          futureLevelDisplay.textContent = futureLevel;
+          
+          // Afficher ou cacher le résumé selon s'il y a des level ups
+          levelSummary.style.display = creationState.levelUpCount > 0 ? 'block' : 'none';
+        }
         
         renderLevelUpContent();
       }
@@ -5239,7 +5482,10 @@ Equipement :
         grid.className = 'levelup-comp-grid';
         grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:0.5rem; max-height:200px; overflow-y:auto;';
         
-        characterData.competences.forEach(comp => {
+        // Trier les compétences par ordre alphabétique
+        const sortedCompetences = [...characterData.competences].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+        
+        sortedCompetences.forEach(comp => {
           const btn = document.createElement('button');
           btn.style.cssText = 'padding:0.5rem; border:1px solid #ddd; border-radius:0.25rem; background:#fff; cursor:pointer; text-align:left; font-size:12px;';
           btn.innerHTML = `<strong>${comp.name}</strong> <span style="color:#888;">(${comp.attribut})</span>`;
@@ -5262,9 +5508,9 @@ Equipement :
       function renderCaracteristiqueSelection(container, cost) {
         container.innerHTML = '<p style="margin-bottom:0.75rem; color:#666;">Sélectionnez une caractéristique à améliorer :</p>';
         
-        // Mapping des clés: displayKey -> stateKey
+        // Mapping des clés: stateKey -> infos (doit correspondre aux clés de creationState.attributes)
         const attrMapping = {
-          'for': { name: 'Force (FOR)', sheetId: 'force' },
+          'force': { name: 'Force (FOR)', sheetId: 'force' },
           'dex': { name: 'Dextérité (DEX)', sheetId: 'dex' },
           'emp': { name: 'Empathie (EMP)', sheetId: 'emp' },
           'sag': { name: 'Sagesse (SAG)', sheetId: 'sag' },
@@ -5846,6 +6092,28 @@ Equipement :
             }
           }
         });
+        
+        // Ajouter les bonus de dégâts si l'avantage en a
+        if (choice.details && choice.details.advId) {
+          const advId = choice.details.advId;
+          const bonusDef = levelBasedBonuses[advId];
+          if (bonusDef && bonusDef.type === 'degat') {
+            // Récupérer le niveau actuel depuis la fiche
+            const niveau = parseInt(document.getElementById('level')?.value) || 1;
+            const bonus = calculateLevelBonus(niveau, bonusDef.divisor);
+            const source = bonusDef.source || choice.details.advName || advId;
+            
+            // Vérifier si cette source existe déjà
+            const existingEntry = damageEntries.find(e => e.diceType === 'Flat' && e.label === source);
+            if (!existingEntry && bonus > 0) {
+              createDamageEntry(1, 'Flat', bonus, source);
+            } else if (existingEntry) {
+              existingEntry.bonus = bonus;
+              renderDamageEntries();
+              updateDamageFormula();
+            }
+          }
+        }
       }
       
       // Finaliser la fiche
@@ -5889,25 +6157,36 @@ Equipement :
         
         // Mode wizard normal - appliquer toutes les étapes
         updateSheetRace();
+        applyRaceBonuses(); // Recalcule les bonus de race + avantages
         updateSheetAttributes();
         updateSheetClass();
         updateSheetCapacities();
         updateSheetCompetences();
         updateSheetNameAndStats();
+        updateSheetDamagesFromAdvantages(); // Ajoute les bonus de dégâts des avantages
+        
+        // Recalculer PV/PF une dernière fois pour être sûr d'avoir les bonnes valeurs
+        // (inclut les bonus de caractéristiques des level ups et le nouveau niveau)
+        const { pv } = calculatePV();
+        const { pf } = calculatePF(pv);
+        document.getElementById('pv-max').value = pv;
+        document.getElementById('pv-current').value = pv;
+        document.getElementById('pf-max').value = pf;
+        document.getElementById('pf-current').value = pf;
         
         // Mettre le texte par défaut des Notes avec les valeurs de création
         const notesTextarea = document.querySelector('.portrait textarea');
         if (notesTextarea) {
-          notesTextarea.value = `- Point d'espoir : 1
-- Point d'anarchisme : 1
-- Santé mentale : 15
+          notesTextarea.value = `• Point d'espoir : 1
+• Point d'anarchisme : 1
+• Santé mentale : 15
 
-- Pièces d'or = 0
-- Pièces d'argent = 0
-- Pièces de cuivre = 0
+• Pièces d'or = 0
+• Pièces d'argent = 0
+• Pièces de cuivre = 0
 
 Equipement :
-- `;
+• `;
           // Auto-resize the textarea
           notesTextarea.style.height = 'auto';
           notesTextarea.style.height = (notesTextarea.scrollHeight) + 'px';
@@ -5961,6 +6240,7 @@ Equipement :
       
       // Initialiser
       initWizard();
+      initBulletConversion(); // Conversion automatique des tirets en puces
       
       // ========== PANNEAU DE RÉFÉRENCE ==========
       function initReferencePanel() {
@@ -6601,6 +6881,104 @@ Equipement :
         'canitaure': { 'athletisme': 2 },  // Rapide : +2 en Athlétisme
         'lustrien': { 'discretion': -5 }   // Outsider : −5 en Discrétion
       };
+      
+      // Mapping des avantages avec bonus basés sur le niveau (+Niveau/x)
+      // Format: { avantageId: { type: 'competence'|'degat'|'special', target: 'compId'|'degat', divisor: 2 (pour /2) } }
+      const levelBasedBonuses = {
+        // Monteur de Meubles
+        'bidouille': { type: 'competence', target: 'bricolage', divisor: 2 },
+        'fureur': { type: 'degat', target: 'flat', divisor: 2, source: 'Fureur' },
+        'cri-rage': { type: 'special', description: '+Niveau/2 attaque pendant Force tours', divisor: 2 },
+        // Inspecteur des Impôts  
+        'tout-le-monde': { type: 'competence', target: 'discretion', divisor: 2, condition: 'en ville' },
+        'dossier': { type: 'competence', target: 'baratin', divisor: 2 },
+        'perception-ultime': { type: 'competence', target: 'perception', divisor: 2, condition: 'en ville' },
+        'combat-monte': { type: 'competence', target: 'equitation', divisor: 2 },
+        // Laborantin
+        'cuisine': { type: 'competence', target: 'cuisine', divisor: 2 },
+        'insensibilite-magie': { type: 'competence', target: 'volonte', divisor: 2, condition: 'contre magie' },
+        // Croque-Mort
+        'glauque': { type: 'competence', target: 'intimidation', divisor: 1 },
+        // Garde
+        'botte': { type: 'special', description: '+Niveau attaque, 1×/combat', divisor: 1 },
+        'arme-favorite': { type: 'special', description: '+Niveau/2 avec un type d\'arme', divisor: 2 },
+        'arme-nommee': { type: 'special', description: '+Niveau/2 avec une arme spécifique', divisor: 2 },
+        'vision-aigle': { type: 'competence', target: 'perception', divisor: 2 },
+        // Fraudeur
+        'pas-loup': { type: 'competence', target: 'discretion', divisor: 2, condition: 'nature' },
+        'par-la': { type: 'competence', target: 'fouille', divisor: 2 },
+        // Aventurier
+        'connaissance-armure': { type: 'special', description: '+Niveau/2 Défense et RD', divisor: 2 },
+        'coup-bas': { type: 'special', description: '+Niveau/2 initiative, 1×/combat', divisor: 2 },
+        // Gladiateur
+        'feinte': { type: 'special', description: '−Niveau/2 attaque, +Niveau/2 dégâts', divisor: 2 },
+        'voie-ange': { type: 'special', description: '+Niveau/2 action voix', divisor: 2 },
+        'instrument-favori': { type: 'special', description: '+Niveau/2 avec un instrument', divisor: 2 },
+        // Ami du Maire
+        'politicien': { type: 'competence', target: 'tactique', divisor: 2 },
+        'sur-entraine': { type: 'competence', target: 'athletisme', divisor: 2 },
+        'verbe-flatteur': { type: 'competence', target: 'seduction', divisor: 2 },
+        'pour-la-mairie': { type: 'special', description: '+Niveau/2 à un jet allié, 3×/scénario', divisor: 2 },
+        // Tavernier
+        'petit-papa-baston': { type: 'special', description: '+Niveau à répartir attaque/dégâts mains nues', divisor: 1 },
+        'descendre-pinte': { type: 'special', description: '+Niveau/2 aux actions alliées pendant 2 rounds', divisor: 2 },
+        // Convoyeur
+        'archerie-montee': { type: 'competence', target: 'tir', divisor: 2, condition: 'à cheval' },
+        'esprit-indomptable': { type: 'competence', target: 'volonte', divisor: 2 },
+        'acrobate-voltigeur': { type: 'competence', target: 'acrobatie', divisor: 2, condition: 'à cheval' },
+        // Yandere
+        'gueule-ange': { type: 'special', description: '+Niveau/2 social beauté', divisor: 2 },
+        'negoce': { type: 'competence', target: 'marchandage', divisor: 2 },
+        'frappe-sismique': { type: 'special', description: '−Niveau/2 de zone, 2 tours', divisor: 2 },
+        'bas-les-pattes': { type: 'special', description: '+Niveau attaque pour défendre chouchou', divisor: 1 },
+        // Enquêteur
+        'bourre-pif': { type: 'degat', target: 'flat', divisor: 2, source: 'Bourre-pif (poings)', condition: 'poings' },
+        'psychologue': { type: 'competence', target: 'psychologie', divisor: 2, note: 'Détection de mensonge' }
+      };
+      
+      // Calcule le bonus basé sur le niveau (arrondi supérieur)
+      function calculateLevelBonus(level, divisor) {
+        if (!level || level < 1) return 0;
+        return Math.ceil(level / divisor);
+      }
+      
+      // Retourne les bonus de compétences basés sur le niveau pour les avantages sélectionnés
+      function getLevelBasedCompBonuses(selectedAdvantages, level) {
+        const bonuses = {};
+        if (!selectedAdvantages || !level) return bonuses;
+        
+        selectedAdvantages.forEach(adv => {
+          const advId = adv.id || adv;
+          const bonusDef = levelBasedBonuses[advId];
+          if (bonusDef && bonusDef.type === 'competence') {
+            const bonus = calculateLevelBonus(level, bonusDef.divisor);
+            bonuses[bonusDef.target] = (bonuses[bonusDef.target] || 0) + bonus;
+          }
+        });
+        
+        return bonuses;
+      }
+      
+      // Retourne les bonus de dégâts basés sur le niveau pour les avantages sélectionnés
+      function getLevelBasedDamageBonuses(selectedAdvantages, level) {
+        const bonuses = [];
+        if (!selectedAdvantages || !level) return bonuses;
+        
+        selectedAdvantages.forEach(adv => {
+          const advId = adv.id || adv;
+          const bonusDef = levelBasedBonuses[advId];
+          if (bonusDef && bonusDef.type === 'degat') {
+            const bonus = calculateLevelBonus(level, bonusDef.divisor);
+            bonuses.push({
+              value: bonus,
+              source: bonusDef.source || adv.name || advId,
+              condition: bonusDef.condition || null
+            });
+          }
+        });
+        
+        return bonuses;
+      }
       
       // Pour stocker le bonus de caractéristique choisi par la Dryade
       let dryadeChosenAttr = null;
