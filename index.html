@@ -1807,29 +1807,29 @@
       }
       
       .skill-table {
-        font-size: 12px !important;
+        font-size: 11px !important;
       }
       
       .skill-table th {
-        font-size: 12px !important;
+        font-size: 11px !important;
       }
       
       .skill-table th,
       .skill-table td {
-        padding: 0.15rem !important;
+        padding: 0.1rem !important;
       }
       
       .skill-table input {
-        font-size: 12px !important;
+        font-size: 11px !important;
       }
       
       .skill-table tbody tr td:first-child {
-        padding-left: 1rem !important;
+        padding-left: 0.9rem !important;
       }
       
       .skill-table tbody tr td:first-child::before {
-        font-size: 12px !important;
-        top: 0.15rem !important;
+        font-size: 11px !important;
+        top: 0.1rem !important;
         left: 0 !important;
       }
       
@@ -2511,14 +2511,14 @@
 
     /* tableau compétences */
     .skill-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-    .skill-table th, .skill-table td { border-bottom: 1px solid #ccc; padding: 0.25rem; text-align: left; }
-    .skill-table th { font-size: 18px; }
+    .skill-table th, .skill-table td { border-bottom: 1px solid #ccc; padding: 0.2rem; text-align: left; }
+    .skill-table th { font-size: 14px; }
     .skill-table th:nth-child(1), .skill-table td:nth-child(1) { width: 50%; }
     .skill-table th:nth-child(2), .skill-table td:nth-child(2) { width: 25%; }
     .skill-table th:nth-child(3), .skill-table td:nth-child(3) { width: 25%; text-align: center; }
-    .skill-table input { width: 100%; border: none; font-size: 16px; }
-    .skill-table tbody tr td:first-child { position: relative; padding-left: 1.25rem; }
-    .skill-table tbody tr td:first-child::before { content: '•'; position: absolute; left: 0; font-size: 16px; line-height: 1; top: 0.3rem; line-height: 1; top: 0.3rem; }
+    .skill-table input { width: 100%; border: none; font-size: 14px; }
+    .skill-table tbody tr td:first-child { position: relative; padding-left: 1.1rem; }
+    .skill-table tbody tr td:first-child::before { content: '•'; position: absolute; left: 0; font-size: 14px; line-height: 1; top: 0.2rem; }
 
     /* ajuster largeur des textareas des demi‑sections */
     .half-section textarea{width:100%;box-sizing:border-box;border:none;border-radius:0.5rem;padding:0.5rem;background:#fff;font-size:16px;overflow:hidden;resize:none;}
@@ -3266,11 +3266,12 @@ Equipement :
       updateRDFormula();
     }
     
-    function createRDEntry(value, label) {
+    function createRDEntry(value, label, conditional = false) {
       const entry = {
         id: Date.now() + Math.random(),
         value: value || 0,
-        label: label || ''
+        label: label || '',
+        conditional: conditional || false
       };
       rdEntries.push(entry);
       renderRDEntries();
@@ -3288,9 +3289,12 @@ Equipement :
       if (entry) {
         if (field === 'value') {
           entry[field] = parseInt(value) || 0;
+        } else if (field === 'conditional') {
+          entry[field] = value === true || value === 'true';
         } else {
           entry[field] = value;
         }
+        renderRDEntries();
         updateRDFormula();
       }
     }
@@ -3304,10 +3308,16 @@ Equipement :
       rdEntries.forEach(entry => {
         const div = document.createElement('div');
         div.className = 'damage-entry';
+        const isConditional = entry.conditional ? 'checked' : '';
+        const conditionalStyle = entry.conditional ? 'background:#fff3cd; border-color:#ffc107;' : '';
         div.innerHTML = `
           <span style="font-weight:bold; color:#666;">RD</span>
-          <input type="number" value="${entry.value}" min="0" max="999" onchange="updateRDEntry(${entry.id}, 'value', this.value)" placeholder="0" style="width:60px;">
-          <input type="text" value="${entry.label}" onchange="updateRDEntry(${entry.id}, 'label', this.value)" placeholder="Source (ex: Armure)">
+          <input type="number" value="${entry.value}" min="0" max="999" onchange="updateRDEntry(${entry.id}, 'value', this.value)" placeholder="0" style="width:60px; ${conditionalStyle}">
+          <input type="text" value="${entry.label}" onchange="updateRDEntry(${entry.id}, 'label', this.value)" placeholder="Source (ex: Armure)" style="${conditionalStyle}">
+          <label style="display:flex; align-items:center; gap:0.2rem; font-size:11px; color:#666; cursor:pointer; white-space:nowrap;" title="RD conditionnelle (ex: si esquive possible)">
+            <input type="checkbox" ${isConditional} onchange="updateRDEntry(${entry.id}, 'conditional', this.checked)" style="cursor:pointer;">
+            Cond.
+          </label>
           <button class="remove-damage-btn" onclick="removeRDEntry(${entry.id})">×</button>
         `;
         container.appendChild(div);
@@ -3323,8 +3333,20 @@ Equipement :
         return;
       }
       
-      const total = rdEntries.reduce((sum, entry) => sum + (entry.value || 0), 0);
-      formulaDiv.textContent = `RD ${total}`;
+      // Total avec toutes les RD
+      const totalMax = rdEntries.reduce((sum, entry) => sum + (entry.value || 0), 0);
+      
+      // Total sans les RD conditionnelles
+      const totalBase = rdEntries
+        .filter(entry => !entry.conditional)
+        .reduce((sum, entry) => sum + (entry.value || 0), 0);
+      
+      // Afficher avec parenthèses si différent
+      if (totalMax !== totalBase) {
+        formulaDiv.innerHTML = `RD ${totalMax} <span style="color:#666; font-size:0.85em;">(${totalBase})</span>`;
+      } else {
+        formulaDiv.textContent = `RD ${totalMax}`;
+      }
     }
     
     // Expose functions globally
@@ -3788,7 +3810,7 @@ Equipement :
           {"id":"avanturier","name":"Aventurier","description":"Combattant polyvalent et tacticien, l'aventurier sait s'adapter à toutes les situations et protéger ses alliés.","avantages":[{"id":"interception","name":"Interception","description":"Défend une attaque pour un allié, 1×/combat"},{"id":"coup-assommant","name":"Coup Assommant","description":"Peut assommer un adversaire"},{"id":"briser","name":"Briser","description":"Dégât sur équipement/arme accru"},{"id":"organisation-combat","name":"Organisation du combat","description":"Jet tactique par combat, permet de repositionner"},{"id":"connaissance-armure","name":"Connaissance armure","description":"+Niveau/2 Défense et RD et +Niveau/2 attaque contre armure similaire"},{"id":"demonstration","name":"Démonstration","description":"Manœuvre offensive pour intimider"},{"id":"coup-bas","name":"Coup bas","description":"1 action par combat, +Niveau/2 initiative"},{"id":"repliques-percutantes","name":"Répliques percutantes","description":"Rajouter Baratin à répartir entre attaque et dégâts"},{"id":"provocation-masse","name":"Provocation de masse","description":"Bonne chance"},{"id":"perfection-etincelante","name":"Perfection Étincelante","description":"Peut ajouter sa Force sur des jets sociaux"}]},
           {"id":"gladiateur","name":"Gladiateur","description":"Combattant spectaculaire et artiste de l'arène, le gladiateur allie prouesses martiales et charisme.","avantages":[{"id":"botte-secrete","name":"Botte Secrète","description":"Attaque sans dégâts mais ennemi −Niveau+2 Défense jusqu'à fin du prochain tour"},{"id":"feinte","name":"Feinte","description":"−Niveau/2 attaque, +Niveau/2 dégâts"},{"id":"point-faible","name":"Point faible","description":"−5 attaque, passe armure"},{"id":"ecarter-soie","name":"Écarter la Soie","description":"Dégâts /2 continus mais arme dans l'adversaire, il a −5 pour attaquer et défendre mais +10 pour attaquer le personnage tant que maintenu"},{"id":"frappe-sang-lie","name":"Frappe du Sang-Lié","description":"Sacrifie PF ou PV pour augmenter dégâts d'autant (PV) ou moitié (PF)"},{"id":"rock-star","name":"Rock Star","description":"Groupuscule de fans"},{"id":"voie-ange","name":"Voie d'ange","description":"+Niveau/2 action voix"},{"id":"touche-a-tout","name":"Touche-à-tout","description":"+5 compétences artistiques"},{"id":"instrument-favori","name":"Instrument Favori","description":"+Niveau/2 avec un instrument ou une arme"},{"id":"sharing-soul","name":"Sharing Soul","description":"Partage une émotion, exacerbe un sentiment"}]},
           {"id":"ami-maire","name":"Ami du Maire","description":"Serviteur dévoué d'une entité (maire, dieu, entité métaphysique...), l'ami du maire canalise des pouvoirs de soin et de destruction.","avantages":[{"id":"imposition-mains","name":"Imposition des mains","description":"X PF+PV = 2×X PV soignés"},{"id":"rayon-brulure","name":"Rayon de brûlure","description":"X PV+PF = 2×X dégâts"},{"id":"politicien","name":"Politicien","description":"+Niveau/2 Tactique"},{"id":"devotion","name":"Dévotion","description":"PF dépensés dans 2 compétences impliquant l'idéal de l'entité ×2"},{"id":"sur-entraine","name":"Sur-entraîné","description":"+Niveau/2 Athlétisme"},{"id":"puttin-devil-jail","name":"Puttin' Devil in Jail","description":"Jet sur la compétence préférée de l'entité avec tout le groupe, permet de repousser n'importe quel adversaire sur une réussite"},{"id":"verbe-flatteur","name":"Verbe Flatteur","description":"+Niveau/2 Séduction"},{"id":"conteur-invetere","name":"Conteur Invétéré","description":"Connaissance des mythes"},{"id":"promotion","name":"Promotion","description":"1×/niveau, double les gains monétaires sur une quête"},{"id":"pour-la-mairie","name":"POUR LA MAIRIE !","description":"3×/scénario, +Niveau/2 à un jet allié"}]},
-          {"id":"tavernier","name":"Tavernier","description":"Combattant à mains nues redoutable et maître de l'hospitalité, le tavernier sait autant servir une bière que distribuer des coups.","avantages":[{"id":"petit-papa-baston","name":"Petit Papa Baston","description":"+Niveau à répartir entre attaque et dégâts contondants mains nues, 3 PF/round"},{"id":"refus-paiement","name":"Refus de paiement","description":"1×/combat, attaque instantanée"},{"id":"descendre-pinte","name":"Descendre une pinte","description":"1 action, +Niveau/2 aux actions alliées pendant 2 rounds"},{"id":"homme-bourre","name":"Technique de l'Homme Bourré","description":"Actions ninjaesques et techniques chelou"},{"id":"gants-anti-coupure","name":"Gants anti-coupure","description":"Parer à mains nues"},{"id":"degager-importuns","name":"Dégager les Importuns","description":"2 caractéristiques ×2 pendant 5 rounds, puis /2 pendant 5h"},{"id":"artefact","name":"Artefact","description":"Cadeau, souvent artefact, obtenu pendant une aventure trop longue à raconter"},{"id":"cuvee-speciale","name":"Cuvée spéciale","description":"+1D6 de dégâts d'un élément"},{"id":"purification","name":"Purification","description":"Pratique pour le ragoût de la semaine dernière"},{"id":"ardoise","name":"Tu vas la payer ton ardoise ?","description":"Permet de connaître les alignements"}]},
+          {"id":"tavernier","name":"Tavernier","description":"Combattant à mains nues redoutable et maître de l'hospitalité, le tavernier sait autant servir une bière que distribuer des coups.","avantages":[{"id":"petit-papa-baston","name":"Petit Papa Baston","description":"+Niveau à répartir entre attaque et dégâts contondants mains nues, 3 PF/round"},{"id":"refus-paiement","name":"Refus de paiement","description":"1 fois par combat, attaque instantanée supplémentaire"},{"id":"descendre-pinte","name":"Descendre une pinte","description":"1 action, +Niveau/2 aux actions alliées pendant 2 rounds"},{"id":"homme-bourre","name":"Technique de l'Homme Bourré","description":"Actions ninjaesques et techniques chelou"},{"id":"gants-anti-coupure","name":"Gants anti-coupure","description":"Parer à mains nues"},{"id":"degager-importuns","name":"Dégager les Importuns","description":"2 caractéristiques ×2 pendant 5 rounds, puis /2 pendant 5h"},{"id":"artefact","name":"Artefact","description":"Cadeau, souvent artefact, obtenu pendant une aventure trop longue à raconter"},{"id":"cuvee-speciale","name":"Cuvée spéciale","description":"+1D6 de dégâts d'un élément"},{"id":"purification","name":"Purification","description":"Pratique pour le ragoût de la semaine dernière"},{"id":"ardoise","name":"Tu vas la payer ton ardoise ?","description":"Permet de connaître les alignements"}]},
           {"id":"convoyeur","name":"Convoyeur","description":"Ingénieur et cavalier, le convoyeur combine expertise technique et maîtrise équestre pour des missions de transport et de combat.","avantages":[{"id":"alchimie-materiaux","name":"Alchimie des Matériaux","description":"Permet de métamorphoser les matériaux"},{"id":"amelioration-objet","name":"Amélioration d'objet","description":"Peut améliorer un objet"},{"id":"reparapide","name":"Réparapide","description":"Répare plus vite"},{"id":"technomagie","name":"Technomagie","description":"Permet de donner des effets magiques aux inventions"},{"id":"biomachine","name":"Biomachine","description":"Permet de rendre compatible chair et mécanique"},{"id":"lien-telempathique","name":"Lien Télempathique","description":"Communication mentale avec la monture"},{"id":"archerie-montee","name":"Archerie Montée","description":"+Niveau/2 tirs à cheval"},{"id":"charge-cavalerie","name":"Charge de Cavalerie","description":"Charge dévastatrice"},{"id":"esprit-indomptable","name":"Esprit Indomptable","description":"+Niveau/2 Volonté"},{"id":"acrobate-voltigeur","name":"Acrobate Voltigeur","description":"+Niveau/2 actions acrobatiques à cheval"}]},
           {"id":"yandere","name":"Yandere","description":"Manipulateur charismatique aux méthodes parfois brutales, le yandere excelle en social comme au combat.","avantages":[{"id":"gueule-ange","name":"Gueule d'ange","description":"+Niveau/2 social beauté"},{"id":"negoce","name":"Négoce","description":"+Niveau/2 Marchandage"},{"id":"ange-passe","name":"Un Ange Passe","description":"Les foules se taisent naturellement pour laisser parler"},{"id":"voodoo-powa","name":"VooDoo Powa","description":"Empathie vs Idéal permet de faire tomber amoureux le temps d'un ordre"},{"id":"commerage","name":"Commérage","description":"Permet d'avoir quelques infos croustillantes"},{"id":"frappe-sismique","name":"Frappe Sismique","description":"−Niveau/2 de zone, 2 tours"},{"id":"coup-brutal","name":"Coup Brutal","description":"Force vs Force : déséquilibrer, renverser, désarmer"},{"id":"haine-grandissante","name":"Haine Grandissante","description":"+2/tour de combat cumulatif (dégâts, attaque, défense ou initiative au choix)"},{"id":"arme-lourde-main","name":"Arme lourde à une main","description":"Manie armes lourdes à une main"},{"id":"bas-les-pattes","name":"Bas les pattes !","description":"Choisis un PJ chouchou en début de session, +Niveau attaque pour attaquer celui qui tape le chouchou"}]},
           {"id":"enqueteur","name":"Enquêteur","description":"Investigateur charismatique et combattant agile, l'enquêteur résout les mystères et sait se défendre avec élégance.","avantages":[{"id":"enchainement","name":"Enchaînement","description":"Si 5 de différence, attaque supplémentaire"},{"id":"multi-baffe","name":"Multi-baffe","description":"Attaque zone corps à corps"},{"id":"bourre-pif","name":"Bourre-pif","description":"+Niveau/2 dégâts poings"},{"id":"courage-fuyons","name":"Courage fuyons","description":"Désengagement gratuit"},{"id":"meditation","name":"Méditation","description":"1 relance par session"},{"id":"attaque-charismatique","name":"Attaque Charismatique","description":"Ajoute Charisme au score d'attaque"},{"id":"defense-charismatique","name":"Défense Charismatique","description":"Ajoute Charisme à la défense"},{"id":"psychologue","name":"Psychologue","description":"+Niveau/2 Détection de mensonge"},{"id":"polyglotte","name":"Polyglotte","description":"4 langues gratuites"},{"id":"chef-naturel","name":"Chef Naturel","description":"Les PNJ ont tendance à suivre les directives du personnage"}]}
@@ -4486,6 +4508,25 @@ Equipement :
                   capacities.push(`<li><strong>${adv.name} ✦</strong> : ${adv.description || 'Pas de description'}</li>`);
                 }
               });
+              
+              // Avantages de Level Up (classe, généraux, autre classe, personnalisés)
+              if (creationState.levelUpChoices) {
+                creationState.levelUpChoices.forEach(choice => {
+                  if (choice.type === 'classe-general' || choice.type === 'autre-classe' || choice.type === 'custom-levelup') {
+                    if (choice.details && choice.details.advName) {
+                      let marker = '';
+                      if (choice.type === 'autre-classe') {
+                        marker = ' ⬡';
+                      } else if (choice.type === 'custom-levelup') {
+                        marker = ' ✦';
+                      } else if (choice.details.source === 'general') {
+                        marker = ' ◆';
+                      }
+                      capacities.push(`<li><strong>${choice.details.advName}${marker}</strong> : ${choice.details.advDesc}</li>`);
+                    }
+                  }
+                });
+              }
               
               if (capacities.length > 0) {
                 list.innerHTML = capacities.join('');
@@ -5849,6 +5890,7 @@ Equipement :
               break;
             case 'classe-general':
             case 'autre-classe':
+            case 'custom-levelup':
               applyLevelUpAdvantage(choice);
               break;
           }
@@ -6241,6 +6283,7 @@ Equipement :
       // Initialiser
       initWizard();
       initBulletConversion(); // Conversion automatique des tirets en puces
+      initAutoRecalculatePVPF(); // Recalcul automatique des PV/PF quand on modifie Force/Intel/Niveau
       
       // ========== PANNEAU DE RÉFÉRENCE ==========
       function initReferencePanel() {
@@ -7388,6 +7431,47 @@ Equipement :
         if (pvCurrentField) pvCurrentField.value = pv;
         if (pfMaxField) pfMaxField.value = pf;
         if (pfCurrentField) pfCurrentField.value = pf;
+      }
+      
+      // Initialiser le recalcul automatique des PV/PF quand on modifie Force, Intel ou Niveau
+      function initAutoRecalculatePVPF() {
+        // Inputs de caractéristiques (dé)
+        const forceInput = document.getElementById('force');
+        const intInput = document.getElementById('int');
+        const levelInput = document.getElementById('level');
+        
+        // Inputs de bonus (+X au-delà de D12)
+        const forceBox = forceInput?.closest('.attr-box');
+        const intBox = intInput?.closest('.attr-box');
+        const forceBonusInput = forceBox?.querySelector('input[type="text"]');
+        const intBonusInput = intBox?.querySelector('input[type="text"]');
+        
+        // Fonction de recalcul avec debounce léger
+        const triggerRecalculate = () => {
+          recalculatePVPF();
+        };
+        
+        // Attacher les écouteurs sur tous les inputs pertinents
+        if (forceInput) {
+          forceInput.addEventListener('input', triggerRecalculate);
+          forceInput.addEventListener('change', triggerRecalculate);
+        }
+        if (intInput) {
+          intInput.addEventListener('input', triggerRecalculate);
+          intInput.addEventListener('change', triggerRecalculate);
+        }
+        if (levelInput) {
+          levelInput.addEventListener('input', triggerRecalculate);
+          levelInput.addEventListener('change', triggerRecalculate);
+        }
+        if (forceBonusInput) {
+          forceBonusInput.addEventListener('input', triggerRecalculate);
+          forceBonusInput.addEventListener('change', triggerRecalculate);
+        }
+        if (intBonusInput) {
+          intBonusInput.addEventListener('input', triggerRecalculate);
+          intBonusInput.addEventListener('change', triggerRecalculate);
+        }
       }
       
       function selectClassFromRef(classId) {
