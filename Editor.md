@@ -4,11 +4,11 @@ Editeur de fiche de personnage Gaia 2 (V2). Source de verite du STATUT projet.
 
 ## Statut
 
-- 2026-07-13 : lot 2 CODE + REVIEW FAITS (mentions de jet auto sous Degats/RD +
-  suivi d'entrainement 4 cases par competence). 4 findings corriges dont 1
-  bloquant (TDZ au chargement). Branche v2 poussee. EN ATTENTE : test Benoit,
-  puis merge main = deploiement. Refonte design : exploree (6 maquettes
-  artifacts), classee sans suite - on garde le look actuel.
+- 2026-07-13 : **lot 2 DEPLOYE** (teste et valide par Benoit, merge v2 -> main,
+  verifie en ligne) : mentions de jet auto sur la ligne des formules Degats/RD
+  + suivi d'entrainement 4 cases par competence (4/4 = +1 niveau propose).
+  4 findings de review corriges dont 1 bloquant (TDZ au chargement).
+  Refonte design : exploree (6 maquettes artifacts), classee sans suite.
 
 - 2026-07-13 : **lot 1 DEPLOYE** (teste et valide par Benoit, merge v2 -> main,
   verifie en ligne). 5 correctifs demandes + 2 bugs preexistants + 14 findings
