@@ -3125,6 +3125,58 @@ Equipement :
       });
     }
     
+    // ===== Mentions de jet (memo de table) sous Degats / RD =====
+    // Avantages qui modifient les JETS d'attaque ou de defense. Detectes par
+    // NOM dans la liste des Capacites de la fiche ; le de est celui de
+    // l'attribut lie (Charisme = Empathie), recalcule en direct.
+    const ROLL_MENTION_ADVANTAGES = [
+      { name: 'Attaque Charismatique', target: 'damage-formula', kind: 'attr-die', attr: 'emp', label: "sur le jet d'attaque" },
+      { name: 'Défense Charismatique', target: 'rd-formula', kind: 'attr-die', attr: 'emp', label: 'sur le jet de défense' },
+      { name: 'Connaissance armure', target: 'damage-formula', kind: 'demi-niveau', label: "sur le jet d'attaque contre armure similaire" },
+      { name: 'Connaissance armure', target: 'rd-formula', kind: 'demi-niveau', label: 'en défense et RD contre armure similaire' }
+    ];
+    
+    function sheetHasAdvantageNamed(name) {
+      const items = document.querySelectorAll('.abilities-list li strong');
+      const want = name.toLowerCase();
+      for (const s of items) {
+        if (s.textContent.replace(/[⬡✦◆⟐]/g, '').trim().toLowerCase() === want) return true;
+      }
+      return false;
+    }
+    
+    function updateRollMentions() {
+      const byTarget = { 'damage-formula': [], 'rd-formula': [] };
+      ROLL_MENTION_ADVANTAGES.forEach(m => {
+        if (!sheetHasAdvantageNamed(m.name)) return;
+        let val = '';
+        if (m.kind === 'attr-die') {
+          const input = document.getElementById(m.attr);
+          const die = getDie(parseInt(input?.value, 10) || 0);
+          const box = input?.closest('.attr-box');
+          const b = parseInt((box?.querySelector('input[type="text"]')?.value || '')
+            .replace(/[^0-9-]/g, ''), 10) || 0;
+          val = '+' + die + (b > 0 ? '+' + b : '');
+        } else if (m.kind === 'demi-niveau') {
+          const niv = parseInt(document.getElementById('level')?.value, 10) || 1;
+          val = '+' + Math.ceil(niv / 2);
+        }
+        byTarget[m.target].push('et ' + val + ' ' + m.label);
+      });
+      Object.entries(byTarget).forEach(([divId, texts]) => {
+        const div = document.getElementById(divId);
+        if (!div) return;
+        const old = div.querySelector('.roll-mention');
+        if (old) old.remove();
+        if (!texts.length) return;
+        const span = document.createElement('span');
+        span.className = 'roll-mention';
+        span.textContent = texts.join(' ');
+        div.appendChild(span);
+      });
+    }
+    
+
     document.querySelectorAll('.attr-box').forEach(box => {
       const numInput = box.querySelector('input[type="number"]');
       const diceSpan = box.querySelector('.attr-dice');
@@ -3150,8 +3202,10 @@ Equipement :
         newRow.querySelectorAll('input').forEach(inp => inp.value = '');
         const jetClone = newRow.querySelector('.skill-jet');
         if (jetClone) { jetClone.textContent = ''; jetClone.title = ''; }
+        newRow.dataset.train = '0';   // ne pas heriter de l'entrainement clone
         currentRow.after(newRow);
         newRow.querySelector('input').focus();
+        updateSkillJets();
       }
     });
     skillsBody.addEventListener('input', () => updateSkillJets());
@@ -3320,6 +3374,7 @@ Equipement :
       
       if (damageEntries.length === 0) {
         formulaDiv.textContent = '—';
+        updateRollMentions();
         return;
       }
       
@@ -3457,6 +3512,7 @@ Equipement :
       
       if (rdEntries.length === 0) {
         formulaDiv.textContent = 'RD —';
+        updateRollMentions();
         return;
       }
       
@@ -3475,57 +3531,6 @@ Equipement :
         formulaDiv.textContent = `RD ${totalMax}`;
       }
       updateRollMentions();
-    }
-    
-    // ===== Mentions de jet (memo de table) sous Degats / RD =====
-    // Avantages qui modifient les JETS d'attaque ou de defense. Detectes par
-    // NOM dans la liste des Capacites de la fiche ; le de est celui de
-    // l'attribut lie (Charisme = Empathie), recalcule en direct.
-    const ROLL_MENTION_ADVANTAGES = [
-      { name: 'Attaque Charismatique', target: 'damage-formula', kind: 'attr-die', attr: 'emp', label: "sur le jet d'attaque" },
-      { name: 'Défense Charismatique', target: 'rd-formula', kind: 'attr-die', attr: 'emp', label: 'sur le jet de défense' },
-      { name: 'Connaissance armure', target: 'damage-formula', kind: 'demi-niveau', label: "sur le jet d'attaque contre armure similaire" },
-      { name: 'Connaissance armure', target: 'rd-formula', kind: 'demi-niveau', label: 'en défense et RD contre armure similaire' }
-    ];
-    
-    function sheetHasAdvantageNamed(name) {
-      const items = document.querySelectorAll('.abilities-list li strong');
-      const want = name.toLowerCase();
-      for (const s of items) {
-        if (s.textContent.replace(/[⬡✦◆⟐]/g, '').trim().toLowerCase() === want) return true;
-      }
-      return false;
-    }
-    
-    function updateRollMentions() {
-      const byTarget = { 'damage-formula': [], 'rd-formula': [] };
-      ROLL_MENTION_ADVANTAGES.forEach(m => {
-        if (!sheetHasAdvantageNamed(m.name)) return;
-        let val = '';
-        if (m.kind === 'attr-die') {
-          const input = document.getElementById(m.attr);
-          const die = getDie(parseInt(input?.value, 10) || 0);
-          const box = input?.closest('.attr-box');
-          const b = parseInt((box?.querySelector('input[type="text"]')?.value || '')
-            .replace(/[^0-9-]/g, ''), 10) || 0;
-          val = '+' + die + (b > 0 ? '+' + b : '');
-        } else if (m.kind === 'demi-niveau') {
-          const niv = parseInt(document.getElementById('level')?.value, 10) || 1;
-          val = '+' + Math.ceil(niv / 2);
-        }
-        byTarget[m.target].push('et ' + val + ' ' + m.label);
-      });
-      Object.entries(byTarget).forEach(([divId, texts]) => {
-        const div = document.getElementById(divId);
-        if (!div) return;
-        const old = div.querySelector('.roll-mention');
-        if (old) old.remove();
-        if (!texts.length) return;
-        const span = document.createElement('span');
-        span.className = 'roll-mention';
-        span.textContent = texts.join(' ');
-        div.appendChild(span);
-      });
     }
     
     // Expose functions globally
