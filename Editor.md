@@ -4,10 +4,12 @@ Editeur de fiche de personnage Gaia 2 (V2). Source de verite du STATUT projet.
 
 ## Statut
 
+- 2026-07-13 : lot 1 CODE + REVIEW FAITS - 5 correctifs demandes + 2 bugs
+  preexistants decouverts + 14 findings de review corriges (dont 1 bloquant
+  dans l'autosave). Branche `v2` poussee. EN ATTENTE : test visuel Benoit
+  (checklist transmise en conversation), puis merge master = deploiement.
 - 2026-07-13 : V2 demarree dans `~/claude/Gaia2-Editor` (clone du repo deploye,
-  branche `v2`). Lot 1 code : 5 correctifs demandes par Benoit + 1 bug decouvert.
-  EN ATTENTE : review adversariale, puis test visuel Benoit, puis merge master
-  (= deploiement joueurs).
+  branche `v2`).
 
 ## Contexte
 
