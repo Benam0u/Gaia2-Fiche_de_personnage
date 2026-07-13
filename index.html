@@ -3067,9 +3067,12 @@ Equipement :
         const attrBonus = parseInt(bonusTxt.replace(/[^0-9-]/g, ''), 10) || 0;
         const suffix = attrBonus > 0 ? `+${attrBonus}` : '';
         const lvl = parseInt(lvlRaw.replace(/[^0-9-]/g, ''), 10);
+        // Une compétence ne figure sur la fiche qu'avec au moins 1 point :
+        // pas de niveau -> pas de jet affiché (le désavantage - 2 dés, garder
+        // le pire - s'applique aux compétences absentes de la fiche).
         if (!lvlRaw || isNaN(lvl) || lvl <= 0) {
-          jetCell.textContent = `2D${die}${suffix} (pire)`;
-          jetCell.title = `Sans point dans la compétence : jet avec désavantage - lancez 2 dés de ${attr || 'la caractéristique'} et gardez le moins bon.`;
+          jetCell.textContent = '';
+          jetCell.title = '';
         } else {
           jetCell.textContent = `${lvl}D${die}${suffix}`;
           jetCell.title = `Niveau ${lvl} : lancez ${lvl} dé${lvl > 1 ? 's' : ''} de ${attr}.`;

@@ -34,8 +34,10 @@ Editeur de fiche de personnage Gaia 2 (V2). Source de verite du STATUT projet.
 
 ## Regles metier notees
 
-- Jet de competence : niveau 0 = desavantage (2 des de l'attribut, garder le
-  pire) ; niveau N = lancer N des. Le "+1" historique semait la confusion.
+- Jet de competence : niveau N = lancer N des de l'attribut lie. Le desavantage
+  (2 des, garder le pire) concerne les competences ABSENTES de la fiche : une
+  competence ne s'y inscrit qu'avec >= 1 point, donc pas d'affichage niveau 0.
+  Le "+1" historique semait la confusion.
 - Level up : 10 pts de crea par niveau ; avantage de classe gratuit a chaque
   niveau IMPAIR (3, 5, 7...) hors niveau 1.
 - Au-dela de D12 : un cran achete en Level Up vaut +2 au bonus (race : +1).
