@@ -4010,13 +4010,17 @@ Equipement :
         let extraBonus = 0;
         
         if (totalBonus > 0) {
-          // Bonus positif : monter les dés
+          // Bonus positif : monter les dés. Au-delà du D12, un cran acheté en
+          // Level Up vaut +2 au bonus (règle), un cran de race vaut +1.
+          // La race s'applique d'abord (ordre de création).
+          const lvlSteps = Math.min(Math.max(levelUpBonus, 0), totalBonus);
+          const raceSteps = totalBonus - lvlSteps;
           for (let i = 0; i < totalBonus; i++) {
             if (currentIndex < diceProgression.length - 1) {
               currentIndex++;
             } else {
-              // Déjà au D12, ajouter un bonus
-              extraBonus++;
+              // Déjà au D12, ajouter un bonus (+2 si cran de Level Up)
+              extraBonus += (i >= raceSteps) ? 2 : 1;
             }
           }
         } else if (totalBonus < 0) {
@@ -5321,7 +5325,7 @@ Equipement :
       // Level Up options configuration
       const LEVELUP_OPTIONS = [
         { id: 'autre-classe', cost: 6, name: 'Avantage d\'autre classe', desc: '+1 Avantage/Capacité d\'une autre classe' },
-        { id: 'caracteristique', cost: 5, name: '+1 Dé Caractéristique', desc: '+1 Dé sur une carac. (ou +1 bonus si déjà D12)' },
+        { id: 'caracteristique', cost: 5, name: '+1 Dé Caractéristique', desc: '+1 Dé sur une carac. (ou +2 bonus si déjà D12)' },
         { id: 'classe-general', cost: 3, name: 'Avantage classe/général', desc: '+1 Avantage/Capacité de sa classe ou général' },
         { id: 'competence', cost: 1, name: '+1 Compétence', desc: '+1 point de compétence' }
       ];
@@ -5593,13 +5597,16 @@ Equipement :
           let currentExtraBonus = existingBonus;
           
           // Ajouter les bonus de race et de level ups de cette session
+          // (au-delà du D12 : +1 par cran de race, +2 par cran de Level Up)
           const totalBonusSteps = raceBonus + levelUpCount;
+          const lvlSteps = Math.min(Math.max(levelUpCount, 0), Math.max(totalBonusSteps, 0));
+          const raceSteps = Math.max(totalBonusSteps, 0) - lvlSteps;
           
           for (let i = 0; i < totalBonusSteps; i++) {
             if (currentIndex < diceProgression.length - 1) {
               currentIndex++;
             } else {
-              currentExtraBonus++;
+              currentExtraBonus += (i >= raceSteps) ? 2 : 1;
             }
           }
           
@@ -5612,7 +5619,7 @@ Equipement :
           if (currentIndex < diceProgression.length - 1) {
             nextDie = diceProgression[currentIndex + 1];
           } else {
-            nextExtraBonus = currentExtraBonus + 1;
+            nextExtraBonus = currentExtraBonus + 2;
           }
           
           // Construire le texte d'effet
@@ -5980,9 +5987,9 @@ Equipement :
           input.value = diceProgression[currentIndex + 1];
           input.dispatchEvent(new Event('input')); // Met à jour l'affichage (D8), etc.
         } else {
-          // Déjà à D12, ajouter +1 au bonus
+          // Déjà à D12 : la règle donne +2 au bonus pour un cran de Level Up
           if (bonusInput) {
-            bonusInput.value = `+${currentBonus + 1}`;
+            bonusInput.value = `+${currentBonus + 2}`;
           }
         }
       }
