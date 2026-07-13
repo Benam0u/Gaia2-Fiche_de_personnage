@@ -1823,6 +1823,10 @@
         font-size: 11px !important;
       }
       
+      .skill-table td.skill-jet {
+        font-size: 11px !important;
+      }
+      
       .skill-table tbody tr td:first-child {
         padding-left: 0.9rem !important;
       }
@@ -2513,9 +2517,11 @@
     .skill-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .skill-table th, .skill-table td { border-bottom: 1px solid #ccc; padding: 0.2rem; text-align: left; }
     .skill-table th { font-size: 14px; }
-    .skill-table th:nth-child(1), .skill-table td:nth-child(1) { width: 50%; }
-    .skill-table th:nth-child(2), .skill-table td:nth-child(2) { width: 25%; }
-    .skill-table th:nth-child(3), .skill-table td:nth-child(3) { width: 25%; text-align: center; }
+    .skill-table th:nth-child(1), .skill-table td:nth-child(1) { width: 40%; }
+    .skill-table th:nth-child(2), .skill-table td:nth-child(2) { width: 18%; }
+    .skill-table th:nth-child(3), .skill-table td:nth-child(3) { width: 14%; text-align: center; }
+    .skill-table th:nth-child(4), .skill-table td:nth-child(4) { width: 28%; text-align: center; }
+    .skill-table td.skill-jet { font-size: 14px; color: #444; white-space: nowrap; }
     .skill-table input { width: 100%; border: none; font-size: 14px; }
     .skill-table tbody tr td:first-child { position: relative; padding-left: 1.1rem; }
     .skill-table tbody tr td:first-child::before { content: '•'; position: absolute; left: 0; font-size: 14px; line-height: 1; top: 0.2rem; }
@@ -2967,15 +2973,15 @@ Equipement :
       <h3>Compétences</h3>
       <table class="skill-table">
         <thead>
-          <tr><th>Nom</th><th>Attribut</th><th>Bonus</th></tr>
+          <tr><th>Nom</th><th>Attribut</th><th>Niveau</th><th>Jet</th></tr>
         </thead>
         <tbody>
-          <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
-          <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="+0" /></td></tr>
+          <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="0" /></td><td class="skill-jet"></td></tr>
+          <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="0" /></td><td class="skill-jet"></td></tr>
+          <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="0" /></td><td class="skill-jet"></td></tr>
+          <tr><td><input /></td><td><input placeholder="DEX" /></td><td><input type="number" placeholder="0" /></td><td class="skill-jet"></td></tr>
+          <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="0" /></td><td class="skill-jet"></td></tr>
+          <tr><td><input /></td><td><input placeholder="SAG" /></td><td><input type="number" placeholder="0" /></td><td class="skill-jet"></td></tr>
         </tbody>
       </table>
       </div>
@@ -3032,14 +3038,56 @@ Equipement :
       return 'D12';
     }
 
+    // ===== Colonne "Jet" des compétences =====
+    // Règle : niveau 0 (ou vide) = jet avec désavantage (2 dés, garder le pire) ;
+    // niveau N >= 1 = lancer N dés de l'attribut lié. Le dé vient de la fiche.
+    const SKILL_ATTR_IDS = { FOR: 'force', DEX: 'dex', EMP: 'emp', SAG: 'sag', INT: 'int' };
+    
+    function updateSkillJets() {
+      document.querySelectorAll('.skill-table tbody tr').forEach(row => {
+        let jetCell = row.querySelector('.skill-jet');
+        if (!jetCell) {
+          jetCell = document.createElement('td');
+          jetCell.className = 'skill-jet';
+          row.appendChild(jetCell);
+        }
+        const inputs = row.querySelectorAll('input');
+        if (inputs.length < 3) { jetCell.textContent = ''; return; }
+        const name = (inputs[0].value || '').trim();
+        const attr = (inputs[1].value || '').trim().toUpperCase();
+        const lvlRaw = (inputs[2].value || '').trim();
+        const attrId = SKILL_ATTR_IDS[attr];
+        if (!name && !lvlRaw) { jetCell.textContent = ''; jetCell.title = ''; return; }
+        if (!attrId) { jetCell.textContent = '—'; jetCell.title = ''; return; }
+        const attrInput = document.getElementById(attrId);
+        const die = parseInt(attrInput?.value, 10) || 0;
+        if (!die) { jetCell.textContent = '—'; jetCell.title = ''; return; }
+        const box = attrInput.closest('.attr-box');
+        const bonusTxt = box?.querySelector('input[type="text"]')?.value || '';
+        const attrBonus = parseInt(bonusTxt.replace(/[^0-9-]/g, ''), 10) || 0;
+        const suffix = attrBonus > 0 ? `+${attrBonus}` : '';
+        const lvl = parseInt(lvlRaw.replace(/[^0-9-]/g, ''), 10);
+        if (!lvlRaw || isNaN(lvl) || lvl <= 0) {
+          jetCell.textContent = `2D${die}${suffix} (pire)`;
+          jetCell.title = `Sans point dans la compétence : jet avec désavantage - lancez 2 dés de ${attr || 'la caractéristique'} et gardez le moins bon.`;
+        } else {
+          jetCell.textContent = `${lvl}D${die}${suffix}`;
+          jetCell.title = `Niveau ${lvl} : lancez ${lvl} dé${lvl > 1 ? 's' : ''} de ${attr}.`;
+        }
+      });
+    }
+    
     document.querySelectorAll('.attr-box').forEach(box => {
       const numInput = box.querySelector('input[type="number"]');
       const diceSpan = box.querySelector('.attr-dice');
+      const bonusTextInput = box.querySelector('input[type="text"]');
       const update = () => {
         const v = parseInt(numInput.value, 10) || 0;
         diceSpan.textContent = `( ${getDie(v)} )`;
+        updateSkillJets();
       };
       numInput.addEventListener('input', update);
+      if (bonusTextInput) bonusTextInput.addEventListener('input', updateSkillJets);
       update();
     });
     // Ajout de lignes dans Compétences avec Entrée
@@ -3051,10 +3099,13 @@ Equipement :
         if (!currentRow) return;
         const newRow = currentRow.cloneNode(true);
         newRow.querySelectorAll('input').forEach(inp => inp.value = '');
+        const jetClone = newRow.querySelector('.skill-jet');
+        if (jetClone) { jetClone.textContent = ''; jetClone.title = ''; }
         currentRow.after(newRow);
         newRow.querySelector('input').focus();
       }
     });
+    skillsBody.addEventListener('input', () => updateSkillJets());
     // Suppression d’une ligne vide avec Backspace dans Compétences
     skillsBody.addEventListener('keydown', (e) => {
       if (e.key === 'Backspace' && e.target.value === '') {
@@ -3064,6 +3115,7 @@ Equipement :
           const prev = row.previousElementSibling ? row.previousElementSibling.querySelector('input') : null;
           row.remove();
           if (prev) prev.focus();
+          updateSkillJets();
         }
       }
     });
@@ -3547,10 +3599,12 @@ Equipement :
           tbody.innerHTML = '';
           sheet.skills.forEach(skill => {
             const row = document.createElement('tr');
+            const niveau = String(skill.bonus || '').replace(/^\+/, '');
             row.innerHTML = `
               <td><input value="${skill.name || ''}" /></td>
               <td><input value="${skill.attr || ''}" placeholder="FOR" /></td>
-              <td><input type="text" value="${skill.bonus || ''}" placeholder="+0" style="text-align:center;" /></td>
+              <td><input type="text" value="${niveau}" placeholder="0" style="text-align:center;" /></td>
+              <td class="skill-jet"></td>
             `;
             tbody.appendChild(row);
           });
@@ -3639,6 +3693,7 @@ Equipement :
       
       // Auto-resize all textareas after import
       autoResizeTextareas();
+      updateSkillJets();
     }
     
     // Helper function to auto-resize all textareas
@@ -4616,7 +4671,8 @@ Equipement :
             row.innerHTML = `
               <td><input value="${comp.name}" /></td>
               <td><input value="${comp.attribut}" /></td>
-              <td><input type="text" value="+${value}" style="text-align:center;" /></td>
+              <td><input type="text" value="${value}" style="text-align:center;" /></td>
+              <td class="skill-jet"></td>
             `;
             skillsBody.appendChild(row);
           });
@@ -4627,11 +4683,13 @@ Equipement :
             row.innerHTML = `
               <td><input /></td>
               <td><input placeholder="FOR" /></td>
-              <td><input type="number" placeholder="+0" /></td>
+              <td><input type="number" placeholder="0" /></td>
+              <td class="skill-jet"></td>
             `;
             skillsBody.appendChild(row);
           }
         }
+        updateSkillJets();
       }
       
       // Calculer les PV (FOR×2 + INT×2 + 10 + Niveau + Bonus)
@@ -6104,32 +6162,35 @@ Equipement :
         const comp = characterData.competences.find(c => c.id === details.compId);
         if (!comp) return;
         
-        // Chercher si la compétence existe déjà
+        // Chercher si la compétence existe déjà (comparaison sur la VALEUR de
+        // l'input nom - l'ancien code lisait textContent, toujours vide)
         const rows = skillsBody.querySelectorAll('tr');
         let found = false;
         
         rows.forEach(row => {
-          const nameCell = row.querySelector('td:first-child');
-          if (nameCell && nameCell.textContent.trim() === comp.name) {
+          const inputs = row.querySelectorAll('input');
+          if (!found && inputs[0] && inputs[0].value.trim() === comp.name) {
             found = true;
-            const bonusInput = row.querySelector('input');
-            if (bonusInput) {
-              const currentValue = parseInt(bonusInput.value.replace(/[^0-9-]/g, '')) || 0;
-              bonusInput.value = `+${currentValue + 1}`;
+            if (inputs[2]) {
+              const currentValue = parseInt(inputs[2].value.replace(/[^0-9-]/g, '')) || 0;
+              inputs[2].value = String(currentValue + 1);
             }
           }
         });
         
-        // Si pas trouvée, l'ajouter
+        // Si pas trouvée, l'ajouter (ligne standard a inputs, sinon elle
+        // n'était pas collectée par la sauvegarde)
         if (!found) {
           const newRow = document.createElement('tr');
           newRow.innerHTML = `
-            <td>${comp.name}</td>
-            <td>${comp.attribut}</td>
-            <td><input type="text" value="+1" style="width:100%;border:none;text-align:center;font-size:16px;" /></td>
+            <td><input value="${comp.name}" /></td>
+            <td><input value="${comp.attribut}" placeholder="FOR" /></td>
+            <td><input type="text" value="1" placeholder="0" style="text-align:center;" /></td>
+            <td class="skill-jet"></td>
           `;
           skillsBody.appendChild(newRow);
         }
+        updateSkillJets();
       }
       
       function applyLevelUpCompetence(details) {
@@ -6148,7 +6209,7 @@ Equipement :
           const nameCell = row.querySelector('td:first-child input');
           if (nameCell && nameCell.value === comp.name) {
             // Incrémenter le bonus existant
-            const bonusCell = row.querySelector('td:last-child input');
+            const bonusCell = row.querySelectorAll('input')[2];
             if (bonusCell) {
               let currentBonus = parseInt(bonusCell.value.replace(/[^0-9-]/g, '')) || 0;
               bonusCell.value = '+' + (currentBonus + 1);
@@ -6822,7 +6883,7 @@ Equipement :
         for (const row of skillRows) {
           const nameInput = row.querySelector('td:first-child input');
           if (nameInput && nameInput.value.trim() === compName) {
-            const bonusInput = row.querySelector('td:last-child input');
+            const bonusInput = row.querySelectorAll('input')[2];
             if (bonusInput) {
               return parseInt(bonusInput.value.replace(/[^0-9-]/g, '')) || 0;
             }
@@ -6956,9 +7017,9 @@ Equipement :
         } else {
           if (existingRow) {
             // Update existing row
-            const bonusInput = existingRow.querySelector('td:last-child input');
+            const bonusInput = existingRow.querySelectorAll('input')[2];
             if (bonusInput) {
-              bonusInput.value = '+' + newBonus;
+              bonusInput.value = String(newBonus);
             }
           } else {
             // Find first empty placeholder row or create new one
@@ -6976,7 +7037,7 @@ Equipement :
               const inputs = emptyRow.querySelectorAll('input');
               if (inputs[0]) inputs[0].value = name;
               if (inputs[1]) inputs[1].value = attr;
-              if (inputs[2]) inputs[2].value = '+' + newBonus;
+              if (inputs[2]) inputs[2].value = String(newBonus);
               // Clean up remaining empty rows after this one
               cleanupEmptySkillRows(tbody);
             } else {
@@ -6985,7 +7046,8 @@ Equipement :
               newRow.innerHTML = `
               <td><input value="${name}" /></td>
               <td><input value="${attr}" /></td>
-              <td><input type="text" value="+${newBonus}" style="text-align:center;" /></td>
+              <td><input type="text" value="${newBonus}" style="text-align:center;" /></td>
+              <td class="skill-jet"></td>
             `;
               tbody.appendChild(newRow);
             }
@@ -6999,11 +7061,12 @@ Equipement :
           if (minusBtn) minusBtn.disabled = false;
           
           if (delta > 0) {
-            showNotification(`✅ "${name}" : +${newBonus}`, '#27ae60');
+            showNotification(`✅ "${name}" : niveau ${newBonus}`, '#27ae60');
           } else {
-            showNotification(`📝 "${name}" : +${newBonus}`, '#f39c12');
+            showNotification(`📝 "${name}" : niveau ${newBonus}`, '#f39c12');
           }
         }
+        updateSkillJets();
       }
       
       // Helper to clean up empty skill table rows at the end
@@ -7281,7 +7344,7 @@ Equipement :
         for (const row of rows) {
           const nameInput = row.querySelector('td:first-child input');
           if (nameInput && nameInput.value.toLowerCase().includes(comp.name.toLowerCase())) {
-            const bonusInput = row.querySelector('td:last-child input');
+            const bonusInput = row.querySelectorAll('input')[2];
             if (bonusInput) {
               const currentBonus = parseInt(bonusInput.value) || 0;
               bonusInput.value = currentBonus + value;
@@ -7312,7 +7375,7 @@ Equipement :
           
           const nameInput = emptyRow.querySelector('td:first-child input');
           const attrInput = emptyRow.querySelector('td:nth-child(2) input');
-          const bonusInput = emptyRow.querySelector('td:last-child input');
+          const bonusInput = emptyRow.querySelectorAll('input')[2];
           
           if (nameInput) nameInput.value = comp.name;
           if (attrInput) attrInput.value = comp.attribut;
