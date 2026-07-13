@@ -2820,7 +2820,7 @@
       <!-- Étape 8: Level Up -->
       <div class="step-content" data-step="8">
         <h2 class="step-title">Améliorations de Niveau (Level Up)</h2>
-        <p class="step-description">Chaque Level Up vous donne <strong>10 points de création</strong> à dépenser. Choisissez vos améliorations ci-dessous.</p>
+        <p class="step-description">Chaque Level Up vous donne <strong>10 points de création</strong> à dépenser. En plus, chaque niveau <strong>impair</strong> atteint (3, 5, 7...) vous offre <strong>1 avantage de classe gratuit</strong>. Choisissez vos améliorations ci-dessous.</p>
         
         <div class="levelup-controls">
           <label style="font-weight:bold; color:#666;">Nombre de Level Up :</label>
@@ -4516,7 +4516,7 @@ Equipement :
               // Avantages de Level Up (classe, généraux, autre classe, personnalisés)
               if (creationState.levelUpChoices) {
                 creationState.levelUpChoices.forEach(choice => {
-                  if (choice.type === 'classe-general' || choice.type === 'autre-classe' || choice.type === 'custom-levelup') {
+                  if (choice.type === 'classe-general' || choice.type === 'classe-gratuit' || choice.type === 'autre-classe' || choice.type === 'custom-levelup') {
                     if (choice.details && choice.details.advName) {
                       let marker = '';
                       if (choice.type === 'autre-classe') {
@@ -5330,6 +5330,28 @@ Equipement :
         { id: 'competence', cost: 1, name: '+1 Compétence', desc: '+1 point de compétence' }
       ];
       
+      // --- Avantages de classe GRATUITS des niveaux impairs -----------------
+      // Règle : chaque niveau IMPAIR atteint (3, 5, 7... - hors niveau 1)
+      // offre 1 avantage de classe gratuit, en plus des 10 points du Level Up.
+      function getBaseLevelForLevelUp() {
+        return currentMode === 'free'
+          ? (parseInt(document.getElementById('level')?.value) || 1)
+          : 1;
+      }
+      
+      function freeClassAdvantagesDue() {
+        const base = getBaseLevelForLevelUp();
+        let due = 0;
+        for (let lvl = base + 1; lvl <= base + creationState.levelUpCount; lvl++) {
+          if (lvl > 1 && lvl % 2 === 1) due++;
+        }
+        return due;
+      }
+      
+      function freeClassAdvantagesChosen() {
+        return creationState.levelUpChoices.filter(c => c.type === 'classe-gratuit').length;
+      }
+      
       function renderLevelUpOptions() {
         const container = document.getElementById('level-up-container');
         const countInput = document.getElementById('levelup-count');
@@ -5381,6 +5403,15 @@ Equipement :
         
         // Recalculer les points dépensés
         creationState.levelUpPointsSpent = creationState.levelUpChoices.reduce((sum, c) => sum + c.cost, 0);
+        
+        // Si le nombre de Level Up baisse, retirer les avantages gratuits en trop
+        const dueFree = freeClassAdvantagesDue();
+        for (let i = creationState.levelUpChoices.length - 1;
+             i >= 0 && freeClassAdvantagesChosen() > dueFree; i--) {
+          if (creationState.levelUpChoices[i].type === 'classe-gratuit') {
+            creationState.levelUpChoices.splice(i, 1);
+          }
+        }
         
         totalPointsSpan.textContent = `= ${creationState.levelUpPointsTotal} points`;
         
@@ -5436,6 +5467,29 @@ Equipement :
         const optionsGrid = document.createElement('div');
         optionsGrid.className = 'levelup-options-grid';
         
+        // Carte des avantages de classe GRATUITS (niveaux impairs)
+        const dueFree = freeClassAdvantagesDue();
+        if (dueFree > 0) {
+          const chosenFree = freeClassAdvantagesChosen();
+          const remainingFree = dueFree - chosenFree;
+          const isSelFree = creationState.levelUpCurrentSelection === 'classe-gratuit';
+          const freeCard = document.createElement('div');
+          freeCard.className = 'levelup-option-card' + (isSelFree ? ' selected' : '') + (remainingFree <= 0 ? ' disabled' : '');
+          if (remainingFree > 0) freeCard.style.borderColor = '#27ae60';
+          freeCard.innerHTML = `
+            <div class="levelup-option-cost" style="color:#27ae60;">GRATUIT</div>
+            <div class="levelup-option-name">Avantage de classe (niveau impair)</div>
+            <div class="levelup-option-desc">1 avantage de votre classe offert à chaque niveau impair atteint (hors niveau 1).<br>${remainingFree > 0 ? `<strong style=\"color:#27ae60;\">À choisir : ${remainingFree} / ${dueFree}</strong>` : `✓ ${dueFree} / ${dueFree} choisi${dueFree > 1 ? 's' : ''}`}</div>
+          `;
+          if (remainingFree > 0) {
+            freeCard.addEventListener('click', () => {
+              creationState.levelUpCurrentSelection = isSelFree ? null : 'classe-gratuit';
+              renderLevelUpContent();
+            });
+          }
+          optionsGrid.appendChild(freeCard);
+        }
+        
         LEVELUP_OPTIONS.forEach(opt => {
           const canAfford = pointsRemaining >= opt.cost;
           const isSelected = creationState.levelUpCurrentSelection === opt.id;
@@ -5478,7 +5532,7 @@ Equipement :
             const item = document.createElement('div');
             item.className = 'levelup-choice-item';
             item.innerHTML = `
-              <span><strong>${choice.cost} pts</strong> - ${choice.label}</span>
+              <span><strong>${choice.cost === 0 ? 'GRATUIT' : choice.cost + ' pts'}</strong> - ${choice.label}</span>
               <button class="levelup-choice-remove" data-index="${index}">✕ Retirer</button>
             `;
             item.querySelector('button').addEventListener('click', () => {
@@ -5495,6 +5549,13 @@ Equipement :
       }
       
       function renderSelectionPanel(panel, optionId, pointsRemaining) {
+        if (optionId === 'classe-gratuit') {
+          panel.innerHTML = '<div class="levelup-selection-title">Choisissez : Avantage de classe GRATUIT (niveau impair)</div>';
+          const freeContent = document.createElement('div');
+          renderFreeClassAdvantageSelection(freeContent);
+          panel.appendChild(freeContent);
+          return;
+        }
         const opt = LEVELUP_OPTIONS.find(o => o.id === optionId);
         if (!opt) return;
         
@@ -5648,6 +5709,46 @@ Equipement :
           grid.appendChild(btn);
         });
         
+        container.appendChild(grid);
+      }
+      
+      // Sélection d'un avantage de classe GRATUIT (niveau impair)
+      function renderFreeClassAdvantageSelection(container) {
+        container.innerHTML = '';
+        if (!creationState.classe || !creationState.classe.avantages) {
+          container.innerHTML = '<p style="color:#999; font-style:italic; padding:0.5rem;">Classe inconnue : impossible de proposer les avantages de classe.</p>';
+          return;
+        }
+        const info = document.createElement('p');
+        info.style.cssText = 'margin-bottom:0.5rem; color:#666;';
+        info.innerHTML = `<strong>Avantages de votre classe (${creationState.classe.name}) - gratuit :</strong>`;
+        container.appendChild(info);
+        
+        const grid = document.createElement('div');
+        grid.className = 'levelup-adv-grid';
+        grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:0.75rem; margin-bottom:1rem; max-height:300px; overflow-y:auto;';
+        
+        const available = creationState.classe.avantages.filter(adv => !isAdvantageAlreadyChosen(adv.id));
+        if (available.length === 0) {
+          grid.innerHTML = '<p style="color:#999; font-style:italic; padding:0.5rem;">Tous les avantages de classe ont été choisis.</p>';
+        } else {
+          available.forEach(adv => {
+            const btn = document.createElement('button');
+            btn.style.cssText = 'padding:0.75rem; border:1px solid #27ae60; border-radius:0.5rem; background:#fff; cursor:pointer; text-align:left; font-size:12px; line-height:1.4;';
+            btn.innerHTML = `<strong style="color:#333;">${adv.name}</strong><br><span style="color:#666; font-size:11px;">${adv.description}</span>`;
+            btn.addEventListener('click', () => {
+              addLevelUpChoice({
+                type: 'classe-gratuit',
+                cost: 0,
+                label: `${adv.name} (Classe - gratuit, niveau impair)`,
+                details: { advId: adv.id, advName: adv.name, advDesc: adv.description, source: 'classe' }
+              });
+            });
+            btn.addEventListener('mouseover', () => btn.style.borderColor = '#1e8449');
+            btn.addEventListener('mouseout', () => btn.style.borderColor = '#27ae60');
+            grid.appendChild(btn);
+          });
+        }
         container.appendChild(grid);
       }
       
@@ -5896,6 +5997,7 @@ Equipement :
               }
               break;
             case 'classe-general':
+            case 'classe-gratuit':
             case 'autre-classe':
             case 'custom-levelup':
               applyLevelUpAdvantage(choice);
@@ -6110,9 +6212,9 @@ Equipement :
           // Augmenter le dé
           valueField.value = Math.min(12, currentValue + 2);
         } else {
-          // Déjà au max, augmenter le bonus
+          // Déjà au max, augmenter le bonus (+2 : règle Level Up au-delà de D12)
           if (bonusField) {
-            bonusField.value = '+' + (currentBonus + 1);
+            bonusField.value = '+' + (currentBonus + 2);
           }
         }
       }
@@ -6167,6 +6269,12 @@ Equipement :
       
       // Finaliser la fiche
       function generateCharacterSheet() {
+        // Avantages de classe gratuits (niveaux impairs) non réclamés ?
+        const dueFreeAdv = freeClassAdvantagesDue() - freeClassAdvantagesChosen();
+        if (dueFreeAdv > 0) {
+          const ok = confirm(`Il vous reste ${dueFreeAdv} avantage(s) de classe GRATUIT(s) (niveaux impairs) non choisi(s).\nContinuer quand même ? (vous pourrez les ajouter à la main plus tard)`);
+          if (!ok) return;
+        }
         // Appliquer les level ups
         applyLevelUpChoices();
         
