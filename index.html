@@ -3758,6 +3758,9 @@ Equipement :
       
       // Notification
       showNotification('✅ Profil sauvegardé !', '#27ae60');
+      
+      // Signaler l'export a l'autosave (drapeau "travail non exporte")
+      window.dispatchEvent(new Event('gaia2-exported'));
     }
     
     function loadProfile(file) {
@@ -6457,9 +6460,134 @@ Equipement :
       }
       
       // Initialiser
+      // ========== AUTOSAVE (localStorage) ==========
+      // Protege contre la perte d'une crea en cours (retour arriere, refresh,
+      // fermeture d'onglet). Sauvegarde l'etat complet (fiche DOM + wizard)
+      // toutes les ~0.8s apres un changement, et propose de reprendre au
+      // chargement. N'altere pas le save/load JSON existant.
+      const AUTOSAVE_KEY = 'gaia2-editeur-autosave-v1';
+      let autosaveTimer = null;
+      let autosaveDirty = false;
+      
+      function autosaveNow() {
+        if (currentMode === 'menu' || currentMode === 'consult') return;
+        try {
+          const payload = {
+            savedAt: new Date().toISOString(),
+            mode: currentMode,
+            step: currentStep,
+            creationState: JSON.parse(JSON.stringify(creationState)),
+            sheet: collectSheetData().sheet
+          };
+          localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(payload));
+        } catch (e) {
+          // localStorage indisponible ou plein : l'autosave devient silencieusement inactif
+        }
+      }
+      
+      function scheduleAutosave() {
+        if (currentMode === 'menu' || currentMode === 'consult') return;
+        autosaveDirty = true;
+        if (autosaveTimer) clearTimeout(autosaveTimer);
+        autosaveTimer = setTimeout(autosaveNow, 800);
+      }
+      
+      // Tout changement (saisie ou clic de selection) declenche l'autosave
+      document.addEventListener('input', scheduleAutosave, true);
+      document.addEventListener('change', scheduleAutosave, true);
+      document.addEventListener('click', scheduleAutosave, true);
+      // Sauvegarde immediate quand la page part en arriere-plan ou se ferme
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') autosaveNow();
+      });
+      window.addEventListener('pagehide', autosaveNow);
+      // L'export JSON explicite leve le drapeau "travail non exporte"
+      window.addEventListener('gaia2-exported', () => { autosaveDirty = false; });
+      // Garde-fou navigateur : avertir avant de quitter avec du travail non exporte
+      window.addEventListener('beforeunload', (e) => {
+        autosaveNow();
+        if (autosaveDirty && (currentMode === 'wizard' || currentMode === 'free')) {
+          e.preventDefault();
+          e.returnValue = '';
+        }
+      });
+      
+      // Proposition de reprise au chargement
+      function offerAutosaveRestore() {
+        let payload = null;
+        try {
+          payload = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) || 'null');
+        } catch (e) { return; }
+        if (!payload || !payload.sheet) return;
+        const meaningful = (payload.mode === 'wizard' && (payload.step || 1) > 1)
+          || payload.mode === 'free'
+          || (payload.sheet.name && payload.sheet.name.trim() !== '');
+        if (!meaningful) return;
+        
+        const when = new Date(payload.savedAt);
+        const whenTxt = isNaN(when) ? '' : ` (${when.toLocaleDateString('fr-FR')} à ${when.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})})`;
+        const banner = document.createElement('div');
+        banner.id = 'autosave-banner';
+        banner.style.cssText = 'position:fixed; top:0; left:0; right:0; z-index:9999; background:#fff; border-bottom:3px solid #8b0000; box-shadow:0 2px 12px rgba(0,0,0,0.25); padding:0.75rem 1rem; display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; justify-content:center; font-size:14px;';
+        banner.innerHTML = `
+          <span>💾 <strong>Travail non sauvegardé retrouvé</strong>${whenTxt} - ${payload.mode === 'wizard' ? 'création en cours (étape ' + (payload.step || 1) + ')' : 'fiche en cours d\'édition'}.</span>
+          <button id="autosave-resume" style="padding:0.4rem 1rem; background:#27ae60; color:#fff; border:none; border-radius:0.25rem; font-weight:bold; cursor:pointer;">Reprendre</button>
+          <button id="autosave-discard" style="padding:0.4rem 1rem; background:#fff; color:#8b0000; border:2px solid #8b0000; border-radius:0.25rem; font-weight:bold; cursor:pointer;">Ignorer</button>
+        `;
+        document.body.appendChild(banner);
+        
+        banner.querySelector('#autosave-discard').addEventListener('click', () => {
+          try { localStorage.removeItem(AUTOSAVE_KEY); } catch (e) {}
+          banner.remove();
+        });
+        
+        banner.querySelector('#autosave-resume').addEventListener('click', () => {
+          banner.remove();
+          // 1. Restaurer la fiche (DOM complet)
+          restoreSheetData(payload.sheet);
+          
+          if (payload.mode === 'wizard' && payload.creationState) {
+            // 2a. Restaurer l'etat du wizard et re-lier race/classe aux donnees
+            Object.assign(creationState, payload.creationState);
+            if (creationState.race && creationState.race.id) {
+              creationState.race = characterData.races.find(r => r.id === creationState.race.id) || creationState.race;
+            }
+            if (creationState.classe && creationState.classe.id) {
+              creationState.classe = characterData.classes.find(c => c.id === creationState.classe.id) || creationState.classe;
+            }
+            currentMode = 'wizard';
+            document.getElementById('wizard-container').style.display = 'block';
+            document.getElementById('wizard-intro').style.display = 'none';
+            document.getElementById('wizard-steps').classList.add('active');
+            document.getElementById('character-sheet').style.display = 'block';
+            document.getElementById('free-mode-buttons').style.display = 'none';
+            document.getElementById('btn-back-from-ref').style.display = 'none';
+            const step = Math.min(Math.max(parseInt(payload.step) || 1, 1), 8);
+            currentStep = step;
+            document.querySelectorAll('.step-content').forEach(sc => sc.classList.remove('active'));
+            const stepContent = document.querySelector(`.step-content[data-step="${step}"]`);
+            if (stepContent) stepContent.classList.add('active');
+            updateProgressBar();
+            renderStep(step);
+          } else {
+            // 2b. Reprendre en mode libre (fiche editable)
+            currentMode = 'free';
+            document.getElementById('wizard-container').style.display = 'none';
+            document.getElementById('wizard-separator').style.display = 'none';
+            document.getElementById('reference-panel').style.display = 'block';
+            document.getElementById('btn-back-from-ref').style.display = 'none';
+            document.getElementById('free-mode-buttons').style.display = 'block';
+            document.getElementById('character-sheet').style.display = 'block';
+          }
+          setTimeout(() => { autoResizeTextareas(); updateSkillJets(); }, 50);
+          showNotification('✅ Travail restauré !', '#27ae60');
+        });
+      }
+      
       initWizard();
       initBulletConversion(); // Conversion automatique des tirets en puces
       initAutoRecalculatePVPF(); // Recalcul automatique des PV/PF quand on modifie Force/Intel/Niveau
+      offerAutosaveRestore();
       
       // ========== PANNEAU DE RÉFÉRENCE ==========
       function initReferencePanel() {
