@@ -1238,7 +1238,10 @@
       margin-top: 0;
     }
     
+    .th-court { display: none; }
     @media screen and (max-width: 768px) {
+      .th-long { display: none; }
+      .th-court { display: inline; }
       .reference-buttons {
         flex-direction: column;
         align-items: stretch;
@@ -2514,6 +2517,10 @@
     .image-preview{display:none;width:100%;max-width:100%;height:auto;max-height:100%;border:1px dashed #999;border-radius:0.5rem;object-fit:contain;cursor:pointer;box-sizing:border-box;}
 
     /* tableau compétences */
+    @media print {
+      .th-court { display: none !important; }
+      .th-long { display: inline !important; }
+    }
     .skill-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .skill-table th, .skill-table td { border-bottom: 1px solid #ccc; padding: 0.2rem; text-align: left; }
     .skill-table th { font-size: 14px; }
@@ -2973,7 +2980,7 @@ Equipement :
       <h3>Compétences</h3>
       <table class="skill-table">
         <thead>
-          <tr><th>Nom</th><th>Attribut</th><th>Niveau</th><th>Jet</th></tr>
+          <tr><th>Nom</th><th><span class="th-long">Attribut</span><span class="th-court">Attr</span></th><th><span class="th-long">Niveau</span><span class="th-court">Niv</span></th><th>Jet</th></tr>
         </thead>
         <tbody>
           <tr><td><input /></td><td><input placeholder="FOR" /></td><td><input type="number" placeholder="0" /></td><td class="skill-jet"></td></tr>
