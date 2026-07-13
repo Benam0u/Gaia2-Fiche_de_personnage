@@ -3039,8 +3039,9 @@ Equipement :
     }
 
     // ===== Colonne "Jet" des compétences =====
-    // Règle : niveau 0 (ou vide) = jet avec désavantage (2 dés, garder le pire) ;
-    // niveau N >= 1 = lancer N dés de l'attribut lié. Le dé vient de la fiche.
+    // Règle : niveau N >= 1 = lancer N dés de l'attribut lié (dé de la fiche).
+    // Pas de niveau = pas de jet affiché : une compétence ne figure sur la
+    // fiche qu'avec au moins 1 point (le désavantage concerne les absentes).
     const SKILL_ATTR_IDS = { FOR: 'force', DEX: 'dex', EMP: 'emp', SAG: 'sag', INT: 'int' };
     
     function updateSkillJets() {
@@ -3066,6 +3067,7 @@ Equipement :
         const bonusTxt = box?.querySelector('input[type="text"]')?.value || '';
         const attrBonus = parseInt(bonusTxt.replace(/[^0-9-]/g, ''), 10) || 0;
         const suffix = attrBonus > 0 ? `+${attrBonus}` : '';
+        const dieLabel = getDie(die);   // normalise (ex. 7 -> D8), comme le span de la fiche
         const lvl = parseInt(lvlRaw.replace(/[^0-9-]/g, ''), 10);
         // Une compétence ne figure sur la fiche qu'avec au moins 1 point :
         // pas de niveau -> pas de jet affiché (le désavantage - 2 dés, garder
@@ -3074,7 +3076,7 @@ Equipement :
           jetCell.textContent = '';
           jetCell.title = '';
         } else {
-          jetCell.textContent = `${lvl}D${die}${suffix}`;
+          jetCell.textContent = `${lvl}${dieLabel}${suffix}`;
           jetCell.title = `Niveau ${lvl} : lancez ${lvl} dé${lvl > 1 ? 's' : ''} de ${attr}.`;
         }
       });
@@ -4268,7 +4270,7 @@ Equipement :
           
           // Mapping des IDs de la fiche vers les clés du creationState
           const attrMapping = {
-            'force': 'for',
+            'force': 'force',
             'dex': 'dex',
             'emp': 'emp',
             'sag': 'sag',
@@ -4643,7 +4645,7 @@ Equipement :
         // Ajouter aussi les avantages de Level Up
         if (creationState.levelUpChoices) {
           creationState.levelUpChoices.forEach(choice => {
-            if (choice.type === 'classe-general' || choice.type === 'autre-classe') {
+            if (choice.type === 'classe-general' || choice.type === 'classe-gratuit' || choice.type === 'autre-classe') {
               if (choice.details && choice.details.advId) {
                 allAdvantages.push({ id: choice.details.advId, name: choice.details.advName });
               }
@@ -4734,7 +4736,7 @@ Equipement :
         // Avantages de Level Up (étape 8)
         if (creationState.levelUpChoices) {
           creationState.levelUpChoices.forEach(choice => {
-            if (choice.type === 'classe-general' || choice.type === 'autre-classe') {
+            if (choice.type === 'classe-general' || choice.type === 'classe-gratuit' || choice.type === 'autre-classe') {
               if (choice.details && choice.details.advId) {
                 allAdvantages.push({ id: choice.details.advId, name: choice.details.advName });
               }
@@ -5476,6 +5478,11 @@ Equipement :
             creationState.levelUpChoices.splice(i, 1);
           }
         }
+        // ... et fermer le panneau de selection gratuit s'il n'y a plus de du
+        if (creationState.levelUpCurrentSelection === 'classe-gratuit'
+            && freeClassAdvantagesChosen() >= dueFree) {
+          creationState.levelUpCurrentSelection = null;
+        }
         
         totalPointsSpan.textContent = `= ${creationState.levelUpPointsTotal} points`;
         
@@ -5727,11 +5734,18 @@ Equipement :
           const lvlSteps = Math.min(Math.max(levelUpCount, 0), Math.max(totalBonusSteps, 0));
           const raceSteps = Math.max(totalBonusSteps, 0) - lvlSteps;
           
-          for (let i = 0; i < totalBonusSteps; i++) {
-            if (currentIndex < diceProgression.length - 1) {
-              currentIndex++;
-            } else {
-              currentExtraBonus += (i >= raceSteps) ? 2 : 1;
+          if (totalBonusSteps > 0) {
+            for (let i = 0; i < totalBonusSteps; i++) {
+              if (currentIndex < diceProgression.length - 1) {
+                currentIndex++;
+              } else {
+                currentExtraBonus += (i >= raceSteps) ? 2 : 1;
+              }
+            }
+          } else if (totalBonusSteps < 0) {
+            // Malus (ex. Troll SAG -2) : descendre les crans, comme getFinalAttribute
+            for (let i = 0; i < Math.abs(totalBonusSteps); i++) {
+              if (currentIndex > 0) currentIndex--;
             }
           }
           
@@ -5792,7 +5806,7 @@ Equipement :
         grid.className = 'levelup-adv-grid';
         grid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:0.75rem; margin-bottom:1rem; max-height:300px; overflow-y:auto;';
         
-        const available = creationState.classe.avantages.filter(adv => !isAdvantageAlreadyChosen(adv.id));
+        const available = creationState.classe.avantages.filter(adv => !isAdvantageAlreadyChosen(adv.id, adv.name));
         if (available.length === 0) {
           grid.innerHTML = '<p style="color:#999; font-style:italic; padding:0.5rem;">Tous les avantages de classe ont été choisis.</p>';
         } else {
@@ -5816,8 +5830,16 @@ Equipement :
         container.appendChild(grid);
       }
       
-      // Vérifie si un avantage est déjà choisi (étapes précédentes ou level ups)
-      function isAdvantageAlreadyChosen(advId) {
+      // Vérifie si un avantage est déjà choisi (étapes précédentes ou level ups),
+      // et en mode libre, s'il figure déjà dans les Capacités de la fiche.
+      function isAdvantageAlreadyChosen(advId, advName) {
+        if (advName && currentMode === 'free') {
+          const items = document.querySelectorAll('.abilities-list li strong');
+          for (const s of items) {
+            const txt = s.textContent.replace(/[⬡✦◆]/g, '').trim();
+            if (txt === advName) return true;
+          }
+        }
         // Vérifier l'avantage primaire (étape 4)
         if (creationState.primaryAdvantage && creationState.primaryAdvantage.id === advId) {
           return true;
@@ -5853,7 +5875,7 @@ Equipement :
           classGrid.className = 'levelup-adv-grid';
           classGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:0.75rem; margin-bottom:1rem; max-height:300px; overflow-y:auto;';
           
-          const availableClassAdvantages = creationState.classe.avantages.filter(adv => !isAdvantageAlreadyChosen(adv.id));
+          const availableClassAdvantages = creationState.classe.avantages.filter(adv => !isAdvantageAlreadyChosen(adv.id, adv.name));
           
           if (availableClassAdvantages.length === 0) {
             classGrid.innerHTML = '<p style="color:#999; font-style:italic; padding:0.5rem;">Tous les avantages de classe ont été choisis.</p>';
@@ -5888,7 +5910,7 @@ Equipement :
         generalGrid.className = 'levelup-adv-grid';
         generalGrid.style.cssText = 'display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:0.75rem; margin-bottom:1rem; max-height:300px; overflow-y:auto;';
         
-        const availableGeneralAdvantages = (characterData.avantagesGeneraux || []).filter(adv => !isAdvantageAlreadyChosen(adv.id));
+        const availableGeneralAdvantages = (characterData.avantagesGeneraux || []).filter(adv => !isAdvantageAlreadyChosen(adv.id, adv.name));
         
         if (availableGeneralAdvantages.length === 0) {
           generalGrid.innerHTML = '<p style="color:#999; font-style:italic; padding:0.5rem;">Tous les avantages généraux ont été choisis.</p>';
@@ -5994,7 +6016,7 @@ Equipement :
           if (!selectedClass) return;
           
           // Filtrer les avantages déjà choisis
-          const availableAdvantages = (selectedClass.avantages || []).filter(adv => !isAdvantageAlreadyChosen(adv.id));
+          const availableAdvantages = (selectedClass.avantages || []).filter(adv => !isAdvantageAlreadyChosen(adv.id, adv.name));
           
           if (availableAdvantages.length === 0) {
             advantagesContainer.innerHTML = '<p style="color:#999; font-style:italic; padding:0.5rem;">Tous les avantages de cette classe ont été choisis.</p>';
@@ -6023,6 +6045,14 @@ Equipement :
       }
       
       function addLevelUpChoice(choice) {
+        // Garde : pas d'avantage gratuit au-dela du nombre de niveaux impairs dus
+        if (choice.type === 'classe-gratuit'
+            && freeClassAdvantagesChosen() >= freeClassAdvantagesDue()) {
+          showNotification('❌ Aucun avantage de classe gratuit restant', '#e74c3c');
+          creationState.levelUpCurrentSelection = null;
+          renderLevelUpContent();
+          return;
+        }
         const pointsRemaining = creationState.levelUpPointsTotal - creationState.levelUpPointsSpent;
         if (choice.cost > pointsRemaining) return;
         
@@ -6146,7 +6176,13 @@ Equipement :
         const currentBonus = parseInt(bonusInput?.value?.replace(/[^0-9-]/g, '')) || 0;
         
         const diceProgression = [4, 6, 8, 10, 12];
-        const currentIndex = diceProgression.indexOf(currentDie);
+        let currentIndex = diceProgression.indexOf(currentDie);
+        if (currentIndex === -1) {
+          // Valeur hors progression (saisie manuelle, ex. 11) : caler sur le
+          // premier de superieur ou egal, comme getFinalAttribute
+          currentIndex = diceProgression.findIndex(d => d >= currentDie);
+          if (currentIndex === -1) currentIndex = diceProgression.length - 1;
+        }
         
         if (currentIndex < diceProgression.length - 1) {
           // Monter le dé d'un cran
@@ -6156,6 +6192,7 @@ Equipement :
           // Déjà à D12 : la règle donne +2 au bonus pour un cran de Level Up
           if (bonusInput) {
             bonusInput.value = `+${currentBonus + 2}`;
+            bonusInput.dispatchEvent(new Event('input')); // rafraichit la colonne Jet
           }
         }
       }
@@ -6199,93 +6236,9 @@ Equipement :
         updateSkillJets();
       }
       
-      function applyLevelUpCompetence(details) {
-        // Ajouter +1 à la compétence dans le tableau
-        const skillsBody = document.querySelector('.skill-table tbody');
-        if (!skillsBody) return;
-        
-        const comp = characterData.competences.find(c => c.id === details.compId);
-        if (!comp) return;
-        
-        // Chercher si la compétence existe déjà
-        const rows = skillsBody.querySelectorAll('tr');
-        let found = false;
-        
-        for (const row of rows) {
-          const nameCell = row.querySelector('td:first-child input');
-          if (nameCell && nameCell.value === comp.name) {
-            // Incrémenter le bonus existant
-            const bonusCell = row.querySelectorAll('input')[2];
-            if (bonusCell) {
-              let currentBonus = parseInt(bonusCell.value.replace(/[^0-9-]/g, '')) || 0;
-              bonusCell.value = '+' + (currentBonus + 1);
-              found = true;
-              break;
-            }
-          }
-        }
-        
-        // Si pas trouvée, chercher une ligne vide ou en créer une nouvelle
-        if (!found) {
-          // Chercher une ligne vide
-          let emptyRow = null;
-          for (const row of rows) {
-            const nameCell = row.querySelector('td:first-child input');
-            if (nameCell && !nameCell.value.trim()) {
-              emptyRow = row;
-              break;
-            }
-          }
-          
-          if (emptyRow) {
-            // Utiliser la ligne vide
-            const cells = emptyRow.querySelectorAll('td input');
-            if (cells.length >= 3) {
-              cells[0].value = comp.name;
-              cells[1].value = comp.attribut;
-              cells[2].value = '+1';
-            }
-          } else {
-            // Créer une nouvelle ligne
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-              <td><input value="${comp.name}" /></td>
-              <td><input value="${comp.attribut}" /></td>
-              <td><input type="text" value="+1" style="text-align:center;" /></td>
-            `;
-            skillsBody.appendChild(newRow);
-          }
-        }
-      }
-      
-      function applyLevelUpCaracteristique(details) {
-        const attr = details.attr;
-        // Les IDs correspondent aux noms des attributs dans le HTML
-        const attrMapping = { force: 'force', dex: 'dex', emp: 'emp', sag: 'sag', int: 'int' };
-        const fieldId = attrMapping[attr];
-        
-        // Récupérer le champ principal de la caractéristique
-        const valueField = document.getElementById(fieldId);
-        if (!valueField) return;
-        
-        // Le champ bonus est le deuxième input dans le même conteneur (après le dice span)
-        const container = valueField.closest('.value-wrap');
-        const bonusField = container ? container.querySelector('input[type="text"]') : null;
-        
-        let currentValue = parseInt(valueField.value) || 4;
-        let currentBonus = parseInt(bonusField?.value?.replace(/[^0-9-]/g, '')) || 0;
-        
-        if (currentValue < 12) {
-          // Augmenter le dé
-          valueField.value = Math.min(12, currentValue + 2);
-        } else {
-          // Déjà au max, augmenter le bonus (+2 : règle Level Up au-delà de D12)
-          if (bonusField) {
-            bonusField.value = '+' + (currentBonus + 2);
-          }
-        }
-      }
-      
+      // (applyLevelUpCompetence et applyLevelUpCaracteristique, legacy sans
+      //  appelant et a l'ancien format, supprimees lors de la review du lot 1.)
+
       function applyLevelUpAdvantage(choice) {
         // Ajouter l'avantage à la liste des capacités
         const sections = document.querySelectorAll('.section');
@@ -6490,6 +6443,9 @@ Equipement :
       
       function scheduleAutosave() {
         if (currentMode === 'menu' || currentMode === 'consult') return;
+        // Un travail demarre : la banniere de reprise devient dangereuse (ecrasement)
+        const staleBanner = document.getElementById('autosave-banner');
+        if (staleBanner) staleBanner.remove();
         autosaveDirty = true;
         if (autosaveTimer) clearTimeout(autosaveTimer);
         autosaveTimer = setTimeout(autosaveNow, 800);
@@ -6527,13 +6483,15 @@ Equipement :
           || (payload.sheet.name && payload.sheet.name.trim() !== '');
         if (!meaningful) return;
         
+        const pStep = parseInt(payload.step) || 1;
+        const asWizard = payload.mode === 'wizard' && payload.creationState && pStep <= 8;
         const when = new Date(payload.savedAt);
         const whenTxt = isNaN(when) ? '' : ` (${when.toLocaleDateString('fr-FR')} à ${when.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})})`;
         const banner = document.createElement('div');
         banner.id = 'autosave-banner';
         banner.style.cssText = 'position:fixed; top:0; left:0; right:0; z-index:9999; background:#fff; border-bottom:3px solid #8b0000; box-shadow:0 2px 12px rgba(0,0,0,0.25); padding:0.75rem 1rem; display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; justify-content:center; font-size:14px;';
         banner.innerHTML = `
-          <span>💾 <strong>Travail non sauvegardé retrouvé</strong>${whenTxt} - ${payload.mode === 'wizard' ? 'création en cours (étape ' + (payload.step || 1) + ')' : 'fiche en cours d\'édition'}.</span>
+          <span>💾 <strong>Travail non sauvegardé retrouvé</strong>${whenTxt} - ${asWizard ? 'création en cours (étape ' + pStep + ')' : 'fiche en cours d\'édition'}.</span>
           <button id="autosave-resume" style="padding:0.4rem 1rem; background:#27ae60; color:#fff; border:none; border-radius:0.25rem; font-weight:bold; cursor:pointer;">Reprendre</button>
           <button id="autosave-discard" style="padding:0.4rem 1rem; background:#fff; color:#8b0000; border:2px solid #8b0000; border-radius:0.25rem; font-weight:bold; cursor:pointer;">Ignorer</button>
         `;
@@ -6545,11 +6503,16 @@ Equipement :
         });
         
         banner.querySelector('#autosave-resume').addEventListener('click', () => {
+          // Ne pas ecraser silencieusement un travail commence apres le chargement
+          if (currentMode !== 'menu'
+              && !confirm('Remplacer le travail en cours par la sauvegarde retrouvée ?')) {
+            return;
+          }
           banner.remove();
-          // 1. Restaurer la fiche (DOM complet)
-          restoreSheetData(payload.sheet);
+          // 1. Restaurer la fiche (DOM complet) - restoreSheetData attend l'enveloppe {sheet}
+          restoreSheetData({ sheet: payload.sheet });
           
-          if (payload.mode === 'wizard' && payload.creationState) {
+          if (asWizard) {
             // 2a. Restaurer l'etat du wizard et re-lier race/classe aux donnees
             Object.assign(creationState, payload.creationState);
             if (creationState.race && creationState.race.id) {
@@ -6565,7 +6528,7 @@ Equipement :
             document.getElementById('character-sheet').style.display = 'block';
             document.getElementById('free-mode-buttons').style.display = 'none';
             document.getElementById('btn-back-from-ref').style.display = 'none';
-            const step = Math.min(Math.max(parseInt(payload.step) || 1, 1), 8);
+            const step = Math.min(Math.max(pStep, 1), 8);
             currentStep = step;
             document.querySelectorAll('.step-content').forEach(sc => sc.classList.remove('active'));
             const stepContent = document.querySelector(`.step-content[data-step="${step}"]`);
@@ -7500,7 +7463,7 @@ Equipement :
           if (!emptyRow) {
             // Créer une nouvelle ligne
             emptyRow = document.createElement('tr');
-            emptyRow.innerHTML = '<td><input /></td><td><input placeholder="' + comp.attribut + '" /></td><td><input type="number" placeholder="+0" /></td>';
+            emptyRow.innerHTML = '<td><input /></td><td><input placeholder="' + comp.attribut + '" /></td><td><input type="number" placeholder="0" /></td><td class="skill-jet"></td>';
             table.appendChild(emptyRow);
           }
           
@@ -7511,6 +7474,7 @@ Equipement :
           if (nameInput) nameInput.value = comp.name;
           if (attrInput) attrInput.value = comp.attribut;
           if (bonusInput) bonusInput.value = value;
+          updateSkillJets();
         }
       }
       
