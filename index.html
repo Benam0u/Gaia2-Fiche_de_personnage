@@ -2532,16 +2532,18 @@
     .skill-table td.skill-jet { font-size: 14px; color: #444; white-space: nowrap; }
     .skill-table input { width: 100%; border: none; font-size: 14px; }
     .skill-table tbody tr td:first-child { position: relative; padding-left: 1.1rem; }
-    /* Cases d'entrainement : 4 coches = +1 niveau (temps libre en session) */
-    .skill-table td.has-train { display: flex; align-items: center; gap: 6px; }
-    .skill-table td.has-train input { flex: 1; min-width: 0; }
-    .train { display: inline-flex; gap: 3px; flex: none; cursor: pointer; opacity: .35; }
+    /* Cases d'entrainement : 4 coches = +1 niveau (temps libre en session).
+       NB : ne jamais mettre display:flex sur un <td> (cellule detruite, largeur 0). */
+    .skill-table td.has-train input { width: calc(100% - 54px); }
+    .train { display: inline-flex; gap: 3px; cursor: pointer; opacity: .35; vertical-align: middle; margin-left: 2px; }
     .train:hover, .train:not([data-count="0"]) { opacity: 1; }
     .train-box { width: 9px; height: 9px; border: 1.5px solid #8b0000; border-radius: 2px; display: inline-block; }
     .train-box.on { background: #8b0000; }
     @media print {
       .train { display: none; }
       .train:not([data-count="0"]) { display: inline-flex; opacity: 1; }
+      .skill-table td.has-train input { width: 100%; }
+      .skill-table td.has-train:has(.train:not([data-count="0"])) input { width: calc(100% - 54px); }
       .train-box { border-color: #333; }
       .train-box.on { background: #333; }
     }
