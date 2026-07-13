@@ -2226,6 +2226,7 @@
       text-align: center;
     }
     
+    .roll-mention { display:block; font-size:12px; color:#666; font-weight:400; line-height:1.45; }
     .damage-formula {
       font-size: 16px;
       font-weight: normal;
@@ -2531,6 +2532,19 @@
     .skill-table td.skill-jet { font-size: 14px; color: #444; white-space: nowrap; }
     .skill-table input { width: 100%; border: none; font-size: 14px; }
     .skill-table tbody tr td:first-child { position: relative; padding-left: 1.1rem; }
+    /* Cases d'entrainement : 4 coches = +1 niveau (temps libre en session) */
+    .skill-table td.has-train { display: flex; align-items: center; gap: 6px; }
+    .skill-table td.has-train input { flex: 1; min-width: 0; }
+    .train { display: inline-flex; gap: 3px; flex: none; cursor: pointer; opacity: .35; }
+    .train:hover, .train:not([data-count="0"]) { opacity: 1; }
+    .train-box { width: 9px; height: 9px; border: 1.5px solid #8b0000; border-radius: 2px; display: inline-block; }
+    .train-box.on { background: #8b0000; }
+    @media print {
+      .train { display: none; }
+      .train:not([data-count="0"]) { display: inline-flex; opacity: 1; }
+      .train-box { border-color: #333; }
+      .train-box.on { background: #333; }
+    }
     .skill-table tbody tr td:first-child::before { content: '•'; position: absolute; left: 0; font-size: 14px; line-height: 1; top: 0.2rem; }
 
     /* ajuster largeur des textareas des demi‑sections */
@@ -3053,6 +3067,28 @@ Equipement :
     
     function updateSkillJets() {
       document.querySelectorAll('.skill-table tbody tr').forEach(row => {
+        // Cases d'entrainement dans la cellule Nom (comme la version manuscrite)
+        const nameTd = row.querySelector('td');
+        if (nameTd && nameTd.querySelector('input') && !nameTd.querySelector('.train')) {
+          const tr = document.createElement('span');
+          tr.className = 'train';
+          tr.title = 'Entrainement (temps libre) : 4 coches = +1 niveau';
+          for (let k = 0; k < 4; k++) {
+            const b = document.createElement('i');
+            b.className = 'train-box';
+            tr.appendChild(b);
+          }
+          nameTd.appendChild(tr);
+          nameTd.classList.add('has-train');
+        }
+        const trainSpan = nameTd ? nameTd.querySelector('.train') : null;
+        if (trainSpan) {
+          const count = Math.max(0, Math.min(4, parseInt(row.dataset.train || '0', 10) || 0));
+          trainSpan.dataset.count = String(count);
+          trainSpan.querySelectorAll('.train-box').forEach((b, k) => b.classList.toggle('on', k < count));
+          const nameVal = (nameTd.querySelector('input').value || '').trim();
+          trainSpan.style.display = nameVal ? '' : 'none';
+        }
         let jetCell = row.querySelector('.skill-jet');
         if (!jetCell) {
           jetCell = document.createElement('td');
@@ -3097,9 +3133,10 @@ Equipement :
         const v = parseInt(numInput.value, 10) || 0;
         diceSpan.textContent = `( ${getDie(v)} )`;
         updateSkillJets();
+        updateRollMentions();
       };
       numInput.addEventListener('input', update);
-      if (bonusTextInput) bonusTextInput.addEventListener('input', updateSkillJets);
+      if (bonusTextInput) bonusTextInput.addEventListener('input', () => { updateSkillJets(); updateRollMentions(); });
       update();
     });
     // Ajout de lignes dans Compétences avec Entrée
@@ -3118,6 +3155,31 @@ Equipement :
       }
     });
     skillsBody.addEventListener('input', () => updateSkillJets());
+    // Entrainement : cliquer une case coche jusqu'a elle (re-cliquer la
+    // derniere decoche) ; a 4/4, proposer +1 niveau et remise a zero.
+    skillsBody.addEventListener('click', (e) => {
+      const box = e.target.closest('.train-box');
+      if (!box) return;
+      const row = box.closest('tr');
+      const span = box.closest('.train');
+      const idx = Array.from(span.querySelectorAll('.train-box')).indexOf(box);
+      const cur = parseInt(row.dataset.train || '0', 10) || 0;
+      let next = (idx + 1 === cur) ? idx : idx + 1;
+      if (next >= 4) {
+        const name = row.querySelector('input')?.value?.trim() || 'cette compétence';
+        if (confirm(`4 entrainements complets !\nAppliquer +1 niveau à « ${name} » et remettre l'entrainement à zéro ?`)) {
+          const lvlInput = row.querySelectorAll('input')[2];
+          if (lvlInput) {
+            const lvl = parseInt((lvlInput.value || '').replace(/[^0-9-]/g, ''), 10) || 0;
+            lvlInput.value = String(lvl + 1);
+          }
+          showNotification(`✅ « ${name} » : niveau +1 (entrainement termine)`, '#27ae60');
+          next = 0;
+        }
+      }
+      row.dataset.train = String(next);
+      updateSkillJets();
+    });
     // Suppression d’une ligne vide avec Backspace dans Compétences
     skillsBody.addEventListener('keydown', (e) => {
       if (e.key === 'Backspace' && e.target.value === '') {
@@ -3297,6 +3359,7 @@ Equipement :
       }
       
       formulaDiv.textContent = formula || '—';
+      updateRollMentions();
     }
     
     // ========== SYSTÈME DE RD ==========
@@ -3411,6 +3474,58 @@ Equipement :
       } else {
         formulaDiv.textContent = `RD ${totalMax}`;
       }
+      updateRollMentions();
+    }
+    
+    // ===== Mentions de jet (memo de table) sous Degats / RD =====
+    // Avantages qui modifient les JETS d'attaque ou de defense. Detectes par
+    // NOM dans la liste des Capacites de la fiche ; le de est celui de
+    // l'attribut lie (Charisme = Empathie), recalcule en direct.
+    const ROLL_MENTION_ADVANTAGES = [
+      { name: 'Attaque Charismatique', target: 'damage-formula', kind: 'attr-die', attr: 'emp', label: "sur le jet d'attaque" },
+      { name: 'Défense Charismatique', target: 'rd-formula', kind: 'attr-die', attr: 'emp', label: 'sur le jet de défense' },
+      { name: 'Connaissance armure', target: 'damage-formula', kind: 'demi-niveau', label: "sur le jet d'attaque contre armure similaire" },
+      { name: 'Connaissance armure', target: 'rd-formula', kind: 'demi-niveau', label: 'en défense et RD contre armure similaire' }
+    ];
+    
+    function sheetHasAdvantageNamed(name) {
+      const items = document.querySelectorAll('.abilities-list li strong');
+      const want = name.toLowerCase();
+      for (const s of items) {
+        if (s.textContent.replace(/[⬡✦◆⟐]/g, '').trim().toLowerCase() === want) return true;
+      }
+      return false;
+    }
+    
+    function updateRollMentions() {
+      const byTarget = { 'damage-formula': [], 'rd-formula': [] };
+      ROLL_MENTION_ADVANTAGES.forEach(m => {
+        if (!sheetHasAdvantageNamed(m.name)) return;
+        let val = '';
+        if (m.kind === 'attr-die') {
+          const input = document.getElementById(m.attr);
+          const die = getDie(parseInt(input?.value, 10) || 0);
+          const box = input?.closest('.attr-box');
+          const b = parseInt((box?.querySelector('input[type="text"]')?.value || '')
+            .replace(/[^0-9-]/g, ''), 10) || 0;
+          val = '+' + die + (b > 0 ? '+' + b : '');
+        } else if (m.kind === 'demi-niveau') {
+          const niv = parseInt(document.getElementById('level')?.value, 10) || 1;
+          val = '+' + Math.ceil(niv / 2);
+        }
+        byTarget[m.target].push('et ' + val + ' ' + m.label);
+      });
+      Object.entries(byTarget).forEach(([divId, texts]) => {
+        const div = document.getElementById(divId);
+        if (!div) return;
+        const old = div.querySelector('.roll-mention');
+        if (old) old.remove();
+        if (!texts.length) return;
+        const span = document.createElement('span');
+        span.className = 'roll-mention';
+        span.textContent = texts.join(' ');
+        div.appendChild(span);
+      });
     }
     
     // Expose functions globally
@@ -3495,7 +3610,8 @@ Equipement :
           const attr = inputs[1].value?.trim();
           const bonus = inputs[2].value?.trim();
           if (name || attr || bonus) {
-            data.sheet.skills.push({ name, attr, bonus });
+            const train = Math.max(0, Math.min(4, parseInt(row.dataset.train || '0', 10) || 0));
+            data.sheet.skills.push({ name, attr, bonus, train });
           }
         }
       });
@@ -3618,6 +3734,7 @@ Equipement :
               <td><input type="text" value="${niveau}" placeholder="0" style="text-align:center;" /></td>
               <td class="skill-jet"></td>
             `;
+            row.dataset.train = String(Math.max(0, Math.min(4, parseInt(skill.train, 10) || 0)));
             tbody.appendChild(row);
           });
         }
@@ -3706,6 +3823,7 @@ Equipement :
       // Auto-resize all textareas after import
       autoResizeTextareas();
       updateSkillJets();
+      updateRollMentions();
     }
     
     // Helper function to auto-resize all textareas
@@ -4608,6 +4726,7 @@ Equipement :
             }
           }
         });
+        updateRollMentions();
       }
       
       // Mettre à jour les compétences
@@ -6292,6 +6411,7 @@ Equipement :
             }
           }
         }
+        updateRollMentions();
       }
       
       // Finaliser la fiche
@@ -7066,9 +7186,10 @@ Equipement :
           const sourceLabel = source === 'general' ? '(Général)' : source === 'autre-classe' ? '(Autre classe)' : '(Classe)';
           showNotification(`✅ "${name}" ajouté ${sourceLabel}`, '#27ae60');
         }
+        updateRollMentions();
       }
       
-      // Helper to clean up empty list items at the end of a list
+
       function cleanupEmptyListItems(list) {
         const items = list.querySelectorAll('li');
         // Remove empty items from the end
@@ -7689,6 +7810,7 @@ Equipement :
       
       // Recalcule PV et PF
       function recalculatePVPF() {
+      updateRollMentions();
         const forceAttr = getSheetAttribute('force');
         const intAttr = getSheetAttribute('int');
         const level = parseInt(document.getElementById('level')?.value) || 1;
